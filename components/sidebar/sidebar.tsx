@@ -55,7 +55,7 @@ export const SidebarWrapper = () => {
               />
               <CollapseItems
                 icon={<ManualIcon />}
-                items={["Formulario 101", "Formulario P-22", "Formulario P-24"]}
+                items={["Manual 101", "Manual P-22", "Manual P-24"]}
                 title="Manuales"
               />
 
@@ -76,7 +76,7 @@ export const SidebarWrapper = () => {
               />
               <SidebarItem
                 isActive={pathname === "/`chiefEngineerForms`"}
-                title="Equipos"
+                title="Mantenimiento"
                 icon={<ChiefEngineerIcon />}
                 href="/chiefEngineerForms"
               />
