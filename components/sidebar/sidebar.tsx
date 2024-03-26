@@ -49,9 +49,10 @@ export const SidebarWrapper = () => {
               />
               <SidebarItem
                 isActive={pathname === "/notifications"}
-                title="Mis notificaciones" // TODO: Proximamente en v2
+                title="Mis notificaciones" 
                 icon={<NotificationIcon />}
-                href="accounts"
+                href=""
+                isDisabled
               />
               <CollapseItems
                 icon={<ManualIcon />}
