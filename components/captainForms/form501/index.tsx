@@ -8,12 +8,12 @@ import {
   Image,
   Input
 } from '@nextui-org/react'
-import ModalFormSend from './modalFormSend'
 import Link from 'next/link'
+import ModalFormSend from './modalFormSend'
 
 export const Formulario501 = () => {
   return (
-    <Card className='w-full'>
+    <Card className='w-full my-16'>
       <CardHeader className='flex gap-3'>
         <Image
           alt='nextui logo'
