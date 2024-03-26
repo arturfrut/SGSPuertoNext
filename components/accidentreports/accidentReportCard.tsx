@@ -1,5 +1,6 @@
 import { Button, Card, CardBody, Tooltip } from '@nextui-org/react'
 import { Community } from '../icons/community'
+import Link from 'next/link'
 
 export const AccidentReportCard = () => {
   return (
@@ -28,7 +29,9 @@ export const AccidentReportCard = () => {
         </div>
         <div className='flex gap-2.5 py-2 items-center justify-end'>
           {/* <Button color='warning'>Cerrar comando</Button> */}
-          <Button>Botón</Button>
+          <Link href='/accidentreports/formReports'>
+            <Button>Botón</Button>
+          </Link>
           {/* TODO: Hacer que me lleve a la pantalla de cerrar comando */}
         </div>
       </CardBody>
