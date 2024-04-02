@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import { CardBalance3 } from '../home/card-balance3'
-import { CardForm501 } from './CardForm501'
+import { CardForm501 } from './cardForm501'
 import { ComandReception } from './commandReception'
 import { Form502 } from './form502'
 
