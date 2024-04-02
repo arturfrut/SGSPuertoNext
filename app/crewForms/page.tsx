@@ -1,7 +1,7 @@
-import React from 'react';
+import { CrewForms } from '@/components/crewForms';
 
 const crewForms = () => {
-   return <h1>crewForms</h1>;
+   return <CrewForms />;
 };
 
 export default crewForms;

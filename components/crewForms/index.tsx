@@ -1,8 +1,8 @@
-'use client'
-import { Form502 } from '../captainForms/form502'
-import { AccidentReportCard } from './accidentReportCard'
+'use client' 
+import CrewMemberCard from './crewMemberCard'
+import { NewCrewMemberCard } from './newCrewMemberCard'
 
-export const AccidentReports = () => {
+export const CrewForms = () => {
   return (
     <div className='h-full lg:px-6'>
       <div className='flex justify-center gap-4 xl:gap-6 pt-3  lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full'>
@@ -10,12 +10,11 @@ export const AccidentReports = () => {
           {/* Card Section Top */}
           <div className='flex flex-col gap-5'>
             <div className='flex justify-center w-full gap-5'>
-              <AccidentReportCard />
+              <NewCrewMemberCard />
             </div>
-            <div className='grid md:grid-cols-2 grid-cols-1 2xl:grid-cols-3 gap-5  justify-center w-full'>
-              <Form502 />
-              <Form502 />
-            </div>
+            {/* <div className='grid md:grid-cols-2 grid-cols-1 2xl:grid-cols-3 gap-5  justify-center w-full'> */}
+              <CrewMemberCard />
+            {/* </div> */}
           </div>
         </div>
       </div>
