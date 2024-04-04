@@ -1,3 +1,4 @@
+import { manualsRoutes } from "@/constants/manualsRoutes";
 import { Avatar, Tooltip } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import { AccidentReportIcon } from "../icons/sidebar/accidentReport-icon";
@@ -56,7 +57,7 @@ export const SidebarWrapper = () => {
               />
               <CollapseItems
                 icon={<ManualIcon />}
-                items={[{name:"Manual-101", route:"/"}, {name:"FP-101", route:"SGS COFC ARGENTINA S.A OCTUBRE 2023 pdf/FORMULARIOS SGS COFC ARGENTINA SA R0/FORMULARIO FP-101.doc"}, ]}
+                items={manualsRoutes}
                 title="Manuales"
               />
 
