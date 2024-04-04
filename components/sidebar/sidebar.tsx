@@ -56,7 +56,7 @@ export const SidebarWrapper = () => {
               />
               <CollapseItems
                 icon={<ManualIcon />}
-                items={["Manual-101", "MGSC-REVISIÓN2", ]}
+                items={[{name:"Manual-101", route:"/"}, {name:"FP-101", route:"SGS COFC ARGENTINA S.A OCTUBRE 2023 pdf/FORMULARIOS SGS COFC ARGENTINA SA R0/FORMULARIO FP-101.doc"}, ]}
                 title="Manuales"
               />
 
