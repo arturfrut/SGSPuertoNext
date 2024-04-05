@@ -11,4 +11,37 @@ export const hydrocarbonsTypes = [
   'Grasa',
   'Lodos'
 ]
-export const yesNoSelect = ['Si', 'No',]
+export const yesNoSelect = ['Si', 'No']
+
+export const accidentTypes = [
+  'Daños al buque',
+  'Daños a terceros',
+  'Daños al medio ambiente',
+  'Hecho potencialmente peligroso',
+  'Accidente personal grave/leve'
+]
+
+export const monthsSelect = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre'
+]
+
+export const shipCondition = ['Calado proa', 'Calado popa', 'Fondeado']
+
+export const shipStatus = [
+  'En navegación',
+  'Maniobra puerto',
+  'Alijo',
+  'Carga/descarga',
+  'Otras circunstancias'
+]
