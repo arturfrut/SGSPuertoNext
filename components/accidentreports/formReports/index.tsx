@@ -16,7 +16,7 @@ import {
 } from '@/constants/strings'
 import { crewListMock } from '@/mocks/crewListMock'
 import { shipMock } from '@/mocks/shipMock'
-import { getYear } from '@/utils/dateSelector'
+import { getCurrentDateTime } from '@/utils/dateSelector'
 import {
   Button,
   Card,
@@ -32,6 +32,12 @@ import {
   RadioGroup,
   Select,
   SelectItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
   Textarea
 } from '@nextui-org/react'
 import { useState } from 'react'
@@ -44,6 +50,9 @@ export const FormReports = (accidentReportData: {
     ship: shipMock,
     crewList: crewListMock
   }
+
+  const [selectedMemberIndex, setSelectedMemberIndex] = useState(-1) // Estado para almacenar el índice del tripulante seleccionado
+
   const [formData, setFormData] = useState({
     ship: {
       shipName: accidentReportData.ship.shipName ?? 'Cargando Barco',
@@ -59,17 +68,11 @@ export const FormReports = (accidentReportData: {
       'Accidente personal grave/leve': false
     },
     accidentDescription: {
-      accidentTime: {
-        year: getYear(),
-        month: 'Marzo',
-        day: '21',
-        hour: '13',
-        minutes: '20'
-      },
+      accidentTime: getCurrentDateTime(),
       place: null,
       LECrew: null
     },
-    witness: [{}],
+    witness: [],
     shipStatus: {
       shipStatus: null,
       'Calado popa': false,
@@ -106,7 +109,131 @@ export const FormReports = (accidentReportData: {
     }
   })
 
-  const addWitness = () => console.log('testigo agregado')
+  const handleSelectChange = e => {
+    setSelectedMemberIndex(parseInt(e.target.value, 10)) // Almacena el índice del tripulante seleccionado al cambiar la selección
+  }
+
+  const addWitness = () => {
+    if (selectedMemberIndex !== -1) {
+      const selectedMember =
+        accidentReportData.crewList[selectedMemberIndex - 1]
+
+      // Verifica si el testigo ya está presente en el estado
+      const isWitnessAlreadyAdded = formData.witness.some(
+        witness => witness.id === selectedMember.id
+      )
+
+      if (!isWitnessAlreadyAdded) {
+        const newWitness = {
+          id: selectedMember.id,
+          name: selectedMember.name,
+          lastName: selectedMember.lastName
+        }
+        setFormData(prevState => ({
+          ...prevState,
+          witness: [...prevState.witness, newWitness]
+        }))
+      } else {
+        // TODO: hacer que aparezca modal que diga q no se puede agregar dos veces al mismo
+        console.log('Este testigo ya ha sido añadido.')
+      }
+    }
+  }
+
+  const removeWitness = indexToRemove => {
+    setFormData(prevState => ({
+      ...prevState,
+      witness: prevState.witness.filter((_, index) => index !== indexToRemove)
+    }))
+  }
+
+  const handleAccidentTypes = (event: {
+    target: { name: string; checked: boolean }
+  }) => {
+    const { name, checked } = event.target
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      accidentType: {
+        ...prevFormData.accidentType,
+        [name]: checked
+      }
+    }))
+  }
+
+  const handleAccidentTimeYear = (event: {
+    target: { name: any; value: any }
+  }) => {
+    const { name, value } = event.target
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      accidentDescription: {
+        ...prevFormData.accidentDescription,
+        accidentTime: {
+          ...prevFormData.accidentDescription.accidentTime,
+          [name]: value
+        }
+      }
+    }))
+  }
+
+  const handleAccidentDay = (event: { target: { name: any; value: any } }) => {
+    const { value } = event.target
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      accidentDescription: {
+        ...prevFormData.accidentDescription,
+        accidentTime: {
+          ...prevFormData.accidentDescription.accidentTime,
+          day: value
+        }
+      }
+    }))
+  }
+
+  const handeAccidentHour = (event: {
+    target: { name: string; value: any }
+  }) => {
+    const { value } = event.target
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      accidentDescription: {
+        ...prevFormData.accidentDescription,
+        accidentTime: {
+          ...prevFormData.accidentDescription.accidentTime,
+          hour: value
+        }
+      }
+    }))
+  }
+
+  const handeAccidentMinute = (event: {
+    target: { name: string; value: any }
+  }) => {
+    const { value } = event.target
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      accidentDescription: {
+        ...prevFormData.accidentDescription,
+        accidentTime: {
+          ...prevFormData.accidentDescription.accidentTime,
+          minute: value
+        }
+      }
+    }))
+  }
+  const handeAccidentPlace = (event: {
+    target: { name: string; value: any }
+  }) => {
+    const { value } = event.target
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      accidentDescription: {
+        ...prevFormData.accidentDescription,
+        place: value
+      }
+    }))
+  }
+
   return (
     <Card className='w-full md:w-2/3 md:px-10 md:py-5'>
       <CardHeader className='flex gap-3'>
@@ -126,8 +253,8 @@ export const FormReports = (accidentReportData: {
       <Divider />
       <CardBody>
         <div className='flex flex-col md:flex-row md:justify-between md:w-2/4 '>
-          <p className='text-xl'>Buque: {accidentReportData.ship.shipName} </p>
-          <p className='text-xl'>Nro: {accidentReportData.ship.shipNumber} </p>
+          <p className='text-xl'>Buque: {formData.ship.shipName} </p>
+          <p className='text-xl'>Nro: {formData.ship.shipNumber} </p>
         </div>
       </CardBody>
       <Divider />
@@ -135,7 +262,14 @@ export const FormReports = (accidentReportData: {
         <p className='text-xl pb-4'>Tipo de Accidente</p>
         <CheckboxGroup className='pb-4'>
           {accidentTypes.map(value => (
-            <Checkbox key={`accidentTypeId-${value}`} value={value}>
+            <Checkbox
+              key={`accidentTypeId-${value}`}
+              name={value}
+              value={value}
+              checked={formData.accidentType[value]}
+              // TODO: FALTA TIPADO de formData
+              onChange={handleAccidentTypes}
+            >
               {value}
             </Checkbox>
           ))}
@@ -150,10 +284,20 @@ export const FormReports = (accidentReportData: {
             <div className='flex w-full  flex-nowrap  gap-4'>
               <Input
                 type='number'
-                max={getYear() + 2}
+                max={getCurrentDateTime().year + 2}
                 label='Año'
-                defaultValue={getYear().toString()}
+                onChange={handleAccidentTimeYear}
+                defaultValue={formData.accidentDescription.accidentTime.year}
               />
+              {/* 
+              ------------------------------------------------------------
+              ------------------------------------------------------------
+              ------------------------------------------------------------
+              ------------------------------------------------------------
+              ------------------------------------------------------------
+              ------------------------------------------------------------
+              ------------------------------------------------------------
+              TODO: USAR MES CON STATE */}
               <Select label='Mes'>
                 {monthsSelect.map(month => (
                   <SelectItem key={`monthsSelectId-${month}`} value={month}>
@@ -161,21 +305,54 @@ export const FormReports = (accidentReportData: {
                   </SelectItem>
                 ))}
               </Select>
-              <Input type='number' max={31} label='Día necesita función' />
+              {/* TODO: HACER FUNCIÓN PAR CANTIDAD MÁXIMA DE DÍAS Y QUE SE HABILITE DESPUES DE TENERUN DATO EN EL MES */}
+              <Input
+                type='number'
+                max={31}
+                label='Día'
+                value={formData.accidentDescription.accidentTime.day}
+                onChange={handleAccidentDay}
+              />
             </div>
           </div>
           <div className='md:w-1/2'>
             <div>
               <p className='w-1/2 my-2'>Hora</p>
               <div className='flex w-full  flex-nowrap gap-4'>
-                <Input type='number' max={24} label='Hora' />
-                <Input type='number' max={60} label='Minutos' />
+                <Input
+                  type='number'
+                  max={24}
+                  label='Hora'
+                  value={formData.accidentDescription.accidentTime.hour}
+                  onChange={handeAccidentHour}
+                />
+                <Input
+                  type='number'
+                  max={60}
+                  label='Minutos'
+                  value={formData.accidentDescription.accidentTime.minute}
+                  onChange={handeAccidentMinute}
+                />
               </div>
             </div>
           </div>
         </div>
         <p className='my-2'>Lugar:</p>
-        <Input className='w-full' type='email' label='Indique lugar' />
+        <Input
+          className='w-full'
+          type='string'
+          label='Indique lugar'
+          value={formData.accidentDescription.place ?? ''}
+          onChange={handeAccidentPlace}
+        />
+        {/* TODO: MANEJAR TRIPULANTE DE FORMA SIMILARA COMO SE MANEJA MES 
+        ---------------------------------------------------------------------
+         --------------------------------------------------------------------
+        ---------------------------------------------------------------------
+        ---------------------------------------------------------------------
+        ---------------------------------------------------------------------
+        
+        */}
         <p className='my-2'>Tripulante L.E</p>
         <Select label='Seleccione un tripulante de la lista' className='w-full'>
           {accidentReportData.crewList.map(
@@ -191,21 +368,57 @@ export const FormReports = (accidentReportData: {
       <CardBody>
         <p className='text-xl pb-4'>Testigos:</p>
         <div className='flex w-full items-center gap-4'>
-          <Select label='Seleccione Tripulante' className='w-full'>
+          <Select
+            label='Seleccione Tripulante'
+            className='w-full my-4'
+            onChange={handleSelectChange}
+          >
             {accidentReportData.crewList.map(
-              (member: { id: number; name: string; lastName: string }) => (
-                <SelectItem key={member.id} value={member.id}>
+              (
+                member: { id: number; name: string; lastName: string },
+                index: number
+              ) => (
+                <SelectItem key={member.id} value={index}>
                   {`${member.name} ${member.lastName}`}
                 </SelectItem>
               )
             )}
           </Select>
           <Button onClick={addWitness} size='lg'>
-            Agregar/Quitar testigo
+            Agregar
           </Button>
         </div>
-        <p>Lista de testigos agregados:</p>
-        <p>No hubieron testigos -render condicional -</p>
+        <Table aria-label='Example static collection table' isStriped>
+          <TableHeader>
+            <TableColumn>Nombre</TableColumn>
+            <TableColumn className='flex justify-end items-center px-8'>
+              Eliminar
+            </TableColumn>
+          </TableHeader>
+          <TableBody>
+            {formData.witness.length > 0 ? (
+              formData.witness.map((witness, index) => (
+                <TableRow
+                  key={index}
+                  className='cursor-pointer'
+                  onClick={() => removeWitness(index)}
+                >
+                  <TableCell>{witness?.name}</TableCell>
+                  <TableCell className='flex justify-end px-10'>
+                    <CrossIcon />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell>No hay testigos</TableCell>
+                <TableCell>
+                  <p></p>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </CardBody>
       <Divider />
       <CardBody>
