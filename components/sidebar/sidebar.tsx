@@ -1,3 +1,4 @@
+import { manualsRoutes } from "@/constants/manualsRoutes";
 import { Avatar, Tooltip } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import { AccidentReportIcon } from "../icons/sidebar/accidentReport-icon";
@@ -56,7 +57,7 @@ export const SidebarWrapper = () => {
               />
               <CollapseItems
                 icon={<ManualIcon />}
-                items={["Manual 101", "Manual P-22", "Manual P-24"]}
+                items={manualsRoutes}
                 title="Manuales"
               />
 
@@ -76,10 +77,10 @@ export const SidebarWrapper = () => {
                 href="/accidentreports"
               />
               <SidebarItem
-                isActive={pathname === "/`chiefEngineerForms`"}
+                isActive={pathname === "/maintenanceForms"}
                 title="Mantenimiento"
                 icon={<ChiefEngineerIcon />}
-                href="/chiefEngineerForms"
+                href="/maintenanceForms"
               />
               <SidebarItem
                 isActive={pathname === "/crewForms"}
