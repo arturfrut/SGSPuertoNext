@@ -15,8 +15,6 @@ export const CollapseItems = ({ icon, items, title }: Props) => {
   const handleDownload = (fileProps: { name: string; route: string }) => {
     setDownloading(true)
     const fileUrl = `/pdfs/${fileProps.route}`
-    // Recordar eliminar console.log
-    console.log('MOSTRAR RUTA',fileUrl)
     saveAs(
       fileUrl,
       fileProps.name,
