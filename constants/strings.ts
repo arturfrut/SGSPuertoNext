@@ -38,7 +38,7 @@ export const monthsSelect = [
 
 export const shipCondition = ['Calado proa', 'Calado popa', 'Fondeado']
 
-export const shipStatus = [
+export const shipStatusRadios = [
   'En navegación',
   'Maniobra puerto',
   'Alijo',
