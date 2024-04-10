@@ -1,4 +1,3 @@
-'use client'
 import { Form502 } from '../captainForms/form502'
 import { AccidentReportCard } from './accidentReportCard'
 

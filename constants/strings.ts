@@ -45,3 +45,7 @@ export const shipStatusRadios = [
   'Carga/descarga',
   'Otras circunstancias'
 ]
+
+export const shipOrCompany = ['Buque', 'Empresa']
+
+export const noteClasification = ['Grave', 'Moderado']
