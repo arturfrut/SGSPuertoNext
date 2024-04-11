@@ -1,20 +1,19 @@
 'use client'
 import ModalFR802 from '@/components/accidentreports/formReports/modalFR802'
-import { useWitness } from '@/components/accidentreports/formReports/useWitness'
-import { CheckIcon } from '@/components/icons/checkIcon'
 import { ClockIcon } from '@/components/icons/clock-icon'
 import { CrossIcon } from '@/components/icons/crossIcon'
 import {
   monthsSelect,
   noteClasification,
+  noteStatus,
   shipOrCompany,
   yesNoSelect
 } from '@/constants/strings'
-import { crewListMock } from '@/mocks/crewListMock'
-import { shipMock } from '@/mocks/shipMock'
 import { FR802Values } from '@/types/FR802'
 import { getCurrentDateTime } from '@/utils/dateSelector'
 import {
+  BreadcrumbItem,
+  Breadcrumbs,
   Button,
   Card,
   CardBody,
@@ -34,15 +33,114 @@ import { useForm } from 'react-hook-form'
 // TODO Preguntar que es NCN y de donde viene, preguntar si firma puede ir de otra forma, el emisor puede venir por bdd?, preguntar que es PD
 // Como se genera NCN?
 
-export const NewNote = (accidentReportData: { ship: any; crewList: any }) => {
-  accidentReportData = {
-    ship: shipMock,
-    crewList: crewListMock
+export const NewNote = (data: { status: string, ncn: number }) => {
+  const dataMock = {
+    dataAnterior: 'Viene de bdd de una nota creada anteriormente',
+    status: 'Creación de la nota',
+    ncn: 23
+  }
+  data = dataMock
+
+  type FN801Values = {
+    title: string
+    ncn?: number
+    status: string
+    emisorName: string
+    emisorType: 'buque' | 'empresa'
+    shipCcompanyName: string
+    noteCreationDate: {
+      day: string
+      month: string
+      year: string
+    }
+    evidence: string
+    emisorSignCreation?: {
+      hasSsigned: true
+      date: string
+    }
+    incidentClasification: 'Grave' | 'Moderado'
+    PDDeliveryDate: {
+      day: string
+      month: string
+      year: string
+    }
+    PDOutDate: {
+      day: string
+      month: string
+      year: string
+    }
+    emisorSignReception: {
+      hasSsigned: true
+      date: string
+    }
+    responsibleName: string
+    afectedZone: string
+    correctiveAction: string
+    ActionOutDate: {
+      day: string
+      month: string
+      year: string
+    }
+    ActionCumpliment: {
+      day: string
+      month: string
+      year: string
+    }
+    observations: string
+    endNoteSign: {
+      hasSsigned: true
+      date: string
+    }
+
+    // --------------------------------------
+    // --------------------------------------
+    // --------------------------------------
+    // --------------------------------------
+    // --------------------------------------
+    // --------------------------------------
+    // --------------------------------------
+
+    accidentDescription: {
+      accidentTime: {
+        year: number
+        month: string
+        day: number
+        hour: number
+        minute: number
+      }
+      accidentPlace: string
+      LE?: string
+    }
+    shipStatus: {
+      shipStatus: string
+    }
+    shipCondition: {
+      [key: string]: boolean
+    }
+    accidentType: {
+      [key: string]: boolean
+    }
+    weatherStatus: {
+      windDirection: string
+      windPower: string
+      seaDirection: string
+      seaPower: string
+      seaCurrentDirection: string
+      seaCurrentPower: string
+      tideHeight: string
+    }
+    witness: []
+    HC: {
+      HC: string
+      HCType?: string
+      HCAmmount?: number
+      HCActions?: string
+    }
+    accidentVerifications: string
+    accidentCaptainOpinion: string
   }
 
-  const { register, handleSubmit, setValue, watch } = useForm<FR802Values>()
-  const { handleSelectChange, addWitness, removeWitness, witnessList } =
-    useWitness(accidentReportData.crewList, setValue)
+  const { register, handleSubmit, setValue, watch } = useForm<FN801Values>()
 
   const onSubmit = (data: FR802Values) => {
     console.log(data)
@@ -52,6 +150,10 @@ export const NewNote = (accidentReportData: { ship: any; crewList: any }) => {
     setValue('shipStatus.shipStatus', e.target.value)
   }
 
+  const handleShipOrCompany = (e: { target: { value: 'buque'|'empresa' } }) => {
+    setValue('emisorType', e.target.value)
+  }
+
   const shipStatusConditional =
     watch('shipStatus.shipStatus') === 'Otras circunstancias'
 
@@ -59,10 +161,6 @@ export const NewNote = (accidentReportData: { ship: any; crewList: any }) => {
 
   const handleAccidentTypes = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(`accidentType.${e.target.name}`, e.target.checked)
-  }
-
-  const handleShipCondition = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(`shipCondition.${e.target.name}`, e.target.checked)
   }
 
   return (
@@ -81,23 +179,42 @@ export const NewNote = (accidentReportData: { ship: any; crewList: any }) => {
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Divider />
-
         <CardBody>
-          <p className='text-xl '>Información básica:</p>
-          <p className='mt-4'> NCN: 23</p>
-          <div className='md:flex md:align-items md:gap-4 md:my-4'>
+          <div className='flex flex-col flex-wrap gap-4 w-full'>
+            <Breadcrumbs radius={'sm'} variant='solid' size='lg'>
+              {noteStatus.map((item, index) => (
+                <BreadcrumbItem key={index} isCurrent={data.status === item}>
+                  {item}
+                </BreadcrumbItem>
+              ))}
+            </Breadcrumbs>
+          </div>
+        </CardBody>
+        <Divider />
+        <CardBody>
+          <p className='text-xl '>Creación de la nota</p>
+          <p className='my-4'> NCN: {data.ncn}</p>
+          <p>Título de la nota:</p>
+          <Input
+            className=' my-4 w-full'
+            type='string'
+            label='Uso para taarjeta identificatoria'
+            {...register('title')}
+          />
+          <p className='my-4'>Nombre:</p>
+          <div className='md:flex md:align-items md:gap-4 '>
             <div className='md:w-1/2'>
               <Input
                 className='w-full'
                 type='string'
                 label='Nombre de Empresa/Buque'
-                {...register('accidentDescription.accidentPlace')}
+                {...register('shipCcompanyName')}
               />
               {/* TODO: Arreglar margin en mobile */}
             </div>
             <RadioGroup
               name='shipStatus'
-              onChange={handleShipStatus}
+              onChange={handleShipOrCompany}
               className='md:w-1/2'
             >
               {shipOrCompany.map(option => (
@@ -159,6 +276,14 @@ export const NewNote = (accidentReportData: { ship: any; crewList: any }) => {
             labelPlacement='outside'
             placeholder='Describa el porque de su nota de no conformidad'
           />
+          <div className='w-full md:w-1/2 flex items-center gap-5 my-4'>
+            <Button className='w-full'> Firma del emisor </Button>
+            <CrossIcon />
+          </div>
+          <Button className='md:w-1/2 mb-4'>Enviar </Button>
+          <Divider />
+          <p className='text-xl mt-4'>Recepción</p>
+
           <p className='my-4'>Clasificación:</p>
           <RadioGroup
             name='shipStatus'
@@ -171,7 +296,7 @@ export const NewNote = (accidentReportData: { ship: any; crewList: any }) => {
               </Radio>
             ))}
           </RadioGroup>
-          <div className='w-full md:flex md:gap-4'>
+          <div className='w-full md:flex md:gap-4 mb-4'>
             <div className='md:w-1/2'>
               <p className='my-4'>Fecha de entrega PD</p>
               <div className='flex w-full  flex-nowrap  gap-4'>
@@ -241,7 +366,15 @@ export const NewNote = (accidentReportData: { ship: any; crewList: any }) => {
               </div>
             </div>
           </div>
-          <div></div>
+          <div className='w-full md:w-1/2 flex items-center gap-5 my-4'>
+            <Button className='w-full'> Firma del emisor </Button>
+            <CrossIcon />
+          </div>
+          <Button className='md:w-1/2 mb-4'>Enviar </Button>
+
+          <Divider />
+          <p className='text-xl mt-4'>Acción:</p>
+
           <p className='my-4'>Responsable de la acción correctiva:</p>
           <Input
             className='w-full'
@@ -367,24 +500,21 @@ export const NewNote = (accidentReportData: { ship: any; crewList: any }) => {
             labelPlacement='outside'
             placeholder='Describa la acción'
           />
+          <div className='md:flex md:gap-5'>
+            <div className='w-full md:w-1/2 flex items-center gap-5'>
+              <Button className='w-full my-4'>
+                {' '}
+                Firma Responsable de la A.C.{' '}
+              </Button>
+              <ClockIcon />
+            </div>
+            <div className='w-full md:w-1/2 flex items-center gap-5'>
+              <Button className='w-full'> Firma Responsable SGS </Button>
+              <ClockIcon />
+            </div>
+          </div>
         </CardBody>
 
-        <Divider />
-        <p>Revisar como poner procesos divisiones y firmas según rol</p>
-        <CardBody className='flex gap-4'>
-          <div className='w-full md:w-1/2 flex items-center gap-5'>
-            <Button className='w-full'> Firma Capitan </Button>
-            <CheckIcon />
-          </div>
-          <div className='w-full md:w-1/2 flex items-center gap-5'>
-            <Button className='w-full'> Firma Responsable SGS </Button>
-            <ClockIcon />
-          </div>
-          <div className='w-full md:w-1/2 flex items-center gap-5'>
-            <Button className='w-full'> Firma Tripulante </Button>
-            <CrossIcon />
-          </div>
-        </CardBody>
         <Divider />
         <CardFooter className=' flex gap-3 justify-end'>
           <ModalFR802 formData={watch()} />

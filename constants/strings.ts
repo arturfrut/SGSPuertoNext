@@ -49,3 +49,11 @@ export const shipStatusRadios = [
 export const shipOrCompany = ['Buque', 'Empresa']
 
 export const noteClasification = ['Grave', 'Moderado']
+
+export const noteStatus= [
+  'Creación de la nota',
+  'Recepción',
+  'Acción',
+  'Aceptación',
+  'Finalizada'
+]
