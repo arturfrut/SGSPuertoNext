@@ -18,7 +18,7 @@ export const SidebarItem = ({
   href = '',
   isDisabled
 }: Props) => {
-  const { collapsed, setCollapsed } = useSidebarContext()
+  const { setCollapsed } = useSidebarContext()
 
   const handleClick = () => {
     if (window.innerWidth < 768) {
@@ -27,7 +27,7 @@ export const SidebarItem = ({
   }
   return (
     <NextLink
-      href={href}
+      href={isDisabled ? '#' : href}
       className={`text-default-900 active:bg-none max-w-full ${
         isDisabled && 'pointer-events-none'
       }`}

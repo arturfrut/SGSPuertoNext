@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={clsx('font-sans antialiased', fontSans.className)}>
         <Providers>
-          <div className='px-4'>{children}</div>
+          <div className='p-4 flex justify-center'>{children}</div>
         </Providers>
       </body>
     </html>
