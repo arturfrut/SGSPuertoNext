@@ -57,3 +57,5 @@ export const noteStatus= [
   'Aceptación',
   'Finalizada'
 ]
+
+
