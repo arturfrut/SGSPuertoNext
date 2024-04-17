@@ -18,6 +18,7 @@ import { CollapseItems } from "./collapse-items";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarMenu } from "./sidebar-menu";
 import { Sidebar } from "./sidebar.styles";
+import { NonCoformityIcon } from "../icons/sidebar/nonConformity-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
@@ -93,6 +94,12 @@ export const SidebarWrapper = () => {
                 title="Capacitaciones"
                 icon={<SettingsIcon />}
                 href="/testsForms"
+              />
+              <SidebarItem
+                isActive={pathname === "/non-conformity"}
+                title="Nota de no conformidad"
+                icon={<NonCoformityIcon />}
+                href="/non-conformity"
               />
               <SidebarItem
                 isActive={pathname === "/closeTrip"}
