@@ -127,7 +127,7 @@ export const manualsRoutes = [
   },
   
   {
-    name: 'Revisión-0',
+    name: 'M.G.T. MANTENIMIENTO',
     route: 'SGS COFC ARGENTINA S.A OCTUBRE 2023 pdf/MANUAL DE MANTENIMIENTO COCF ARGENTINA S.A R0/MGTMB COCF ARGENTINA S.A.    REVISION 0.pdf',
   },
   
