@@ -94,7 +94,7 @@ export const FormReports = (accidentReportData: {
         />
         <div className='flex flex-col'>
           <p className='text-xl'>
-            FR-802 RREPORTE DE ACCIDENTE y CUASIACCIDENTE
+            FR-802 REPORTE DE ACCIDENTE y CUASIACCIDENTE
           </p>
         </div>
       </CardHeader>
