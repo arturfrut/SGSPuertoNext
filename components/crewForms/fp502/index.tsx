@@ -1,7 +1,8 @@
 'use client'
-import ModalFR802 from '@/components/accidentreports/formReports/modalFR802'
+import { CrossIcon } from '@/components/icons/crossIcon'
 import { FR802Values } from '@/types/FR802'
 import {
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -292,6 +293,7 @@ export const Fp502 = (data: { status: string; ncn: number }) => {
                   <TableColumn key={index}>{header}</TableColumn>
                 ))}
               </TableHeader>
+              {/* Al "activar" un checkbox, automaticamente me debería dejar modificarlo abriendo el modal */}
               <TableBody>
                 {products.map(product => (
                   <TableRow key={product.id}>
@@ -314,21 +316,24 @@ export const Fp502 = (data: { status: string; ncn: number }) => {
                 ))}
               </TableBody>
             </Table>
-            <ModalToAddElement  />
+            <ModalToAddElement />
           </CardBody>
           <Divider />
           <p className='my-4'> Información adicional</p>
           <Textarea
-            {...register('accidentVerifications')}
             labelPlacement='outside'
             placeholder='Escriba aqui su reseña'
           />
+          <div className='w-full my-4 md:w-1/2 flex items-center justify-center gap-5'>
+            <Button className='w-full'> Firma Tripulante </Button>
+            <CrossIcon />
+          </div>
         </CardBody>
 
         <Divider />
         <CardFooter className=' flex gap-3 justify-end'>
-          <ModalFR802 formData={watch()} />
           {/* TODO: EN V2 AGREGAR BOTÓN DE RESET EN FORMULARIOS */}
+          <Button>Enviar</Button>
         </CardFooter>
       </form>
     </Card>

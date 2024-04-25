@@ -1,40 +1,79 @@
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
+import { CrossIcon } from '@/components/icons/crossIcon'
+import {
+  Button,
+  Checkbox,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
+  useDisclosure
+} from '@nextui-org/react'
 
 export default function ModalToAddElement() {
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   return (
     <>
-      <Button onPress={onOpen}>Añadir Elemento</Button>
-      <Modal size="5xl" isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} isKeyboardDismissDisabled={true}>
+      <Button className='my-4' onPress={onOpen}>
+        Añadir Elemento
+      </Button>
+      <Modal
+        size='5xl'
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        isKeyboardDismissDisabled={true}
+      >
         <ModalContent>
-          {(onClose) => (
+          {onClose => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
-              <ModalBody>
-                <p> 
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit
-                  dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. 
-                  Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. 
-                  Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur 
-                  proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
+              <ModalHeader className='flex flex-col gap-1'>
+                Entrega de nuevo material
+              </ModalHeader>
+              <ModalBody className='grid'>
+                <p>Id del producto a recibir</p>
+                {/* Debe venir por bdd, en caso de seleccionar debe rellenar el
+                resto de los input, en caso de seleccionar otro se agregara a la
+                bdd al final del envio. */}
+                <Select label='Id' value='0'>
+                  {[1, 2, 3, 4, 5, 'Agregar'].map(element => (
+                    <SelectItem
+                      key={`monthsSelectId-${element}`}
+                      value={element}
+                    >
+                      {element}
+                    </SelectItem>
+                  ))}
+                </Select>
+                <p>Nombre del elemento a recibir </p>
+                <Input type={'string'} label='Ingrese nombre de producto' />
+                <p>Marca del elemento a recibir </p>
+                <Input type={'string'} label='Marca' />
+                <p>Modelo de elemento a recibir </p>
+                <Input type={'string'} label='Modelo' />
+                <p>Cantidad</p>
+                <Input type='number' label='Cantidad' />
+                <p>Producto certificado</p>
+                <Checkbox
+                  // onChange={handleShipCondition}
+                  name='isCertified'
+                >
+                  Marque solo en caso de ser certificado
+                </Checkbox>
+                <div className='w-full md:w-1/2 flex items-center justify-center gap-5'>
+                  <Button className='w-full'> Firma Tripulante </Button>
+                  <CrossIcon />
+                </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color='danger' variant='light' onPress={onClose}>
                   Close
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button color='primary' onPress={onClose}>
                   Action
                 </Button>
               </ModalFooter>
@@ -43,5 +82,5 @@ export default function ModalToAddElement() {
         </ModalContent>
       </Modal>
     </>
-  );
+  )
 }
