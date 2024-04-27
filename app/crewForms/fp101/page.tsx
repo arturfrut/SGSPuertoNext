@@ -1,4 +1,4 @@
-import { Fp101 } from "@/components/captainForms/fp101"
+import { Fp101 } from "@/components/crewForms/fp101"
 
 const fp101 = () => {
   return <Fp101 />
