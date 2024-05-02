@@ -162,3 +162,113 @@ RZ-06 REG. ZAFARARNCHOS Y EJERCICIOS SE VA
 
   
 
+/////////////////////////////////////////
+/////////////////////////////////////////
+
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+
+
+Se debería poder reutilizar firma de cada tripulante
+en donde esta UI en el titulo de cada nota, debe ir la empresa
+Revisar que es manual y que es formulario, deberían haber 4 manuales
+
+
+
+Reporte de accidente quitar numero
+En reportte de accidente de administrador se tiene q poder seleccionar viaje (asi aparece la tripulacion que corresponde)
+
+Si hay testigo tiene que firmar al final cada uno
+
+Calados tiene que tener input
+
+Firma tripulante no obligatorio
+
+
+
+
+FP - 501: Instrucciones de familiarización para tripulantes
+no va firma sgs, va firma capitan
+
+
+FP - 502: CONSTANCIA DE ENTREGA DE ROPA DE TRABAJO Y ELEMENTOS DE PROTECCIÓN PERSONAL
+
+Falta firma tripulante
+
+
+502: reseña de trabajo puede ser :
+  Cocinero, Máquinas, Marinero , Bodega,  Puente ( Botines, guantes y nada mas ), 
+  Se va reseña de los epp
+
+  file:///C:/Proyects/Resources%20SGS/Revisi%C3%B3n-1.pdf
+  Por defecto cuando seleccione puesto le aparecen materiales por defecto
+
+
+FC 101 - Control de vencimiento
+Se llama CNSN el NCN, y viene del barco
+Categoria es Cocinero, Máquinas, Marinero , Bodega, Puente
+
+Efectivo relevo: se va
+
+Si cambia foto de certificado me obliga a volver a cargar la data
+
+Cambiar a formato tabla
+
+Apellido y nombre viene de antes
+
+
+
+FN-802 NOTA DE NO CONFORMIDAD
+  Administrador decide quien recibe
+  Visto por persona designada (administrador) despues de creación de nota y llena campos ademas se agregan acciones, en recepción solamente va firma y observación
+  accion se va, se agrega sección de recibido y se crea nuevo estado de en espera de cumplimiento y cierre
+  Firma agregar aclaración 
+
+INSTRUCCIONES DE CONTROL DE GUARDIA EN PUERTO, lo llena Guardia en puerto (nuevo usuario) me lo mando angel por wp, es un reporte diario donde se llenan los checkbox
+<!-- Esto va a tener control mensual en proxima reunion con back-->
+
+
+Falta reporte de alerta meteorologico
+
+REGISTRO DE MANTENIMIENTO MOTORES B/P  “RAFFAELA"
+Se tienen que poder guardar caracteristicas del barco, puede tener varios motores de distintos tipos (checkbox y agregar),
+Tiene acceso el jefe de maquinas
+
+FORMULARIO PC-201 ENTREGA Y RECEPCION DE COMANDO CAPITAN
+Esto es dinamico
+
+
+https://docs.google.com/document/d/14YKi2p562D3Ya6pEnuaaNCMRt7nCIV91/edit
+Se carga por pdf en administrador
+
+Notas de reparacion o mantenimiento 
+Tiene varios estados son;
+Solicitud, aceptación o rechazo (gerente tecnico en caso de rechazo tiene q decir porque, si se acepta tiene que poner que taller lo hace o si lo hace personal de abordo), Conformidad del trabajo por parte del jefe de maquinas, puede no estar conforme y en ese caso tiene que volver a pedirla
+
+
+Tipos de usuarios : 
+Empresa: Se divide en 3, 
+  armador: puede ver las cosas de la empresa, pero no modificar, se parece al administrador
+  Gerente de personal: Puede ver legajos de personas, capacitaciones, entrega de ropa y accidentes. Puede ver y cargar accidentes y notas de no conformidad
+  Gerente técnico: Puede ver pedidos (reparaciones y mantenimiento, puede dar pasos siguientes). Pedidos
+
+
+Administrador:
+  Puede crear usuarios, incluyendo capitan, empresa, guardia de puerto.
+  
+  Pendientes: 
+
+  Tiene que haber carga de pdfs prefectura con estado
+
+  Reporte de clima 
+  Reporte de accidente
+  No conformidad
+  ver Pedidos (no firma, solo se ven)
+  Ejercicio buque tierra (tipo de zafarrancho, en capacitaciones puede haber carga de pdfs (va con checkbox si es buque tierra))
+
+Guardia en puerto: 
+  Solo los controles de guardia de puerto

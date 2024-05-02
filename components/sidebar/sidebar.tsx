@@ -78,6 +78,12 @@ export const SidebarWrapper = () => {
                 href="/accidentreports"
               />
               <SidebarItem
+                isActive={pathname === "/accidentreports"}
+                title="Reporte A. Climática"
+                icon={<AccidentReportIcon />}
+                href="/weather-alert"
+              />
+              <SidebarItem
                 isActive={pathname === "/maintenanceForms"}
                 title="Mantenimiento"
                 icon={<ChiefEngineerIcon />}
