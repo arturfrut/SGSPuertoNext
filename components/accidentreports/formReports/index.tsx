@@ -105,9 +105,7 @@ export const FormReports = (accidentReportData: {
             <p className='text-xl'>
               Buque: {accidentReportData.ship.shipName}{' '}
             </p>
-            <p className='text-xl'>
-              Nro: {accidentReportData.ship.shipNumber}{' '}
-            </p>
+
           </div>
         </CardBody>
         <Divider />
