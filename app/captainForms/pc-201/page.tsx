@@ -1,4 +1,4 @@
-import { Page201 } from '@/components/pc201'
+import { Page201 } from '@/components/captainForms/pc201'
 
 const pc201 = () => {
   return <Page201 />
