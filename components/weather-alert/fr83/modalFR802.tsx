@@ -9,26 +9,42 @@ import {
   ModalHeader,
   useDisclosure
 } from '@nextui-org/react'
+import { useState } from 'react'
 
 export default function Modalfr83({
   modalTitle,
   inputPlaceHolder,
-  tableDescription
+  tableDescription,
+  setWeatherSteps,
+  index,
+  weatherSteps
 }: {
   modalTitle: string
   inputPlaceHolder: string
   tableDescription: string
+  setWeatherSteps: (updatedWeatherSteps: any[]) => void
+  index: number
+  weatherSteps: any
 }) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [value, setValue] = useState('')
+
+  const onAccept = () => {
+    const updatedWeatherSteps = [...weatherSteps]
+    if (value !== '') {
+      updatedWeatherSteps[index].checked = true
+      setWeatherSteps(updatedWeatherSteps)
+    }
+    onClose()
+  }
 
   return (
     <>
       <Button variant='light' onPress={onOpen}>
-        { tableDescription}
+        {tableDescription}
       </Button>
       <Modal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
         isDismissable={false}
         isKeyboardDismissDisabled={true}
       >
@@ -39,13 +55,15 @@ export default function Modalfr83({
                 {modalTitle}
               </ModalHeader>
               <ModalBody>
-               <Input placeholder={inputPlaceHolder} label={modalTitle}/>
+                <Input
+                  placeholder={inputPlaceHolder}
+                  label={modalTitle}
+                  value={value}
+                  onValueChange={setValue}
+                />
               </ModalBody>
               <ModalFooter>
-                <Button color='danger' variant='light' onPress={onClose}>
-                  Cancelar
-                </Button>
-                <Button type='submit' color='primary' onPress={onClose}>
+                <Button color='primary' onClick={onAccept}>
                   Aceptar
                 </Button>
               </ModalFooter>
