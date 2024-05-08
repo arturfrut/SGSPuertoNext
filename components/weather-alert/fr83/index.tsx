@@ -29,35 +29,12 @@ import {
   useDisclosure
 } from '@nextui-org/react'
 import { useState } from 'react'
-import ModalFR802 from './modalFR802'
 import Modalfr83 from './modalFR802'
 
 export const FormFr83 = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [products, setProduct] = useState([
-    {
-      product: 'Protector Facial',
-      model: 'Modelo1',
-      brand: 'Marca1',
-      certified: true,
-      amount: 50,
-      date: '2024-04-17',
-      crewSign: false,
-      id: 1
-    },
-    {
-      product: 'Protector auditivo',
-      model: 'Modelo2',
-      brand: 'Marca2',
-      certified: false,
-      amount: 30,
-      date: '2024-04-17',
-      crewSign: true,
-      id: 2
-    }
-  ])
 
-  const weatherSteps = [
+  const weatherStepsArray = [
     {
       action: 'Control totalidad cierres estacos',
       checked: false
@@ -105,6 +82,15 @@ export const FormFr83 = () => {
       checked: false
     }
   ]
+  const [weatherSteps, setWeatherSteps] = useState(weatherStepsArray)
+
+  const handleRow = (index: number) => {
+    const updatedWeatherSteps = [...weatherSteps]
+    if (!weatherSteps[index].modalTitle) {
+      updatedWeatherSteps[index].checked = true
+      setWeatherSteps(updatedWeatherSteps)
+    }
+  }
 
   const crewList = crewListMock
 
@@ -223,24 +209,37 @@ export const FormFr83 = () => {
             <TableHeader>
               <TableColumn className='w-6'>{'    '}</TableColumn>
               <TableColumn className='w-2'>Hecho</TableColumn>
-              <TableColumn className='flex'>Acción</TableColumn>
+              <TableColumn>Acción</TableColumn>
               <TableColumn>Detalle</TableColumn>
             </TableHeader>
             <TableBody>
               {weatherSteps.map((step, index) => (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  className='cursor-pointer'
+                  onClick={() => handleRow(index)}
+                >
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell className='flex justify-center'>
-                    <Checkbox />
+                  <TableCell>
+                    <Checkbox
+                      isSelected={step.checked}
+                      onValueChange={() => handleRow(index)}
+                    />
                   </TableCell>
                   <TableCell>{step.action}</TableCell>
-                  <TableCell className='cursor-pointer'>
-                    {/* {step.tableDescription} */}
+                  <TableCell>
+                    {/* {step.tableDescription} 
+                    TODO: NO FUNCIONA CHECKBOX
+                    
+                    */}
                     {step.modalTitle ? (
                       <Modalfr83
                         modalTitle={step.modalTitle}
                         inputPlaceHolder={step.inputPlaceHolder}
                         tableDescription={step.tableDescription}
+                        setWeatherSteps={setWeatherSteps}
+                        index={index}
+                        weatherSteps={weatherSteps}
                       />
                     ) : (
                       ''

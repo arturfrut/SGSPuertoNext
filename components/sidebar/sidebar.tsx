@@ -19,6 +19,7 @@ import { SidebarItem } from "./sidebar-item";
 import { SidebarMenu } from "./sidebar-menu";
 import { Sidebar } from "./sidebar.styles";
 import { NonCoformityIcon } from "../icons/sidebar/nonConformity-icon";
+import { WeatherReportIcon } from "../icons/sidebar/weatherReport-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
@@ -79,7 +80,7 @@ export const SidebarWrapper = () => {
               <SidebarItem
                 isActive={pathname === "/accidentreports"}
                 title="Reporte A. Climática"
-                icon={<AccidentReportIcon />}
+                icon={<WeatherReportIcon />}
                 href="/weather-alert"
               />
               <SidebarItem
