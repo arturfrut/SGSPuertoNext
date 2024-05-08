@@ -276,12 +276,6 @@ export const Fp502 = (data: { status: string; ncn: number }) => {
             labelPlacement='outside'
             placeholder='Escriba aqui su reseña'
           />
-          <p className='my-4'> Breve reseña de los EPP por puesto de trabajo</p>
-          <Textarea
-            {...register('accidentVerifications')}
-            labelPlacement='outside'
-            placeholder='Escriba aqui su reseña'
-          />
           <Divider className='my-4' />
           <CardBody>
             <p className='text-xl my-4'> Lista de elementos recibidos</p>

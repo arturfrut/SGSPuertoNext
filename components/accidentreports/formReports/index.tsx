@@ -92,9 +92,9 @@ export const FormReports = (accidentReportData: {
           src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
           width={40}
         />
-        <div className="flex flex-col">
-          <p className="text-xl">
-            FR-802 RREPORTE DE ACCIDENTE y CUASIACCIDENTE
+        <div className='flex flex-col'>
+          <p className='text-xl'>
+            FR-802 REPORTE DE ACCIDENTE y CUASIACCIDENTE
           </p>
         </div>
       </CardHeader>
@@ -104,9 +104,6 @@ export const FormReports = (accidentReportData: {
           <div className="flex flex-col md:flex-row md:justify-between md:w-2/4 ">
             <p className="text-xl">
               Buque: {accidentReportData.ship.shipName}{" "}
-            </p>
-            <p className="text-xl">
-              Nro: {accidentReportData.ship.shipNumber}{" "}
             </p>
           </div>
         </CardBody>
