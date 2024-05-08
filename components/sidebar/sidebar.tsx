@@ -52,7 +52,7 @@ export const SidebarWrapper = () => {
               />
               <SidebarItem
                 isActive={pathname === "/notifications"}
-                title="Mis notificaciones" 
+                title="Mis notificaciones"
                 icon={<NotificationIcon />}
                 href=""
                 isDisabled
@@ -62,7 +62,6 @@ export const SidebarWrapper = () => {
                 items={manualsRoutes}
                 title="Manuales"
               />
-
             </SidebarMenu>
 
             <SidebarMenu title="Viaje Actual">
@@ -100,7 +99,7 @@ export const SidebarWrapper = () => {
                 isActive={pathname === "/testsForms"}
                 title="Capacitaciones"
                 icon={<SettingsIcon />}
-                href="/testsForms"
+                href="/trainings"
               />
               <SidebarItem
                 isActive={pathname === "/non-conformity"}

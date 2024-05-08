@@ -30,7 +30,7 @@ export const AccidentReportCard = () => {
         <div className='flex gap-2.5 py-2 items-center justify-end'>
           {/* <Button color='warning'>Cerrar comando</Button> */}
           <Link href='/accidentreports/formReports'>
-            <Button>Botón</Button>
+            <Button>Reportar</Button>
           </Link>
           {/* TODO: Hacer que me lleve a la pantalla de cerrar comando */}
         </div>
