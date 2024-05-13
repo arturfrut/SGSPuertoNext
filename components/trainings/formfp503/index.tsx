@@ -1,6 +1,9 @@
-'use client'
-import { CrossIcon } from '@/components/icons/crossIcon'
-import { crewListMock } from '@/mocks/crewListMock'
+"use client";
+import { CrossIcon } from "@/components/icons/crossIcon";
+import SignModal from "@/components/signModal";
+import useSignModal from "@/components/signModal/useSignModal";
+import { SignatureChecker } from "@/components/signatureChecker";
+import { crewListMock } from "@/mocks/crewListMock";
 import {
   Button,
   Card,
@@ -21,51 +24,53 @@ import {
   TableHeader,
   TableRow,
   Textarea,
-  useDisclosure
-} from '@nextui-org/react'
-import { useState } from 'react'
+  useDisclosure,
+} from "@nextui-org/react";
+import { useState } from "react";
 
 export const Formfp503 = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [products, setProduct] = useState([
     {
-      product: 'Protector Facial',
-      model: 'Modelo1',
-      brand: 'Marca1',
+      product: "Protector Facial",
+      model: "Modelo1",
+      brand: "Marca1",
       certified: true,
       amount: 50,
-      date: '2024-04-17',
+      date: "2024-04-17",
       crewSign: false,
-      id: 1
+      id: 1,
     },
     {
-      product: 'Protector auditivo',
-      model: 'Modelo2',
-      brand: 'Marca2',
+      product: "Protector auditivo",
+      model: "Modelo2",
+      brand: "Marca2",
       certified: false,
       amount: 30,
-      date: '2024-04-17',
+      date: "2024-04-17",
       crewSign: true,
-      id: 2
-    }
-  ])
+      id: 2,
+    },
+  ]);
 
-  const crewList = crewListMock
+  const crewList = crewListMock;
 
-  const headers = ['Tripulante', 'Firma', 'Comprendió']
+  const headers = ["Tripulante", "Firma", "Comprendió"];
+
+  const { signatures, handleSaveSignature } = useSignModal();
 
   return (
-    <Card className='w-full md:w-2/3 md:px-10 md:py-5'>
-      <CardHeader className='flex gap-3'>
+    <Card className="w-full md:w-2/3 md:px-10 md:py-5">
+      <CardHeader className="flex gap-3">
         <Image
-          alt='nextui logo'
+          alt="nextui logo"
           height={40}
-          radius='sm'
-          src='https://avatars.githubusercontent.com/u/86160567?s=200&v=4'
+          radius="sm"
+          src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
           width={40}
         />
-        <div className='flex flex-col'>
-          <p className='text-xl'>FP - 503 CAPACITACIÓN</p>
+        <div className="flex flex-col">
+          <p className="text-xl">FP - 503 CAPACITACIÓN</p>
         </div>
       </CardHeader>
       {/* <form onSubmit={handleSubmit(onSubmit)}> */}
@@ -73,25 +78,25 @@ export const Formfp503 = () => {
         <Divider />
 
         <CardBody>
-          <p className='text-xl '>Datos de la empresa</p>
-          <p className='mt-4'> Nombre: de Bdd</p>
-          <p className='my-4'> Razón social: de Bdd</p>
-          <Divider className=' mb-4' />
-          <p className='text-xl mb-4'>Tipo de capacitación:</p>
-          <RadioGroup >
-            <Radio value='Capacitación'>Capacitación</Radio>
-            <Radio value='Zafarrancho'>Zafarrancho</Radio>
-            <Radio value='san-francisco'>Ejercicio</Radio>
+          <p className="text-xl ">Datos de la empresa</p>
+          <p className="mt-4"> Nombre: de Bdd</p>
+          <p className="my-4"> Razón social: de Bdd</p>
+          <Divider className=" mb-4" />
+          <p className="text-xl mb-4">Tipo de capacitación:</p>
+          <RadioGroup>
+            <Radio value="Capacitación">Capacitación</Radio>
+            <Radio value="Zafarrancho">Zafarrancho</Radio>
+            <Radio value="san-francisco">Ejercicio</Radio>
           </RadioGroup>
-          <p className='my-4'>Tema tratado:</p>
+          <p className="my-4">Tema tratado:</p>
           <Textarea
-            labelPlacement='outside'
-            placeholder='Describa el tema aquí'
+            labelPlacement="outside"
+            placeholder="Describa el tema aquí"
           />
-          <Divider className='my-4' />
-          <p className='text-xl mb-4'>Participantes:</p>
-          <div className='flex w-full items-center gap-4'>
-            <Select label='Seleccione Tripulante' className='w-full my-4'>
+          <Divider className="my-4" />
+          <p className="text-xl mb-4">Participantes:</p>
+          <div className="flex w-full items-center gap-4">
+            <Select label="Seleccione Tripulante" className="w-full my-4">
               {crewList.map(
                 (
                   member: { id: number; name: string; lastName: string },
@@ -104,13 +109,13 @@ export const Formfp503 = () => {
               )}
             </Select>
             {/* <Button onClick={addWitness} size='lg'> */}
-            <Button size='lg'>Agregar</Button>
+            <Button size="lg">Agregar</Button>
           </div>
-          <Table aria-label='Example static collection table' isStriped>
+          <Table aria-label="Example static collection table" isStriped>
             <TableHeader>
               <TableColumn>Tripulante</TableColumn>
               <TableColumn>Comprendió</TableColumn>
-              <TableColumn className='flex justify-end items-center px-8'>
+              <TableColumn className="flex justify-end items-center px-8">
                 Eliminar
               </TableColumn>
             </TableHeader>
@@ -121,14 +126,14 @@ export const Formfp503 = () => {
                   //   witnessList.witness.map((witness, index) => (
                   <TableRow
                     key={index}
-                    className='cursor-pointer'
+                    className="cursor-pointer"
                     // onClick={() => removeWitness(index)}
                   >
                     <TableCell>{witness?.name}</TableCell>
                     <TableCell>
                       <Checkbox />
                     </TableCell>
-                    <TableCell className='flex justify-end px-10'>
+                    <TableCell className="flex justify-end px-10">
                       <CrossIcon />
                     </TableCell>
                   </TableRow>
@@ -146,15 +151,15 @@ export const Formfp503 = () => {
               )}
             </TableBody>
           </Table>
-          <Divider className='my-4' />
-          <p className='mb-4'> Información adicional</p>
+          <Divider className="my-4" />
+          <p className="mb-4"> Información adicional</p>
           <Textarea
-            labelPlacement='outside'
-            placeholder='Escriba aqui su reseña'
+            labelPlacement="outside"
+            placeholder="Escriba aqui su reseña"
           />
-          <Divider className=' my-4' />
-          <p className='mb-4'>Encargado de dar la capacitación:</p>
-          <Select label='Seleccione Tripulante' className='w-full my-4'>
+          <Divider className=" my-4" />
+          <p className="mb-4">Encargado de dar la capacitación:</p>
+          <Select label="Seleccione Tripulante" className="w-full my-4">
             {crewList.map(
               (
                 member: { id: number; name: string; lastName: string },
@@ -166,18 +171,23 @@ export const Formfp503 = () => {
               )
             )}
           </Select>
-          <div className='w-full my-4 md:w-1/2 flex items-center justify-center gap-5'>
-            <Button className='w-full'> Firma persona encargada </Button>
-            <CrossIcon />
+          <div className="w-full my-4 md:w-1/2 flex items-center justify-center gap-5">
+            <SignModal
+              onSave={(data: any) =>
+                handleSaveSignature(data, "personInChargeSignature")
+              }
+              title="FIRMA DE PERSONA ENCARGADA"
+            />
+            <SignatureChecker status={signatures?.personInChargeSignature} />
           </div>
         </CardBody>
 
         <Divider />
-        <CardFooter className=' flex gap-3 justify-end'>
+        <CardFooter className=" flex gap-3 justify-end">
           {/* TODO: EN V2 AGREGAR BOTÓN DE RESET EN FORMULARIOS */}
           <Button>Enviar</Button>
         </CardFooter>
       </form>
     </Card>
-  )
-}
+  );
+};

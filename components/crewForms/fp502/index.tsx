@@ -1,6 +1,6 @@
-'use client'
-import { CrossIcon } from '@/components/icons/crossIcon'
-import { FR802Values } from '@/types/FR802'
+"use client";
+import { CrossIcon } from "@/components/icons/crossIcon";
+import { FR802Values } from "@/types/FR802";
 import {
   Button,
   Card,
@@ -17,69 +17,72 @@ import {
   TableHeader,
   TableRow,
   Textarea,
-  useDisclosure
-} from '@nextui-org/react'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import ModalToAddElement from './ModalToAddElement'
+  useDisclosure,
+} from "@nextui-org/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import ModalToAddElement from "./ModalToAddElement";
+import SignModal from "@/components/signModal";
+import { SignatureChecker } from "@/components/signatureChecker";
+import useSignModal from "@/components/signModal/useSignModal";
 
 export const Fp502 = (data: { status: string; ncn: number }) => {
   const dataMock = {
-    status: 'Creación de la nota',
-    ncn: 23
-  }
-  data = dataMock
+    status: "Creación de la nota",
+    ncn: 23,
+  };
+  data = dataMock;
 
   type FN801Values = {
-    title: string
-    ncn?: number
-    status: string
-    emisorName: string
-    emisorType: 'buque' | 'empresa'
-    shipCcompanyName: string
+    title: string;
+    ncn?: number;
+    status: string;
+    emisorName: string;
+    emisorType: "buque" | "empresa";
+    shipCcompanyName: string;
     noteCreationDate: {
-      day: string
-      month: string
-      year: string
-    }
-    evidence: string
+      day: string;
+      month: string;
+      year: string;
+    };
+    evidence: string;
     emisorSignCreation?: {
-      hasSsigned: true
-      date: string
-    }
-    incidentClasification: 'Grave' | 'Moderado'
+      hasSsigned: true;
+      date: string;
+    };
+    incidentClasification: "Grave" | "Moderado";
     PDDeliveryDate: {
-      day: string
-      month: string
-      year: string
-    }
+      day: string;
+      month: string;
+      year: string;
+    };
     PDOutDate: {
-      day: string
-      month: string
-      year: string
-    }
+      day: string;
+      month: string;
+      year: string;
+    };
     emisorSignReception: {
-      hasSsigned: true
-      date: string
-    }
-    responsibleName: string
-    afectedZone: string
-    correctiveAction: string
+      hasSsigned: true;
+      date: string;
+    };
+    responsibleName: string;
+    afectedZone: string;
+    correctiveAction: string;
     ActionOutDate: {
-      day: string
-      month: string
-      year: string
-    }
+      day: string;
+      month: string;
+      year: string;
+    };
     ActionCumpliment: {
-      day: string
-      month: string
-      year: string
-    }
-    observations: string
+      day: string;
+      month: string;
+      year: string;
+    };
+    observations: string;
     endNoteSign: {
-      hasSsigned: true
-      date: string
-    }
+      hasSsigned: true;
+      date: string;
+    };
 
     // --------------------------------------
     // --------------------------------------
@@ -91,166 +94,167 @@ export const Fp502 = (data: { status: string; ncn: number }) => {
 
     accidentDescription: {
       accidentTime: {
-        year: number
-        month: string
-        day: number
-        hour: number
-        minute: number
-      }
-      accidentPlace: string
-      LE?: string
-    }
+        year: number;
+        month: string;
+        day: number;
+        hour: number;
+        minute: number;
+      };
+      accidentPlace: string;
+      LE?: string;
+    };
     shipStatus: {
-      shipStatus: string
-    }
+      shipStatus: string;
+    };
     shipCondition: {
-      [key: string]: boolean
-    }
+      [key: string]: boolean;
+    };
     accidentType: {
-      [key: string]: boolean
-    }
+      [key: string]: boolean;
+    };
     weatherStatus: {
-      windDirection: string
-      windPower: string
-      seaDirection: string
-      seaPower: string
-      seaCurrentDirection: string
-      seaCurrentPower: string
-      tideHeight: string
-    }
-    witness: []
+      windDirection: string;
+      windPower: string;
+      seaDirection: string;
+      seaPower: string;
+      seaCurrentDirection: string;
+      seaCurrentPower: string;
+      tideHeight: string;
+    };
+    witness: [];
     HC: {
-      HC: string
-      HCType?: string
-      HCAmmount?: number
-      HCActions?: string
-    }
-    accidentVerifications: string
-    accidentCaptainOpinion: string
-  }
+      HC: string;
+      HCType?: string;
+      HCAmmount?: number;
+      HCActions?: string;
+    };
+    accidentVerifications: string;
+    accidentCaptainOpinion: string;
+  };
 
-  const { register, handleSubmit, setValue, watch } = useForm<FN801Values>()
+  const { signatures, handleSaveSignature } = useSignModal();
+  const { register, handleSubmit, setValue, watch } = useForm<FN801Values>();
 
   const onSubmit = (data: FR802Values) => {
-    console.log(data)
-  }
+    console.log(data);
+  };
 
   const handleShipStatus = (e: { target: { value: string } }) => {
-    setValue('shipStatus.shipStatus', e.target.value)
-  }
+    setValue("shipStatus.shipStatus", e.target.value);
+  };
 
   const handleShipOrCompany = (e: {
-    target: { value: 'buque' | 'empresa' }
+    target: { value: "buque" | "empresa" };
   }) => {
-    setValue('emisorType', e.target.value)
-  }
+    setValue("emisorType", e.target.value);
+  };
 
   const shipStatusConditional =
-    watch('shipStatus.shipStatus') === 'Otras circunstancias'
+    watch("shipStatus.shipStatus") === "Otras circunstancias";
 
-  const HCValue = watch('HC.HC')
+  const HCValue = watch("HC.HC");
 
   const handleAccidentTypes = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(`accidentType.${e.target.name}`, e.target.checked)
-  }
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    setValue(`accidentType.${e.target.name}`, e.target.checked);
+  };
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [products, setProduct] = useState([
     {
-      product: 'Protector Facial',
-      model: 'Modelo1',
-      brand: 'Marca1',
+      product: "Protector Facial",
+      model: "Modelo1",
+      brand: "Marca1",
       certified: true,
       amount: 50,
-      date: '2024-04-17',
+      date: "2024-04-17",
       crewSign: false,
-      id: 1
+      id: 1,
     },
     {
-      product: 'Protector auditivo',
-      model: 'Modelo2',
-      brand: 'Marca2',
+      product: "Protector auditivo",
+      model: "Modelo2",
+      brand: "Marca2",
       certified: false,
       amount: 30,
-      date: '2024-04-17',
+      date: "2024-04-17",
       crewSign: true,
-      id: 2
+      id: 2,
     },
     {
-      product: 'Zapato de seguridad',
-      model: 'Modelo3',
-      brand: 'Marca3',
+      product: "Zapato de seguridad",
+      model: "Modelo3",
+      brand: "Marca3",
       certified: true,
       amount: 100,
-      date: '2024-04-17',
+      date: "2024-04-17",
       crewSign: false,
-      id: 3
+      id: 3,
     },
     {
-      product: 'Casco',
-      model: 'Modelo4',
-      brand: 'Marca4',
+      product: "Casco",
+      model: "Modelo4",
+      brand: "Marca4",
       certified: true,
       amount: 80,
-      date: '2024-04-17',
+      date: "2024-04-17",
       crewSign: true,
-      id: 4
+      id: 4,
     },
     {
-      product: 'Chaleco salvavidas',
-      model: 'Modelo5',
-      brand: 'Marca5',
+      product: "Chaleco salvavidas",
+      model: "Modelo5",
+      brand: "Marca5",
       certified: false,
       amount: 20,
-      date: '2024-04-17',
+      date: "2024-04-17",
       crewSign: false,
-      id: 5
+      id: 5,
     },
     {
-      product: 'Faja lumbar',
-      model: 'Modelo6',
-      brand: 'Marca6',
+      product: "Faja lumbar",
+      model: "Modelo6",
+      brand: "Marca6",
       certified: true,
       amount: 40,
-      date: '2024-04-17',
+      date: "2024-04-17",
       crewSign: true,
-      id: 6
+      id: 6,
     },
     {
-      product: 'Guantes',
-      model: 'Modelo7',
-      brand: 'Marca7',
+      product: "Guantes",
+      model: "Modelo7",
+      brand: "Marca7",
       certified: true,
       amount: 60,
-      date: '2024-04-17',
+      date: "2024-04-17",
       crewSign: false,
-      id: 7
-    }
-  ])
+      id: 7,
+    },
+  ]);
 
   const headers = [
-    'Se entrega',
-    'ID',
-    'Producto',
-    'Tipo/Modelo',
-    'Marca',
-    'Posee certificación',
-    'Cantidad',
-    'Fecha',
-    'Firma del trabajador'
-  ]
+    "Se entrega",
+    "ID",
+    "Producto",
+    "Tipo/Modelo",
+    "Marca",
+    "Posee certificación",
+    "Cantidad",
+    "Fecha",
+    "Firma del trabajador",
+  ];
 
   return (
-    <Card className='w-full md:w-2/3 md:px-10 md:py-5'>
-      <CardHeader className='flex gap-3'>
+    <Card className="w-full md:w-2/3 md:px-10 md:py-5">
+      <CardHeader className="flex gap-3">
         <Image
-          alt='nextui logo'
+          alt="nextui logo"
           height={40}
-          radius='sm'
-          src='https://avatars.githubusercontent.com/u/86160567?s=200&v=4'
+          radius="sm"
+          src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
           width={40}
         />
-        <div className='flex flex-col'>
-          <p className='text-xl'>
+        <div className="flex flex-col">
+          <p className="text-xl">
             FP - 502: CONSTANCIA DE ENTREGA DE ROPA DE TRABAJO Y ELEMENTOS DE
             PROTECCIÓN PERSONAL
           </p>
@@ -260,28 +264,28 @@ export const Fp502 = (data: { status: string; ncn: number }) => {
         <Divider />
 
         <CardBody>
-          <p className='text-xl '>Datos de la empresa</p>
-          <p className='my-4'> Razón social: de Bdd</p>
-          <p className='my-4'> Cuit: de Bdd</p>
-          <p className='my-4'> Dirección: de Bdd</p>
-          <p className='my-4'> Localidad:de bdd</p>
+          <p className="text-xl ">Datos de la empresa</p>
+          <p className="my-4"> Razón social: de Bdd</p>
+          <p className="my-4"> Cuit: de Bdd</p>
+          <p className="my-4"> Dirección: de Bdd</p>
+          <p className="my-4"> Localidad:de bdd</p>
           <Divider />
-          <p className='text-xl my-4'>Datos del tripulante</p>
+          <p className="text-xl my-4">Datos del tripulante</p>
 
-          <p className='my-4'> Nombre: de petición</p>
-          <p className='my-4'> DNI: de petición</p>
-          <p className='my-4'> Breve reseña del puesto de trabajo</p>
+          <p className="my-4"> Nombre: de petición</p>
+          <p className="my-4"> DNI: de petición</p>
+          <p className="my-4"> Breve reseña del puesto de trabajo</p>
           <Textarea
-            {...register('accidentVerifications')}
-            labelPlacement='outside'
-            placeholder='Escriba aqui su reseña'
+            {...register("accidentVerifications")}
+            labelPlacement="outside"
+            placeholder="Escriba aqui su reseña"
           />
-          <Divider className='my-4' />
+          <Divider className="my-4" />
           <CardBody>
-            <p className='text-xl my-4'> Lista de elementos recibidos</p>
-            <p className=' my-4'> Toque el elemento para modificar</p>
+            <p className="text-xl my-4"> Lista de elementos recibidos</p>
+            <p className=" my-4"> Toque el elemento para modificar</p>
 
-            <Table isStriped aria-label='Example static collection table'>
+            <Table isStriped aria-label="Example static collection table">
               <TableHeader>
                 {headers.map((header, index) => (
                   <TableColumn key={index}>{header}</TableColumn>
@@ -289,7 +293,7 @@ export const Fp502 = (data: { status: string; ncn: number }) => {
               </TableHeader>
               {/* Al "activar" un checkbox, automaticamente me debería dejar modificarlo abriendo el modal */}
               <TableBody>
-                {products.map(product => (
+                {products.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>
                       <Checkbox />
@@ -313,23 +317,28 @@ export const Fp502 = (data: { status: string; ncn: number }) => {
             <ModalToAddElement />
           </CardBody>
           <Divider />
-          <p className='my-4'> Información adicional</p>
+          <p className="my-4"> Información adicional</p>
           <Textarea
-            labelPlacement='outside'
-            placeholder='Escriba aqui su reseña'
+            labelPlacement="outside"
+            placeholder="Escriba aqui su reseña"
           />
-          <div className='w-full my-4 md:w-1/2 flex items-center justify-center gap-5'>
-            <Button className='w-full'> Firma Tripulante </Button>
-            <CrossIcon />
+          <div className="w-full my-4 md:w-1/2 flex items-center justify-center gap-5">
+            <SignModal
+              onSave={(data: any) =>
+                handleSaveSignature(data, "witnessSignature")
+              }
+              title="FIRMA TRIPULANTE"
+            />
+            <SignatureChecker status={signatures?.witnessSignature} />
           </div>
         </CardBody>
 
         <Divider />
-        <CardFooter className=' flex gap-3 justify-end'>
+        <CardFooter className=" flex gap-3 justify-end">
           {/* TODO: EN V2 AGREGAR BOTÓN DE RESET EN FORMULARIOS */}
           <Button>Enviar</Button>
         </CardFooter>
       </form>
     </Card>
-  )
-}
+  );
+};

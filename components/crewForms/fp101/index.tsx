@@ -1,16 +1,14 @@
+"use client";
 import React from "react";
 import { Textarea, Divider, Card, CardBody, Button } from "@nextui-org/react";
 import { CheckIcon } from "@/components/icons/checkIcon";
 import { CrossIcon } from "@/components/icons/crossIcon";
-
-// TODO:
-// PONER ÍCONOS FALTANTES, REEMPLAZARLOS POR "-" Y "."
-// PONER EL CARDBODY DE FIRMAS DE MANERA HORIZONTAL, NO VERTICAL
-
-
-// CONSULTAR SOBRE EL USO DE MAYÚSCULAS Y MINÚSCULAS, Y ERRORES VARIOS.
+import useSignModal from "@/components/signModal/useSignModal";
+import SignModal from "@/components/signModal";
+import { SignatureChecker } from "@/components/signatureChecker";
 
 export const Fp101 = () => {
+  const { signatures, handleSaveSignature } = useSignModal();
   return (
     <Card className="w-full md:w-2/3 md:px-10 md:py-5">
       <CardBody className="my-4">
@@ -142,16 +140,25 @@ export const Fp101 = () => {
       <Divider />
       <CardBody className=" gap-4 mt-3">
         <div className="w-full md:w-1/3 flex items-center gap-5">
-          <Button className="w-full">NOMBRE Y APELLIDO</Button>
-          <CheckIcon />
+          <SignModal
+            onSave={(data: any) => handleSaveSignature(data, "nameAndLastName")}
+            title="NOMBRE Y APELLIDO"
+          />
+          <SignatureChecker status={signatures?.nameAndLastName} />
         </div>
         <div className="w-full md:w-1/3 flex items-center gap-5">
-          <Button className="w-full">FIRMA</Button>
-          <CrossIcon />
+          <SignModal
+            onSave={(data: any) => handleSaveSignature(data, "signature")}
+            title="FIRMA"
+          />
+          <SignatureChecker status={signatures?.signature} />
         </div>
         <div className="w-full md:w-1/3 flex items-center gap-5">
-          <Button className="w-full">FECHA</Button>
-          <CrossIcon />
+          <SignModal
+            onSave={(data: any) => handleSaveSignature(data, "signatureDate")}
+            title="FECHA"
+          />
+          <SignatureChecker status={signatures?.signatureDate} />
         </div>
         <Divider />
         <p className="text-sm">
