@@ -1,4 +1,5 @@
 import { Accordion, AccordionItem, Divider } from '@nextui-org/react'
+import { AccordionMember } from './accordionMember'
 
 export default function CrewMemberCard() {
   const defaultContent =
@@ -7,15 +8,7 @@ export default function CrewMemberCard() {
   return (
     <Accordion variant='splitted'>
       <AccordionItem key='1' aria-label='Accordion 1' title='Marinero 1 66%'>
-        Formulario 500
-        <Divider />
-        <p>
-          Titulo arriba más oscuro y grande, icono de estado a la izquierda,
-          status
-        </p>
-        <p>Carga de libreta </p>
-        <p>En caso de estar completo se mostrará en verde lo de 3/3</p>
-        <Divider />
+        <AccordionMember />
       </AccordionItem>
       <AccordionItem key='2' aria-label='Accordion 2' title='Marinero 2 1/3'>
         {defaultContent}

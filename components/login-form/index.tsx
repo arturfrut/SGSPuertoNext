@@ -1,4 +1,3 @@
-// LoginForm.jsx
 import {
   Button,
   Card,
@@ -16,7 +15,10 @@ import { EyeSlashFilledIcon } from '../icons/EyeSlashFilledIcon'
 const LoginForm = ({ setIsLogged }) => { // Pasar setIsLogged como argumento
   const [isVisible, setIsVisible] = useState(false)
   const toggleVisibility = () => setIsVisible(!isVisible)
-  const handleButon = () => setIsLogged(true)
+  const handleButon = () => {
+    sessionStorage.setItem('isLogged', JSON.stringify(true))
+    setIsLogged(true)
+  }
 
   return (
     <div className='flex justify-center items-center h-screen'>
