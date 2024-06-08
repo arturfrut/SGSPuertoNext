@@ -35,14 +35,13 @@ import SignModal from "@/components/signModal";
 import { SignatureChecker } from "@/components/signatureChecker";
 
 export const FormFr83 = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {  onOpen } = useDisclosure();
 
   const weatherStepsArray = [
     {
       action: "Control totalidad cierres estacos",
       checked: false,
     },
-
     {
       action: "Tincar objetos sueltos en cubierta",
       checked: false,
@@ -86,18 +85,19 @@ export const FormFr83 = () => {
     },
   ];
   const [weatherSteps, setWeatherSteps] = useState(weatherStepsArray);
+  const { signatures, handleSaveSignature } = useSignModal();
+  const crewList = crewListMock;
 
-  const handleRow = (index: number) => {
-    const updatedWeatherSteps = [...weatherSteps];
-    if (!weatherSteps[index].modalTitle) {
-      updatedWeatherSteps[index].checked = true;
+  const handleRowClick = (index: number) => {
+    const step = weatherSteps[index];
+    if (step.modalTitle) {
+      onOpen();
+    } else {
+      const updatedWeatherSteps = [...weatherSteps];
+      updatedWeatherSteps[index].checked = !updatedWeatherSteps[index].checked;
       setWeatherSteps(updatedWeatherSteps);
     }
   };
-
-  const { signatures, handleSaveSignature } = useSignModal();
-
-  const crewList = crewListMock;
 
   return (
     <Card className="w-full md:w-2/3 md:px-10 md:py-5">
@@ -113,10 +113,8 @@ export const FormFr83 = () => {
           <p className="text-xl">FR - 83 REPORTE ALERTA METEOROLÓGICA</p>
         </div>
       </CardHeader>
-      {/* <form onSubmit={handleSubmit(onSubmit)}> */}
       <form>
         <Divider className="mb-4" />
-
         <p className="text-xl ">Información general</p>
         <p className="mt-4"> Buque: de bdd</p>
         <p className="my-4"> Fecha: Automática</p>
@@ -127,7 +125,6 @@ export const FormFr83 = () => {
         </div>
         <p className="my-4"> Nro de servicio de alerta de P.N.A:</p>
         <Input placeholder="ingrese número" />
-
         <Divider className=" my-4" />
         <CardBody>
           <p className="text-xl mb-4">
@@ -206,10 +203,8 @@ export const FormFr83 = () => {
             type="number"
             label="Ingrese altura"
           />
-
           <Divider className="my-4" />
           <p className="text-xl mb-4">Siga las siguientes acciones:</p>
-
           <Table aria-label="Example static collection table" isStriped>
             <TableHeader>
               <TableColumn className="w-6">{"    "}</TableColumn>
@@ -222,21 +217,17 @@ export const FormFr83 = () => {
                 <TableRow
                   key={index}
                   className="cursor-pointer"
-                  onClick={() => handleRow(index)}
+                  onClick={() => handleRowClick(index)}
                 >
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
                     <Checkbox
                       isSelected={step.checked}
-                      onValueChange={() => handleRow(index)}
+                      onValueChange={() => handleRowClick(index)}
                     />
                   </TableCell>
                   <TableCell>{step.action}</TableCell>
                   <TableCell>
-                    {/* {step.tableDescription} 
-                    TODO: NO FUNCIONA CHECKBOX
-                    
-                    */}
                     {step.modalTitle ? (
                       <Modalfr83
                         modalTitle={step.modalTitle}
@@ -284,7 +275,6 @@ export const FormFr83 = () => {
             <SignatureChecker status={signatures?.personInChargeSignature} />{" "}
           </div>
         </CardBody>
-
         <Divider />
         <CardFooter className=" flex gap-3 justify-end">
           {/* TODO: EN V2 AGREGAR BOTÓN DE RESET EN FORMULARIOS */}
