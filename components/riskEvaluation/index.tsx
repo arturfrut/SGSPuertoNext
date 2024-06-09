@@ -25,10 +25,18 @@ import {
   RadioGroup,
   Select,
   SelectItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
   Textarea
 } from '@nextui-org/react'
 import { useState } from 'react'
 import RiskTableModal from './riskTableModal'
+import RiskChip from './RiskChip'
+import AddRiskModal from './AddRiskModal'
 
 // TODO Preguntar que es NCN y de donde viene, preguntar si firma puede ir de otra forma, el emisor puede venir por bdd?, preguntar que es PD
 // Como se genera NCN?
@@ -36,71 +44,45 @@ import RiskTableModal from './riskTableModal'
 export const RiskEvaluation = () => {
   const { signatures, handleSaveSignature } = useSignModal()
   const [status, setStatus] = useState(0)
-  const [probability, setProbability] = useState('')
+  const [tablesData, setTablesData] = useState({
+    firstEvaluation:{
+      risks:[]
+    },
+    secondEvaluation:{
+      preventions:[
 
-  const tableConsecuent = {
-    tableHeaders: ['CATEGORÍA', 'NIVEL DE DAÑO', 'DESCRIPCIÓN', 'SELECCIONAR'],
-      rows: [
-        {
-          category: '1',
-          frecuency: 'Nulo',
-          description: 'No hay posibilidad de daños o enfermedades a las personas que ejecutan el trabajo'
-        },
-        {
-          category: '2',
-          frecuency: 'Bajo',
-          description: 'Cuando las posibilidad de daños o enfermedades son remotas, se aplicaran medidas de control de riesgo como prevención de daños'
-        },
-        {
-          category: '3',
-          frecuency: 'Moderado',
-          description: 'Cuando existe la posibilidad de un daño personal o enfermedad para los ejecutores del trabajo pero las medidas de control de riesgo son suficientes para evitar un accidente'
-        },
-        {
-          category: '4',
-          frecuency: 'Alto',
-          description: 'Cuando exista la posibilidad de daños personales y enfermedades pero reduciendo el nivel de riesgo reducimos el nivel de daños'
-        },
-        {
-          category: '5',
-          frecuency: 'Muy alto',
-          description: 'Cuando existe la posibilidad de daños personales, enfermedades o perdidas de vida, se prohibirá la realización del trabajo'
-        }
       ]
-    }
+    } 
+  })
 
-  
+ const RisktableHeaders = [
+  'Riesgo', 'Detalle', 'Probabilidad', 'Consecuencia', 'Resultado', 'Requiere medidas', 'Editar', 'Eliminar'
+ ]
+ const Risks = [
+  {
+  riskNumber: 'R1',
+  riskDetail: 'Riesgo 1',
+  probabilty: 'Probabilidad 1',
+  consecuency: 'Consecuencia 1',
+  result: 'Resultado 1',
+  actionRequired: 'Requiere medidas 1'
+ },
+ {
+  riskNumber: 'R1',
+  riskDetail: 'Riesgo 1',
+  probabilty: 'Probabilidad 1',
+  consecuency: 'Consecuencia 1',
+  result: 'Resultado 1',
+  actionRequired: 'Requiere medidas 1'
+ }
 
-  const tableProbability = {
-    tableHeaders: ['CATEGORÍA', 'FRECUENCIA', 'DESCRIPCIÓN', 'SELECCIONAR'],
-    rows: [
-      {
-        category: '1',
-        frecuency: 'Improbable',
-        description: 'Es virtualmente improbable o irreal'
-      },
-      {
-        category: '2',
-        frecuency: 'Remota',
-        description: 'No se espera que ocurra'
-      },
-      {
-        category: '3',
-        frecuency: 'Poco frecuente',
-        description: 'Ocurre rara vez'
-      },
-      {
-        category: '4',
-        frecuency: 'Probable',
-        description: 'Ocurre al menos una vez cada diez años'
-      },
-      {
-        category: '5',
-        frecuency: 'Frecuente',
-        description: 'Ocurre varias veces al año'
-      }
-    ]
-  }
+ ]
+
+
+ const generateSecondTable = () => {
+  setStatus(1)
+
+ }
 
   return (
     <Card className='w-full md:w-2/3 md:px-10 md:py-5'>
@@ -144,21 +126,35 @@ export const RiskEvaluation = () => {
             labelPlacement='outside'
             placeholder='Describa el trabajo aquí'
           />
+                  <Table className='my-4' isStriped aria-label='Example static collection table'>
+                  <TableHeader>
+                    {RisktableHeaders.map((header, index) => (
+                      <TableColumn key={index}>{header}</TableColumn>
+                    ))}
+                  </TableHeader>
+                  <TableBody emptyContent={"Sin riesgos agregados"}>
+                    {Risks.map(risk => (
+                      <TableRow key={risk.riskNumber}>
+                        <TableCell>{risk.riskNumber}</TableCell>
+                        <TableCell>{risk.riskDetail}</TableCell>
+                        <TableCell>{risk.probabilty}</TableCell>
+                        <TableCell>{risk.consecuency}</TableCell>
+                        <TableCell>{risk.result}</TableCell>
+                        <TableCell>{risk.actionRequired}</TableCell>
+                        <TableCell>editar</TableCell>
+                        <TableCell>eliminar</TableCell>
 
-          <p className='text-xl my-4'>RIESGO 1:</p>
-          <p className='my-4'>Detalle:</p>
-          <Textarea
-            labelPlacement='outside'
-            placeholder='Escriba el detalle de la situación aquí'
-          />
-          <p className='my-4'>Probabilidad:  No hay probabilidad seleccionada</p>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  </Table>
 
-         
-          <RiskTableModal title={'PROBABILIDAD'} tableData={tableProbability} />
-          <p className='my-4'>Consecuencia:  No hay consecuencia seleccionada</p>
+          <AddRiskModal setTablesData={setTablesData}/>
 
-         
-          <RiskTableModal title={'CONSECUENCIA'} tableData={tableConsecuent} />
+          <Button className='my-2 md:w-1/2 w-full' onPress={generateSecondTable}>
+        Generar tabla de Reevaluación de riesgos
+      </Button>
+
           <p className='my-4'>Nombre:</p>
           <div className='md:flex md:align-items md:gap-4 '>
             <div className='md:w-1/2'>

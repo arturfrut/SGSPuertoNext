@@ -12,12 +12,33 @@ import {
   TableRow,
   useDisclosure
 } from '@nextui-org/react'
+import { useState } from 'react'
 
-export default function RiskTableModal({ title, tableData }) {
+interface TableRow {
+  category: string
+  frecuency: string
+  description: string
+}
+
+interface TableData {
+  tableHeaders: string[]
+  rows: TableRow[]
+}
+
+interface RiskTableModalProps {
+  title: string
+  tableData: TableData
+}
+
+const RiskTableModal: React.FC<RiskTableModalProps> = ({
+  title,
+  tableData
+}) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+
   return (
     <>
-      <Button className="my-2 md:w-1/2 w-full" onPress={onOpen}>
+      <Button className='my-2 md:w-1/2 w-full' onPress={onOpen}>
         {title}
       </Button>
       <Modal
@@ -32,7 +53,13 @@ export default function RiskTableModal({ title, tableData }) {
             <>
               <ModalHeader className='flex flex-col gap-1'>{title}</ModalHeader>
               <ModalBody>
-                <Table isStriped aria-label='Example static collection table'>
+                <Table
+        selectionMode="single"
+        selectionBehavior="toggle"
+
+                  onRowAction={key => alert(`Opening item ${key}...`)}
+                  aria-label='Example static collection table'
+                >
                   <TableHeader>
                     {tableData.tableHeaders.map((header, index) => (
                       <TableColumn key={index}>{header}</TableColumn>
@@ -44,9 +71,6 @@ export default function RiskTableModal({ title, tableData }) {
                         <TableCell>{row.category}</TableCell>
                         <TableCell>{row.frecuency}</TableCell>
                         <TableCell>{row.description}</TableCell>
-                        <TableCell>
-                          <Button onPress={onClose}>Seleccionar</Button>
-                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -67,3 +91,5 @@ export default function RiskTableModal({ title, tableData }) {
     </>
   )
 }
+
+export default RiskTableModal
