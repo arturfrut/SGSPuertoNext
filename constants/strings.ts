@@ -50,7 +50,7 @@ export const shipOrCompany = ['Buque', 'Empresa']
 
 export const noteClasification = ['Grave', 'Moderado']
 
-export const noteStatus= [
+export const noteStatus = [
   'Creación de la nota',
   'Recepción',
   'Acción',
@@ -58,4 +58,7 @@ export const noteStatus= [
   'Finalizada'
 ]
 
-
+export const riskEvaluationStatus = [
+  'Primera evaluación de riesgos',
+  'Segunda evaluación de riesgos'
+]
