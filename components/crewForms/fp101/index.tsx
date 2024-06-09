@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
 import { Textarea, Divider, Card, CardBody, Button } from "@nextui-org/react";
-import { CheckIcon } from "@/components/icons/checkIcon";
-import { CrossIcon } from "@/components/icons/crossIcon";
 import useSignModal from "@/components/signModal/useSignModal";
 import SignModal from "@/components/signModal";
 import { SignatureChecker } from "@/components/signatureChecker";
@@ -74,7 +72,7 @@ export const Fp101 = () => {
           <strong>AIRES MARINOS S.A. </strong>considera que el consumo de
           alcohol y el consumo de drogas y otras sustancias similares, deteriora
           el desempeño en el trabajo y es una seria amenaza para la salud, la
-          productividad y la seguridad de todo su personal y de la empresa".
+          productividad y la seguridad de todo su personal y de la empresa.
           <br />
           Con el fin de evitar los riesgos mencionados, aplicamos la siguiente
           política, cuyo estricto cumplimiento es condición de empleo para todo
