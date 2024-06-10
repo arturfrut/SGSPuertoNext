@@ -12,7 +12,7 @@ import RiskChip from './RiskChip'
 import RiskTableModal from './riskTableModal'
 import { useState } from 'react'
 
-export default function AddRiskModal({setTablesData}) {
+export default function AddRiskModal({setTablesData, prevRiskData}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const tableConsecuent = {
@@ -81,8 +81,32 @@ export default function AddRiskModal({setTablesData}) {
       }
     ]
   }
+  interface RiskGrade {
+    color: 'success' | 'warning' | 'danger' | 'default' | 'primary' | 'secondary'
+    description: string
+    action: string
+  }
 
-  const [riskData, setRiskData] = useState([])
+  const [riskData, setRiskData] = useState({
+    riskDetail: '',
+    probability: null,
+    consequence: null,
+    result: {
+      color:'default',
+      description: '',
+      action:''
+
+    }
+  });
+  
+  // const handleTableSelection = (type, selectedRow) => {
+  //   const newRiskData = { ...riskData };
+  //   newRiskData[type] = selectedRow;
+  //   newRiskData.result = calculateRiskResult(newRiskData);
+  //   setRiskData(newRiskData);
+  // };
+
+
 
   // riskDetail: 'Riesgo 1',
   // probabilty: 'Probabilidad 1',
@@ -107,34 +131,41 @@ export default function AddRiskModal({setTablesData}) {
         <ModalContent>
           {onClose => (
             <>
-              <ModalHeader className='flex flex-col gap-1'>{`Riesgo ${1}}`}</ModalHeader>
+              <ModalHeader className='flex flex-col gap-1'>{`Riesgo ${1}`}</ModalHeader>
               <ModalBody>
                 <p className='my-4'>Detalle:</p>
                 <Textarea
                   labelPlacement='outside'
                   placeholder='Escriba el detalle de la situación aquí'
-                  onChange={e => setRiskData({...riskData, riskDetail:e.target.value})}
+                  onChange={e => setRiskData({ ...riskData, riskDetail: e.target.value })}
                 />
                 <p className='my-4'>
-                  Probabilidad: No hay probabilidad seleccionada
+                Probabilidad: {riskData.probability ?? 'No hay probabilidad seleccionada'}
                 </p>
 
                 <RiskTableModal
                   title={'PROBABILIDAD'}
                   tableData={tableProbability}
+                  setRiskData= {setRiskData}
+                  riskData={riskData}
+                  riskProp='probability'
+
                 />
                 <p className='my-4'>
-                  Consecuencia: No hay consecuencia seleccionada
+                Consecuencia: {riskData.consequence ?? 'No hay consecuencia seleccionada'}
                 </p>
 
                 <RiskTableModal
                   title={'CONSECUENCIA'}
                   tableData={tableConsecuent}
+                  setRiskData= {setRiskData}
+                  riskData={riskData}
+                  riskProp='consequence'
                 />
 
                 <p className='text-xl my-4'>RESULTADO:</p>
 
-                <RiskChip risk={2} />
+                <RiskChip risk={riskData.result} />
               </ModalBody>
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>

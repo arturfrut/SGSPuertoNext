@@ -68,7 +68,7 @@ export const RiskEvaluation = () => {
   actionRequired: 'Requiere medidas 1'
  },
  {
-  riskNumber: 'R1',
+  riskNumber: 'R2',
   riskDetail: 'Riesgo 1',
   probabilty: 'Probabilidad 1',
   consecuency: 'Consecuencia 1',
@@ -149,7 +149,7 @@ export const RiskEvaluation = () => {
                   </TableBody>
                   </Table>
 
-          <AddRiskModal setTablesData={setTablesData}/>
+          <AddRiskModal setTablesData={setTablesData} prevRiskData={null}/>
 
           <Button className='my-2 md:w-1/2 w-full' onPress={generateSecondTable}>
         Generar tabla de Reevaluación de riesgos
