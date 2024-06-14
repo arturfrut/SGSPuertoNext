@@ -29,10 +29,12 @@ interface TableData {
   rows: TableRow[]
 }
 interface RiskData {
+  riskNumber: number
   riskDetail: string
   probability: string | null
   consequence: string | null
   result: RiskGrade
+  actionRequired: boolean
 }
 
 type SetRiskData = React.Dispatch<React.SetStateAction<Partial<RiskData>>>
@@ -44,11 +46,15 @@ interface RiskTableModalProps {
   riskProp: string
 }
 
-
-
-export  const riskGradeGenerator = (risk: number | null) => {
-  risk = risk || 0;
+export const riskGradeGenerator = (risk: number | null): RiskGrade => {
+  risk = risk || 0
   switch (true) {
+    case risk === 0:
+      return {
+        color: 'default',
+        description: 'Sin información ( ? )',
+        action: '-'
+      }
     case risk < 5:
       return {
         color: 'success',
@@ -89,24 +95,28 @@ const RiskTableModal: React.FC<RiskTableModalProps> = ({
   setRiskData,
   riskProp
 }) => {
- 
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const handleRowAction = (key, onClose) => {
-    const riskCalculate = riskData => {
-      const riskMultiplier =
-        riskData.probability && riskData.consequence
-          ? riskData.probability * riskData.consequence
-          : null
-      return riskGradeGenerator(riskMultiplier).description
-    }
+  const handleRowAction = (key: number, onClose: () => void) => {
+    const selectedCategory = tableData.rows[key - 1].category;
 
-    setRiskData({
-      ...riskData,
-      [riskProp]: tableData.rows[key - 1].frecuency,
-      result: riskCalculate(riskData)
-    })
-    onClose()
+    setRiskData(prevRiskData => {
+      const updatedRiskData = {
+        ...prevRiskData,
+        [riskProp]: selectedCategory
+      };
+
+      const riskMultiplier = updatedRiskData.probability && updatedRiskData.consequence
+        ? Number(updatedRiskData.probability) * Number(updatedRiskData.consequence)
+        : 0;
+
+      return {
+        ...updatedRiskData,
+        result: riskGradeGenerator(riskMultiplier),
+        actionRequired: riskMultiplier > 5
+      };
+    });
+
+    onClose();
   }
 
   return (
@@ -129,7 +139,7 @@ const RiskTableModal: React.FC<RiskTableModalProps> = ({
                 <Table
                   selectionMode='single'
                   selectionBehavior='toggle'
-                  onRowAction={key => handleRowAction(key, onClose)}
+                  onRowAction={key => handleRowAction(Number(key), onClose)}
                   aria-label='Example static collection table'
                 >
                   <TableHeader>
@@ -148,14 +158,6 @@ const RiskTableModal: React.FC<RiskTableModalProps> = ({
                   </TableBody>
                 </Table>
               </ModalBody>
-              {/* <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
-                </Button>
-              </ModalFooter> */}
             </>
           )}
         </ModalContent>

@@ -12,7 +12,6 @@ interface RiskGrade {
 }
 
 const RiskChip: React.FC<RiskChipProps> = ({ risk }) => {
-  
   return (
     <div className="flex items-center gap-4">
       <Chip color={risk.color}>{risk.description}</Chip>
