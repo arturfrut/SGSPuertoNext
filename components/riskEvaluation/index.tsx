@@ -23,11 +23,8 @@ import {
 import { useState } from 'react'
 import AddRiskModal from './AddRiskModal'
 
-// TODO Preguntar que es NCN y de donde viene, preguntar si firma puede ir de otra forma, el emisor puede venir por bdd?, preguntar que es PD
-// Como se genera NCN?
 
 export const RiskEvaluation = () => {
-  const { signatures, handleSaveSignature } = useSignModal()
   const [tablesData, setTablesData] = useState({
     firstEvaluation: {
       risks: []
