@@ -12,85 +12,109 @@ import RiskChip from './RiskChip'
 import RiskTableModal from './riskTableModal'
 import { useState } from 'react'
 
-export default function AddRiskModal({setTablesData}) {
+export const tableConsecuent = {
+  tableHeaders: ['CATEGORÍA', 'NIVEL DE DAÑO', 'DESCRIPCIÓN'],
+  rows: [
+    {
+      category: '1',
+      frecuency: 'Nulo',
+      description:
+        'No hay posibilidad de daños o enfermedades a las personas que ejecutan el trabajo'
+    },
+    {
+      category: '2',
+      frecuency: 'Bajo',
+      description:
+        'Cuando las posibilidad de daños o enfermedades son remotas, se aplicaran medidas de control de riesgo como prevención de daños'
+    },
+    {
+      category: '3',
+      frecuency: 'Moderado',
+      description:
+        'Cuando existe la posibilidad de un daño personal o enfermedad para los ejecutores del trabajo pero las medidas de control de riesgo son suficientes para evitar un accidente'
+    },
+    {
+      category: '4',
+      frecuency: 'Alto',
+      description:
+        'Cuando exista la posibilidad de daños personales y enfermedades pero reduciendo el nivel de riesgo reducimos el nivel de daños'
+    },
+    {
+      category: '5',
+      frecuency: 'Muy alto',
+      description:
+        'Cuando existe la posibilidad de daños personales, enfermedades o perdidas de vida, se prohibirá la realización del trabajo'
+    }
+  ]
+}
+
+export const tableProbability = {
+  tableHeaders: ['CATEGORÍA', 'FRECUENCIA', 'DESCRIPCIÓN'],
+  rows: [
+    {
+      category: '1',
+      frecuency: 'Improbable',
+      description: 'Es virtualmente improbable o irreal'
+    },
+    {
+      category: '2',
+      frecuency: 'Remota',
+      description: 'No se espera que ocurra'
+    },
+    {
+      category: '3',
+      frecuency: 'Poco frecuente',
+      description: 'Ocurre rara vez'
+    },
+    {
+      category: '4',
+      frecuency: 'Probable',
+      description: 'Ocurre al menos una vez cada diez años'
+    },
+    {
+      category: '5',
+      frecuency: 'Frecuente',
+      description: 'Ocurre varias veces al año'
+    }
+  ]
+}
+export default function AddRiskModal({ setTablesData, prevRiskData }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const tableConsecuent = {
-    tableHeaders: ['CATEGORÍA', 'NIVEL DE DAÑO', 'DESCRIPCIÓN'],
-    rows: [
-      {
-        category: '1',
-        frecuency: 'Nulo',
-        description:
-          'No hay posibilidad de daños o enfermedades a las personas que ejecutan el trabajo'
-      },
-      {
-        category: '2',
-        frecuency: 'Bajo',
-        description:
-          'Cuando las posibilidad de daños o enfermedades son remotas, se aplicaran medidas de control de riesgo como prevención de daños'
-      },
-      {
-        category: '3',
-        frecuency: 'Moderado',
-        description:
-          'Cuando existe la posibilidad de un daño personal o enfermedad para los ejecutores del trabajo pero las medidas de control de riesgo son suficientes para evitar un accidente'
-      },
-      {
-        category: '4',
-        frecuency: 'Alto',
-        description:
-          'Cuando exista la posibilidad de daños personales y enfermedades pero reduciendo el nivel de riesgo reducimos el nivel de daños'
-      },
-      {
-        category: '5',
-        frecuency: 'Muy alto',
-        description:
-          'Cuando existe la posibilidad de daños personales, enfermedades o perdidas de vida, se prohibirá la realización del trabajo'
-      }
-    ]
+  const initialValue = {
+    riskNumber: prevRiskData?.firstEvaluation.risks.length || 1,
+    riskDetail: '',
+    probability: 0,
+    consequence: 0,
+    result: {
+      color: 'default',
+      description: 'Sin información ( ? )',
+      action: ''
+    },
+    actionRequired: false
   }
 
-  const tableProbability = {
-    tableHeaders: ['CATEGORÍA', 'FRECUENCIA', 'DESCRIPCIÓN'],
-    rows: [
-      {
-        category: '1',
-        frecuency: 'Improbable',
-        description: 'Es virtualmente improbable o irreal'
-      },
-      {
-        category: '2',
-        frecuency: 'Remota',
-        description: 'No se espera que ocurra'
-      },
-      {
-        category: '3',
-        frecuency: 'Poco frecuente',
-        description: 'Ocurre rara vez'
-      },
-      {
-        category: '4',
-        frecuency: 'Probable',
-        description: 'Ocurre al menos una vez cada diez años'
-      },
-      {
-        category: '5',
-        frecuency: 'Frecuente',
-        description: 'Ocurre varias veces al año'
+  const [riskData, setRiskData] = useState(initialValue)
+
+  const createRow = (onClose: () => void) => {
+    setTablesData({
+      ...prevRiskData,
+      firstEvaluation: {
+        risks: [
+          ...prevRiskData.firstEvaluation.risks,
+          {
+            ...riskData,
+            consequence:
+              tableConsecuent.rows[riskData.consequence - 1].frecuency,
+            probability:
+              tableConsecuent.rows[riskData.consequence - 1].frecuency
+          }
+        ]
       }
-    ]
+    })
+    setRiskData(initialValue)
+    onClose()
   }
-
-  const [riskData, setRiskData] = useState([])
-
-  // riskDetail: 'Riesgo 1',
-  // probabilty: 'Probabilidad 1',
-  // consecuency: 'Consecuencia 1',
-  // result: 'Resultado 1',
-  // actionRequired: 'Requiere medidas 1'
-
-
 
   return (
     <>
@@ -107,41 +131,55 @@ export default function AddRiskModal({setTablesData}) {
         <ModalContent>
           {onClose => (
             <>
-              <ModalHeader className='flex flex-col gap-1'>{`Riesgo ${1}}`}</ModalHeader>
+              <ModalHeader className='flex flex-col gap-1'>{`Riesgo ${1}`}</ModalHeader>
               <ModalBody>
                 <p className='my-4'>Detalle:</p>
                 <Textarea
                   labelPlacement='outside'
                   placeholder='Escriba el detalle de la situación aquí'
-                  onChange={e => setRiskData({...riskData, riskDetail:e.target.value})}
+                  onChange={e =>
+                    setRiskData({ ...riskData, riskDetail: e.target.value })
+                  }
                 />
                 <p className='my-4'>
-                  Probabilidad: No hay probabilidad seleccionada
+                  Probabilidad:{' '}
+                  {riskData.probability
+                    ? tableProbability.rows[riskData.probability - 1].frecuency
+                    : 'No hay probabilidad seleccionada'}
                 </p>
 
                 <RiskTableModal
                   title={'PROBABILIDAD'}
                   tableData={tableProbability}
+                  setRiskData={setRiskData}
+                  riskData={riskData}
+                  riskProp='probability'
                 />
                 <p className='my-4'>
-                  Consecuencia: No hay consecuencia seleccionada
+                  Consecuencia:{' '}
+                  {riskData.consequence
+                    ? tableConsecuent.rows[riskData.consequence - 1].frecuency
+                    : 'No hay probabilidad seleccionada'}
                 </p>
 
                 <RiskTableModal
                   title={'CONSECUENCIA'}
                   tableData={tableConsecuent}
+                  setRiskData={setRiskData}
+                  riskData={riskData}
+                  riskProp='consequence'
                 />
 
                 <p className='text-xl my-4'>RESULTADO:</p>
 
-                <RiskChip risk={2} />
+                <RiskChip risk={riskData.result} />
               </ModalBody>
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>
                   Eliminar
                   {/* AGREGAR LÓGICA PARA SI NO EXISTE, QUE SOLO APREZCA AGREGAR, SINO ELIMINAR EDITAR */}
                 </Button>
-                <Button color='primary' onPress={onClose}>
+                <Button color='primary' onPress={() => createRow(onClose)}>
                   Crear / Editar
                 </Button>
               </ModalFooter>
