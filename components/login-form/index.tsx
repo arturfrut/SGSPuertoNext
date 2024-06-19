@@ -12,7 +12,11 @@ import { useState } from 'react'
 import { EyeFilledIcon } from '../icons/EyeFilledIcon'
 import { EyeSlashFilledIcon } from '../icons/EyeSlashFilledIcon'
 
-const LoginForm = ({ setIsLogged }) => { // Pasar setIsLogged como argumento
+interface LoginFormProps {
+  setIsLogged: (value: boolean) => void
+}
+
+const LoginForm = ({ setIsLogged }: LoginFormProps) => { 
   const [isVisible, setIsVisible] = useState(false)
   const toggleVisibility = () => setIsVisible(!isVisible)
   const handleButon = () => {

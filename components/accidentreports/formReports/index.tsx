@@ -51,10 +51,12 @@ import { SignatureChecker } from "@/components/signatureChecker";
 
 // En modal tener en cuenta que la fecha va unificada, puede no haber testigos, En calado de proa, popa y fondeado va un si o no, en las condiciones meteor va de a pares Ej: Viento: sur magnitud 5, Derrame de hidrocarburos mostrara las otras opciones dependiendo de si es un si o un no
 
-export const FormReports = (accidentReportData: {
+export const FormReports = (
+  accidentReportData: {
   ship: any;
   crewList: any;
-}) => {
+}
+) => {
   accidentReportData = {
     ship: shipMock,
     crewList: crewListMock,

@@ -15,8 +15,6 @@ import {
 } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { DateSelector } from "../dateSelector";
-import { CheckIcon } from "../icons/checkIcon";
-import { CrossIcon } from "../icons/crossIcon";
 import { Fc101CaptainForm } from "./Fc101Captain";
 import SignModal from "../signModal";
 import { SignatureChecker } from "../signatureChecker";
@@ -54,7 +52,7 @@ export const Fc101 = (data: { status: string; ncn: number }) => {
   const { signatures, handleSaveSignature } = useSignModal();
   const { register, handleSubmit, watch } = useForm<FN801Values>();
 
-  const onSubmit = (data: FR802Values) => {
+  const onSubmit = (data: any) => {
     console.log(data);
   };
 

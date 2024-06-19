@@ -50,7 +50,7 @@ export const Fp501 = (data: { status: string; ncn: number }) => {
   const { signatures, handleSaveSignature } = useSignModal();
   const { register, handleSubmit, watch } = useForm<FN801Values>();
 
-  const onSubmit = (data: FR802Values) => {
+  const onSubmit = (data: FN801Values) => {
     console.log(data);
   };
 

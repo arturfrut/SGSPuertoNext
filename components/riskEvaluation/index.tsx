@@ -23,9 +23,32 @@ import {
 import { useState } from 'react'
 import AddRiskModal from './AddRiskModal'
 
+interface Risk {
+  riskNumber: number
+  riskDetail: string
+  probability: string
+  consequence: string
+  result: {
+    description: string
+  }
+  actionRequired: boolean
+}
+
+interface Prevention extends Risk {
+  preventionAction: string | null
+}
+
+interface TablesData {
+  firstEvaluation: {
+    risks: Risk[]
+  }
+  secondEvaluation: {
+    preventions: Prevention[]
+  }
+}
 
 export const RiskEvaluation = () => {
-  const [tablesData, setTablesData] = useState({
+  const [tablesData, setTablesData] = useState<TablesData>({
     firstEvaluation: {
       risks: []
     },
@@ -95,7 +118,10 @@ export const RiskEvaluation = () => {
           <div className='flex flex-col flex-wrap gap-4 w-full'>
             <Breadcrumbs radius={'sm'} variant='solid' size='lg'>
               {riskEvaluationStatus.map((item, index) => (
-                <BreadcrumbItem key={index} isCurrent={status === index}>
+                <BreadcrumbItem
+                  key={index}
+                  isCurrent={Number(status ?? -1) === index}
+                >
                   {item}
                 </BreadcrumbItem>
               ))}

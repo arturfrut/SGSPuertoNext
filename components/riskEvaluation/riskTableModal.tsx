@@ -41,8 +41,7 @@ type SetRiskData = React.Dispatch<React.SetStateAction<Partial<RiskData>>>
 interface RiskTableModalProps {
   title: string
   tableData: TableData
-  riskData: RiskData
-  setRiskData: SetRiskData
+  setRiskData: any
   riskProp: string
 }
 
@@ -91,7 +90,6 @@ export const riskGradeGenerator = (risk: number | null): RiskGrade => {
 const RiskTableModal: React.FC<RiskTableModalProps> = ({
   title,
   tableData,
-  riskData,
   setRiskData,
   riskProp
 }) => {
@@ -99,7 +97,7 @@ const RiskTableModal: React.FC<RiskTableModalProps> = ({
   const handleRowAction = (key: number, onClose: () => void) => {
     const selectedCategory = tableData.rows[key - 1].category;
 
-    setRiskData(prevRiskData => {
+    setRiskData((prevRiskData: any) => {
       const updatedRiskData = {
         ...prevRiskData,
         [riskProp]: selectedCategory
