@@ -11,6 +11,7 @@ export const modalFr802 = {
       month: "monthsSelectId-Diciembre",
       day: "25",
       hour: "22",
+      minute:"22"
     },
     accidentPlace: "Casco del barco",
     LE: "",

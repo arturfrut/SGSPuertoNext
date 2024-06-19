@@ -78,7 +78,7 @@ export const tableProbability = {
     }
   ]
 }
-export default function AddRiskModal({ setTablesData, prevRiskData }) {
+export default function AddRiskModal({ setTablesData, prevRiskData }: any) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const initialValue = {
@@ -116,6 +116,28 @@ export default function AddRiskModal({ setTablesData, prevRiskData }) {
     onClose()
   }
 
+  const validateRiskColor = (
+    color: string
+  ): 'success' | 'warning' | 'danger' | 'default' | 'primary' | 'secondary' => {
+    const validColors = [
+      'success',
+      'warning',
+      'danger',
+      'default',
+      'primary',
+      'secondary'
+    ]
+    return validColors.includes(color)
+      ? (color as
+          | 'success'
+          | 'warning'
+          | 'danger'
+          | 'default'
+          | 'primary'
+          | 'secondary')
+      : 'default'
+  }
+
   return (
     <>
       <Button className='my-2 md:w-1/2 w-full' onPress={onOpen}>
@@ -129,7 +151,7 @@ export default function AddRiskModal({ setTablesData, prevRiskData }) {
         isKeyboardDismissDisabled={true}
       >
         <ModalContent>
-          {onClose => (
+          {(onClose: () => void) => (
             <>
               <ModalHeader className='flex flex-col gap-1'>{`Riesgo ${1}`}</ModalHeader>
               <ModalBody>
@@ -137,7 +159,7 @@ export default function AddRiskModal({ setTablesData, prevRiskData }) {
                 <Textarea
                   labelPlacement='outside'
                   placeholder='Escriba el detalle de la situación aquí'
-                  onChange={e =>
+                  onChange={(e: { target: { value: any } }) =>
                     setRiskData({ ...riskData, riskDetail: e.target.value })
                   }
                 />
@@ -152,7 +174,7 @@ export default function AddRiskModal({ setTablesData, prevRiskData }) {
                   title={'PROBABILIDAD'}
                   tableData={tableProbability}
                   setRiskData={setRiskData}
-                  riskData={riskData}
+                  // riskData={riskData}
                   riskProp='probability'
                 />
                 <p className='my-4'>
@@ -166,13 +188,18 @@ export default function AddRiskModal({ setTablesData, prevRiskData }) {
                   title={'CONSECUENCIA'}
                   tableData={tableConsecuent}
                   setRiskData={setRiskData}
-                  riskData={riskData}
+                  // riskData={riskData}
                   riskProp='consequence'
                 />
 
                 <p className='text-xl my-4'>RESULTADO:</p>
 
-                <RiskChip risk={riskData.result} />
+                <RiskChip
+                  risk={{
+                    ...riskData.result,
+                    color: validateRiskColor(riskData.result.color)
+                  }}
+                />
               </ModalBody>
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>

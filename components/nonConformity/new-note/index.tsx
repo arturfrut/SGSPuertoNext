@@ -31,6 +31,7 @@ import {
   SelectItem,
   Textarea,
 } from "@nextui-org/react";
+import { ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 
 // TODO Preguntar que es NCN y de donde viene, preguntar si firma puede ir de otra forma, el emisor puede venir por bdd?, preguntar que es PD
@@ -153,11 +154,15 @@ export const NewNote = (data: { status: string; ncn: number }) => {
     setValue("shipStatus.shipStatus", e.target.value);
   };
 
-  const handleShipOrCompany = (e: {
-    target: { value: "buque" | "empresa" };
-  }) => {
-    setValue("emisorType", e.target.value);
-  };
+  const handleShipOrCompany = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value === 'buque' || value === 'empresa') {
+      setValue('emisorType', value)
+    } else {
+      console.error('Valor no válido:', value)
+    }
+  }
+  
 
   const shipStatusConditional =
     watch("shipStatus.shipStatus") === "Otras circunstancias";
