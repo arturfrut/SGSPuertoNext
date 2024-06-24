@@ -7,22 +7,34 @@ import {
   Divider,
   Image,
   Input
-} from '@nextui-org/react'
-import { useState } from 'react'
-import { EyeFilledIcon } from '../icons/EyeFilledIcon'
-import { EyeSlashFilledIcon } from '../icons/EyeSlashFilledIcon'
+} from '@nextui-org/react';
+import { useState } from 'react';
+import { EyeFilledIcon } from '../icons/EyeFilledIcon';
+import { EyeSlashFilledIcon } from '../icons/EyeSlashFilledIcon';
+import axios from 'axios';
 
 interface LoginFormProps {
-  setIsLogged: (value: boolean) => void
+  setIsLogged: (value: boolean) => void;
 }
 
-const LoginForm = ({ setIsLogged }: LoginFormProps) => { 
-  const [isVisible, setIsVisible] = useState(false)
-  const toggleVisibility = () => setIsVisible(!isVisible)
-  const handleButon = () => {
-    sessionStorage.setItem('isLogged', JSON.stringify(true))
-    setIsLogged(true)
-  }
+const LoginForm = ({ setIsLogged }: LoginFormProps) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
+  const [error, setError] = useState('');
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('/api/login', { username, password });
+      const { token } = response.data;
+      sessionStorage.setItem('isLogged', JSON.stringify(true));
+      sessionStorage.setItem('token', token);
+      setIsLogged(true);
+    } catch (error) {
+      setError('Invalid username or password');
+    }
+  };
 
   return (
     <div className='flex justify-center items-center h-screen'>
@@ -44,12 +56,15 @@ const LoginForm = ({ setIsLogged }: LoginFormProps) => {
         </CardHeader>
         <Divider />
         <CardBody>
+          {error && <p className='text-red-500'>{error}</p>}
           <Input
             isClearable
             label='Usuario'
             variant='bordered'
             placeholder='Ingresa tu nombre de usuario'
             className='w-full'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <Input
             label='Password'
@@ -70,15 +85,17 @@ const LoginForm = ({ setIsLogged }: LoginFormProps) => {
             }
             type={isVisible ? 'text' : 'password'}
             className='my-4 w-full'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </CardBody>
         <Divider />
         <CardFooter className='flex justify-end'>
-          <Button onClick={handleButon}>Entrar</Button>
+          <Button onClick={handleLogin}>Entrar</Button>
         </CardFooter>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;
