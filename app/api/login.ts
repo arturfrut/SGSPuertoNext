@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const SECRET_KEY = 'your_secret_key';
+const SECRET_KEY = 'SGS_Puerto_Next2024';
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {

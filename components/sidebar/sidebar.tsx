@@ -11,15 +11,15 @@ import { CrewIcon } from "../icons/sidebar/crew-icon";
 import { FilterIcon } from "../icons/sidebar/filter-icon";
 import { HomeIcon } from "../icons/sidebar/home-icon";
 import { ManualIcon } from "../icons/sidebar/manuals-icon";
+import { NonCoformityIcon } from "../icons/sidebar/nonConformity-icon";
 import { NotificationIcon } from "../icons/sidebar/notificationicon";
 import { SettingsIcon } from "../icons/sidebar/settings-icon";
+import { WeatherReportIcon } from "../icons/sidebar/weatherReport-icon";
 import { useSidebarContext } from "../layout/layout-context";
 import { CollapseItems } from "./collapse-items";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarMenu } from "./sidebar-menu";
 import { Sidebar } from "./sidebar.styles";
-import { NonCoformityIcon } from "../icons/sidebar/nonConformity-icon";
-import { WeatherReportIcon } from "../icons/sidebar/weatherReport-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
@@ -46,7 +46,7 @@ export const SidebarWrapper = () => {
             <SidebarMenu title="Mi usuario">
               <SidebarItem
                 isActive={pathname === "/accounts"}
-                title="Mi usuario" // TODO: aca debería aparecer el nombre del usuario por defecto
+                title="Mi usuario" 
                 icon={<AccountsIcon />}
                 href="accounts"
               />
@@ -61,6 +61,15 @@ export const SidebarWrapper = () => {
                 icon={<ManualIcon />}
                 items={manualsRoutes}
                 title="Manuales"
+              />
+            </SidebarMenu>
+
+            <SidebarMenu title="Administrador">
+              <SidebarItem
+                isActive={pathname === "/create-user"}
+                title="Crear usuario" 
+                icon={<AccountsIcon />} // TODO: Icono de crear usuario
+                href="create-user"
               />
             </SidebarMenu>
 

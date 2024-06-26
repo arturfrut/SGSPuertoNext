@@ -1,23 +1,26 @@
-// import { sql } from '@vercel/postgres'
-import { db } from '@vercel/postgres'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
+import supabase from '@/lib/supabase';
 
+export async function GET(request: NextRequest) {
+  try {
+    const { data: products, error } = await supabase
+      .from('products')
+      .select('*');
 
-// Trae respuesta completa, con mucha data de la petición 
-// export async function GET(request: Request) {
-//   const response = await sql`select * from products;`
-//   return NextResponse.json({ response })
-// }
+    if (error) {
+      throw new Error(error.message as string);
+    }
 
-// Trae solo la data que voy a usar, que viene en las rows
-// export async function GET(request: Request) {
-//   const { rows: products } = await sql`select * from products;`
-//   return NextResponse.json({ products })
-// }
+    console.log('Conexión exitosa a la base de datos de Supabase');
+    console.log('Productos:', products);
 
-export async function GET(request: Request) {
-  const client = await db.connect()
+    return NextResponse.json(products);
+  } catch (error) {
+    console.error('Error al obtener productos:', error);
 
-  const { rows: products } = await client.sql`select * from products;`
-  return NextResponse.json( products )
+    return NextResponse.json(
+      { message: 'Error fetching products' },
+      { status: 500 }
+    );
+  }
 }
