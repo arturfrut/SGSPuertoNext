@@ -1,157 +1,169 @@
-import { manualsRoutes } from "@/constants/manualsRoutes";
-import { Avatar, Tooltip } from "@nextui-org/react";
-import { usePathname } from "next/navigation";
-import { AccidentReportIcon } from "../icons/sidebar/accidentReport-icon";
-import { AccountsIcon } from "../icons/sidebar/accounts-icon";
-import { CaptainHatIcon } from "../icons/sidebar/captainHat-icon";
-import { ChangeLogIcon } from "../icons/sidebar/changelog-icon";
-import { ChiefEngineerIcon } from "../icons/sidebar/chiefEngineer-icon";
-import { CloseTripIcon } from "../icons/sidebar/closeTrip-icon";
-import { CrewIcon } from "../icons/sidebar/crew-icon";
-import { FilterIcon } from "../icons/sidebar/filter-icon";
-import { HomeIcon } from "../icons/sidebar/home-icon";
-import { ManualIcon } from "../icons/sidebar/manuals-icon";
-import { NonCoformityIcon } from "../icons/sidebar/nonConformity-icon";
-import { NotificationIcon } from "../icons/sidebar/notificationicon";
-import { SettingsIcon } from "../icons/sidebar/settings-icon";
-import { WeatherReportIcon } from "../icons/sidebar/weatherReport-icon";
-import { useSidebarContext } from "../layout/layout-context";
-import { CollapseItems } from "./collapse-items";
-import { SidebarItem } from "./sidebar-item";
-import { SidebarMenu } from "./sidebar-menu";
-import { Sidebar } from "./sidebar.styles";
+import { manualsRoutes } from '@/constants/manualsRoutes'
+import { Avatar, Tooltip } from '@nextui-org/react'
+import { usePathname } from 'next/navigation'
+import { AccidentReportIcon } from '../icons/sidebar/accidentReport-icon'
+import { AccountsIcon } from '../icons/sidebar/accounts-icon'
+import { CaptainHatIcon } from '../icons/sidebar/captainHat-icon'
+import { ChangeLogIcon } from '../icons/sidebar/changelog-icon'
+import { ChiefEngineerIcon } from '../icons/sidebar/chiefEngineer-icon'
+import { CloseTripIcon } from '../icons/sidebar/closeTrip-icon'
+import { CrewIcon } from '../icons/sidebar/crew-icon'
+import { FilterIcon } from '../icons/sidebar/filter-icon'
+import { HomeIcon } from '../icons/sidebar/home-icon'
+import { ManualIcon } from '../icons/sidebar/manuals-icon'
+import { NonCoformityIcon } from '../icons/sidebar/nonConformity-icon'
+import { NotificationIcon } from '../icons/sidebar/notificationicon'
+import { SettingsIcon } from '../icons/sidebar/settings-icon'
+import { WeatherReportIcon } from '../icons/sidebar/weatherReport-icon'
+import { useSidebarContext } from '../layout/layout-context'
+import { CollapseItems } from './collapse-items'
+import { SidebarItem } from './sidebar-item'
+import { SidebarMenu } from './sidebar-menu'
+import { Sidebar } from './sidebar.styles'
 
 export const SidebarWrapper = () => {
-  const pathname = usePathname();
-  const { collapsed, setCollapsed } = useSidebarContext();
+  const pathname = usePathname()
+  const { collapsed, setCollapsed } = useSidebarContext()
 
   return (
-    <aside className="h-screen z-[202] sticky top-0">
+    <aside className='h-screen z-[202] sticky top-0'>
       {collapsed ? (
         <div className={Sidebar.Overlay()} onClick={setCollapsed} />
       ) : null}
       <div
         className={Sidebar({
-          collapsed: collapsed,
+          collapsed: collapsed
         })}
       >
-        <div className="flex flex-col justify-between h-full">
+        <div className='flex flex-col justify-between h-full'>
           <div className={Sidebar.Body()}>
             <SidebarItem
-              title="Home"
+              title='Home'
               icon={<HomeIcon />}
-              isActive={pathname === "/"}
-              href="/"
+              isActive={pathname === '/'}
+              href='/'
             />
-            <SidebarMenu title="Mi usuario">
+            <SidebarMenu title='Mi usuario'>
               <SidebarItem
-                isActive={pathname === "/accounts"}
-                title="Mi usuario" 
+                isActive={pathname === '/accounts'}
+                title='Mi usuario'
                 icon={<AccountsIcon />}
-                href="accounts"
+                href='accounts'
               />
               <SidebarItem
-                isActive={pathname === "/notifications"}
-                title="Mis notificaciones"
+                isActive={pathname === '/notifications'}
+                title='Mis notificaciones'
                 icon={<NotificationIcon />}
-                href=""
+                href=''
                 isDisabled
               />
               <CollapseItems
                 icon={<ManualIcon />}
                 items={manualsRoutes}
-                title="Manuales"
+                title='Manuales'
               />
             </SidebarMenu>
 
-            <SidebarMenu title="Administrador">
+            <SidebarMenu title='Administrador'>
               <SidebarItem
-                isActive={pathname === "/create-user"}
-                title="Crear usuario" 
+                isActive={pathname === '/create-user'}
+                title='Crear usuario'
                 icon={<AccountsIcon />} // TODO: Icono de crear usuario
-                href="create-user"
+                href='create-user'
+              />
+              <SidebarItem
+                isActive={pathname === '/create-company'}
+                title='Registrar empresa'
+                icon={<AccountsIcon />} // TODO: Icono de crear usuario
+                href='create-ship'
+              />
+              <SidebarItem
+                isActive={pathname === '/create-ship'}
+                title='Registrar barco'
+                icon={<CloseTripIcon />} // TODO: Icono de crear usuario
+                href='create-ship'
               />
             </SidebarMenu>
 
-            <SidebarMenu title="Viaje Actual">
+            <SidebarMenu title='Viaje Actual'>
               <SidebarItem
-                isActive={pathname === "/captainForms"}
-                title="Capitán"
+                isActive={pathname === '/captainForms'}
+                title='Capitán'
                 icon={<CaptainHatIcon />}
-                href="/captainForms"
+                href='/captainForms'
               />
               <SidebarItem
-                isActive={pathname === "/accidentreports"}
-                title="Reportar accidente"
+                isActive={pathname === '/accidentreports'}
+                title='Reportar accidente'
                 icon={<AccidentReportIcon />}
-                href="/accidentreports"
+                href='/accidentreports'
               />
               <SidebarItem
-                isActive={pathname === "/accidentreports"}
-                title="Reporte A. Climática"
+                isActive={pathname === '/accidentreports'}
+                title='Reporte A. Climática'
                 icon={<WeatherReportIcon />}
-                href="/weather-alert"
+                href='/weather-alert'
               />
               <SidebarItem
-                isActive={pathname === "/maintenanceForms"}
-                title="Mantenimiento"
+                isActive={pathname === '/maintenanceForms'}
+                title='Mantenimiento'
                 icon={<ChiefEngineerIcon />}
-                href="/maintenanceForms"
+                href='/maintenanceForms'
               />
               <SidebarItem
-                isActive={pathname === "/crewForms"}
-                title="Tripulantes"
+                isActive={pathname === '/crewForms'}
+                title='Tripulantes'
                 icon={<CrewIcon />}
-                href="/crewForms"
+                href='/crewForms'
               />
               <SidebarItem
-                isActive={pathname === "/testsForms"}
-                title="Capacitaciones"
+                isActive={pathname === '/testsForms'}
+                title='Capacitaciones'
                 icon={<SettingsIcon />}
-                href="/trainings"
+                href='/trainings'
               />
               <SidebarItem
-                isActive={pathname === "/non-conformity"}
-                title="Nota de no conformidad"
+                isActive={pathname === '/non-conformity'}
+                title='Nota de no conformidad'
                 icon={<NonCoformityIcon />}
-                href="/non-conformity"
+                href='/non-conformity'
               />
               <SidebarItem
-                isActive={pathname === "/closeTrip"}
-                title="Cierre de viaje actual"
+                isActive={pathname === '/closeTrip'}
+                title='Cierre de viaje actual'
                 icon={<CloseTripIcon />}
-                href="/closeTrip"
+                href='/closeTrip'
               />
             </SidebarMenu>
 
-            <SidebarMenu title="Updates">
+            <SidebarMenu title='Updates'>
               <SidebarItem
-                isActive={pathname === "/changelog"}
-                title="Changelog"
+                isActive={pathname === '/changelog'}
+                title='Changelog'
                 icon={<ChangeLogIcon />}
               />
             </SidebarMenu>
           </div>
           <div className={Sidebar.Footer()}>
-            <Tooltip content={"Settings"} color="primary">
-              <div className="max-w-fit">
+            <Tooltip content={'Settings'} color='primary'>
+              <div className='max-w-fit'>
                 <SettingsIcon />
               </div>
             </Tooltip>
-            <Tooltip content={"Adjustments"} color="primary">
-              <div className="max-w-fit">
+            <Tooltip content={'Adjustments'} color='primary'>
+              <div className='max-w-fit'>
                 <FilterIcon />
               </div>
             </Tooltip>
-            <Tooltip content={"Profile"} color="primary">
+            <Tooltip content={'Profile'} color='primary'>
               <Avatar
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-                size="sm"
+                src='https://i.pravatar.cc/150?u=a042581f4e29026704d'
+                size='sm'
               />
             </Tooltip>
           </div>
         </div>
       </div>
     </aside>
-  );
-};
+  )
+}
