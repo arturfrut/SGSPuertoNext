@@ -1,16 +1,23 @@
 'use server'
 
-import { sql } from '@vercel/postgres'
-import { revalidatePath } from 'next/cache'
+export const submitAccidentReport = async (e: React.FormEvent, report: any) => {
+  e.preventDefault();
+  try {
+    const response = await fetch('/api/accidents', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(report),
+    });
 
-export const createProduct = async (formData: FormData) => {
-  const rawData = {
-    name: formData.get('name') as string,
-    price: formData.get('price') as string,
-    available: formData.get('available') as string
+    if (!response.ok) {
+      throw new Error('Error creating accident report');
+    }
+
+    const data = await response.json();
+    console.log('Accident report created successfully:', data);
+  } catch (error) {
+    console.error('Error creating accident report:', error);
   }
-  await sql`insert into products (name, price, availabe) values (${rawData.name}, ${rawData.price}, ${rawData.available})`
-  
-  // Revalidate para que pida q se vuelva a buscar la data
-  revalidatePath("/")
-}
+};

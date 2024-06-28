@@ -39,7 +39,6 @@ export async function POST(request: Request) {
       password = ''
     } = userData;
 
-    // Crear un nuevo usuario en Supabase Auth
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password
@@ -55,7 +54,6 @@ export async function POST(request: Request) {
       throw new Error('User creation failed');
     }
 
-    // Agregar la data correspondiente a la tabla `users`
     const { error: insertError } = await supabase
       .from('users')
       .insert([

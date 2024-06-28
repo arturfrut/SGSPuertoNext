@@ -28,7 +28,8 @@ export const CreateUser = () => {
     { name: 'last_name', placeholder: 'Last Name' },
     { name: 'email', placeholder: 'Email', type: 'email' },
     { name: 'cellphone_number', placeholder: 'Cellphone Number' },
-    { name: 'document_number', placeholder: 'Document Number' },
+    { name: 'document_number', placeholder: 'Document Number' }, 
+    // TODO: Agregar que el documento no lleve puntos y sea positivo, cambiar edad por fecha de nacimiento, hacer validación con función para tipo de usuario con checkbox
     { name: 'document_type', placeholder: 'Document Type' },
     { name: 'age', placeholder: 'Age', type: 'number' },
     { name: 'country', placeholder: 'Country' },
