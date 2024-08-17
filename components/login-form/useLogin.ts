@@ -1,7 +1,9 @@
-import supabase from "@/lib/supabase"
-import { useState } from "react"
+import supabase from '@/lib/supabase'
+import { userShipsData } from '@/mocks/localStorageShips'
+import { useState } from 'react'
 
 export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
+  const mockShips = userShipsData
   const [isVisible, setIsVisible] = useState(false)
   const [userData, setUserData] = useState({
     username: '',
@@ -38,7 +40,22 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
         if (response.ok) {
           localStorage.setItem('user', JSON.stringify(userInfo))
           localStorage.setItem('isLogged', JSON.stringify(true))
-          localStorage.setItem('voyage', JSON.stringify(1))
+          localStorage.setItem('voyage', JSON.stringify(1)) // ESTE NO DEBERÍA IR
+          localStorage.setItem('shipsData', JSON.stringify(mockShips))
+          localStorage.setItem(  // TRAER POR QUERY
+            'notifications',
+            JSON.stringify([
+              { id: 2, date: '22/22/22' },
+              { id: 4, date: '11/11/11' }
+            ])
+          )
+          localStorage.setItem( // TRAER POR QUERY
+            'expirations',
+            JSON.stringify([
+              { id: 6, date: '22/22/22' },
+              { id: 3, date: '11/11/11' }
+            ])
+          )
           setIsLogged(true)
         } else {
           setError(userInfo.message || 'Error fetching user data')
@@ -49,6 +66,11 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
     }
   }
   return {
-    toggleVisibility, handleLogin, userData, setUserData, error, isVisible
+    toggleVisibility,
+    handleLogin,
+    userData,
+    setUserData,
+    error,
+    isVisible
   }
 }

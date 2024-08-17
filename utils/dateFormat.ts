@@ -1,9 +1,12 @@
-export const dateGeratorWithFormat = () => {
-  const today = new Date()
-
-  const day = today.getDate().toString().padStart(2, '0')
-  const month = (today.getMonth() + 1).toString().padStart(2, '0')
-  const year = today.getFullYear()
-
-  return `${day}/${month}/${year}`
+interface DateObject {
+  year: number;
+  month: number;
+  day: number;
+  era: string;
+  calendar: any
 }
+
+export const convertToDate = (dateObject: DateObject): Date => {
+  const { year, month, day } = dateObject;
+  return new Date(year, month - 1, day);
+};

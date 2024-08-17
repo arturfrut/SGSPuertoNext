@@ -2,7 +2,6 @@
 // TODO: Revisar este use client, se usa por el startTrip
 
 import { useState } from 'react'
-import { CardBalance3 } from '../home/card-balance3'
 import { ComandReception } from './commandReception'
 import { Form502 } from './form502'
 import { CardForm501 } from './CardForm501'
@@ -27,7 +26,7 @@ export const CaptainForms = () => {
                 cada marinero
               </h1>
               <h1>Card de equipos, formularios a llenar, anterior y nuevo</h1>
-              <CardBalance3 />
+              {/* <CardBalance3 /> */}
             </div>
           </div>
         </div>

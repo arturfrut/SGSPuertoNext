@@ -37,7 +37,7 @@ interface AccidentReport {
 }
 
 interface AccidentReportDB {
-  id: number
+  id?: number
   accident_type_danos_al_buque: boolean
   accident_type_danos_a_terceros: boolean
   accident_type_danos_al_medio_ambiente: boolean

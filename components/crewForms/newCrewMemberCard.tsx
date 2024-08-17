@@ -1,8 +1,23 @@
-import { Button, Card, CardBody, Tooltip } from '@nextui-org/react'
+import { Card, CardBody } from '@nextui-org/react'
 import { Community } from '../icons/community'
 import { NewCrewMemberModal } from './NewCrewMemberModal'
+import { useEffect, useState } from 'react'
 
 export const NewCrewMemberCard = () => {
+  const [searchOptions, setSearchOptions] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  async function fetchData() {
+    const res = await fetch(`/api/get_sailors_for_search`)
+    const data = await res.json()
+    setSearchOptions(data)
+    setIsLoading(false)
+  }
+  useEffect(() => {
+    fetchData()
+  }, [])
+  
+
   return (
     <Card className='bg-danger rounded-xl shadow-md px-3 w-full'>
       <CardBody className='py-5'>
@@ -17,25 +32,15 @@ export const NewCrewMemberCard = () => {
               </span>
             </div>
           </div>
-          <Tooltip
-            showArrow
-            content='Recuerde cerrar comando al terminar su viaje'
-          >
-            <div className='flex items-center justify-center rounded-full bg-gray-300 w-5 h-5'>
-              <h2 className='text-gray-600'>&#8520;</h2>
-            </div>
-          </Tooltip>
         </div>
         <div className='flex gap-2.5 py-2 items-center'>
           <span className='text-white'>Status:</span>
           <span className='text-white'>OK</span>
         </div>
         <div className='flex gap-2.5 py-2 items-center justify-end'>
-          {/* <Button color='warning'>Cerrar comando</Button> */}
 
-          <NewCrewMemberModal />
+          <NewCrewMemberModal searchOptions = {searchOptions}/>
 
-          {/* TODO: Hacer que me lleve a la pantalla de cerrar comando */}
         </div>
       </CardBody>
     </Card>
