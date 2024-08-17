@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Button,
   Card,
@@ -8,21 +10,23 @@ import {
   Image,
   Input
 } from '@nextui-org/react'
-import { useState } from 'react'
 import { EyeFilledIcon } from '../icons/EyeFilledIcon'
 import { EyeSlashFilledIcon } from '../icons/EyeSlashFilledIcon'
+import { useLogin } from './useLogin'
 
 interface LoginFormProps {
   setIsLogged: (value: boolean) => void
 }
 
-const LoginForm = ({ setIsLogged }: LoginFormProps) => { 
-  const [isVisible, setIsVisible] = useState(false)
-  const toggleVisibility = () => setIsVisible(!isVisible)
-  const handleButon = () => {
-    sessionStorage.setItem('isLogged', JSON.stringify(true))
-    setIsLogged(true)
-  }
+const LoginForm = ({ setIsLogged }: LoginFormProps) => {
+  const {
+    toggleVisibility,
+    handleLogin,
+    userData,
+    setUserData,
+    error,
+    isVisible
+  } = useLogin(setIsLogged)
 
   return (
     <div className='flex justify-center items-center h-screen'>
@@ -50,6 +54,10 @@ const LoginForm = ({ setIsLogged }: LoginFormProps) => {
             variant='bordered'
             placeholder='Ingresa tu nombre de usuario'
             className='w-full'
+            value={userData.username}
+            onChange={e =>
+              setUserData({ ...userData, username: e.target.value })
+            }
           />
           <Input
             label='Password'
@@ -70,11 +78,16 @@ const LoginForm = ({ setIsLogged }: LoginFormProps) => {
             }
             type={isVisible ? 'text' : 'password'}
             className='my-4 w-full'
+            value={userData.password}
+            onChange={e =>
+              setUserData({ ...userData, password: e.target.value })
+            }
           />
+          {error && <p className='text-red-500'>{error}</p>}
         </CardBody>
         <Divider />
         <CardFooter className='flex justify-end'>
-          <Button onClick={handleButon}>Entrar</Button>
+          <Button onClick={handleLogin}>Entrar</Button>
         </CardFooter>
       </Card>
     </div>

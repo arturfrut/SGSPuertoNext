@@ -1,11 +1,10 @@
-
 'use client'
-import LoginForm from '@/components/login-form'
 import { NextUIProvider } from '@nextui-org/system'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { ThemeProviderProps } from 'next-themes/dist/types'
-import * as React from 'react'
 import { Layout } from '../components/layout/layout'
+import LoginForm from '@/components/login-form'
+import React, { useState, useEffect } from 'react'
 
 export interface ProvidersProps {
   children: React.ReactNode
@@ -13,10 +12,10 @@ export interface ProvidersProps {
 }
 
 export function Providers({ children, themeProps }: ProvidersProps) {
-  const [isLogged, setIsLogged] = React.useState<boolean>(false)
-  const [mounted, setMounted] = React.useState(false)
+  const [isLogged, setIsLogged] = useState<boolean>(false)
+  const [mounted, setMounted] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     const storedIsLogged = sessionStorage.getItem('isLogged')
     if (storedIsLogged) {
       setIsLogged(JSON.parse(storedIsLogged))

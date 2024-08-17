@@ -11,7 +11,6 @@ import {
 
 export default function Modalfp503({ formData }: { formData: any }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  console.log('RENDER DE MODAL', formData)
   return (
     <>
       <Button onPress={onOpen}>Ver detalle</Button>

@@ -62,3 +62,50 @@ export const riskEvaluationStatus = [
   'Primera evaluación de riesgos',
   'Segunda evaluación de riesgos'
 ]
+
+export const trainingExercises = [
+  {
+    name: "Hombre al agua",
+    id: 1,
+    frequency: 60,
+  },
+  
+  {
+    name: "Colisión y Varadura",
+    id: 2,
+    frequency: 60,
+  },
+  {
+    name: "Lucha contra incendio",
+    id: 3,
+    frequency: 30,
+  },
+  {
+    name: "Abandono",
+    id: 4,
+    frequency: 30,
+  },
+  {
+    name: "Rol de respuesta por derrame de hidrocarburos",
+    id: 5,
+    frequency: 30,
+  },
+  {
+    name: "Evacuación de tripulante",
+    id: 6,
+    frequency: 60,
+  },
+  {
+    name: "Buque sin propulsión / gobierno",
+    id: 7,
+    frequency: 365,
+  },
+  {
+    name: "Entrada y rescate espacios cerrados",
+    id: 8,
+    frequency: 60,
+  },
+
+]
+
+// Cuando hay toma de mando, cuando devuelve el mando se suspende y tiene que avisar que hay que quitar el barco de servicio

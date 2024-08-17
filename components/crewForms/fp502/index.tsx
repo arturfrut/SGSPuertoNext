@@ -292,7 +292,7 @@ export const Fp502 = (data: { status: string; ncn: number }) => {
                 ))}
               </TableHeader>
               {/* Al "activar" un checkbox, automaticamente me debería dejar modificarlo abriendo el modal */}
-              <TableBody>
+              <TableBody emptyContent={'Sin productos agregados'}>
                 {products.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>

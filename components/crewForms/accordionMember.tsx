@@ -46,7 +46,7 @@ const crewFormsAccordion = [
     link: "/fp501",
   },
   {
-    name: "Formulario 502 - Entrega Materiales",
+    name: "Formulario 502 - Entrega de Elementos de protección personal",
     code: "fp502",
     link: "/fp502",
   },

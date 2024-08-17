@@ -1,5 +1,4 @@
 "use client";
-import { accidentTypes } from "@/constants/strings";
 import { modalFr802 } from "@/mocks/modalFr802Mock";
 import {
   Button,
@@ -11,6 +10,8 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
+
+// TODO : Actualmente esta funcionando con mock
 
 export default function ModalFR802({ formData: formData }: { formData: any }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
