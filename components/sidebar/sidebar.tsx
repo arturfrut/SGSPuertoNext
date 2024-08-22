@@ -1,7 +1,7 @@
 import { manualsRoutes } from '@/constants/manualsRoutes'
 import { Avatar, Select, SelectItem, Tooltip } from '@nextui-org/react'
 import { usePathname } from 'next/navigation'
-import { SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AccidentReportIcon } from '../icons/sidebar/accidentReport-icon'
 import { AccountsIcon } from '../icons/sidebar/accounts-icon'
 import { CaptainHatIcon } from '../icons/sidebar/captainHat-icon'
@@ -21,6 +21,8 @@ import { CollapseItems } from './collapse-items'
 import { SidebarItem } from './sidebar-item'
 import { SidebarMenu } from './sidebar-menu'
 import { Sidebar } from './sidebar.styles'
+import useGlobalStore from '@/stores/useGlobalStore'
+
 
 interface ShipInterface {
   idOMI: string
@@ -35,6 +37,8 @@ export const SidebarWrapper = () => {
   const { collapsed, setCollapsed } = useSidebarContext()
   const [ships, setShips] = useState<ShipInterface[]>([])
   const [selectedShip, setSelectedShip] = useState<ShipInterface | null>(null)
+  const barcoSeleccionado = useGlobalStore((state) => state.selectedShip);
+
 
   useEffect(() => {
     const storedShips = localStorage.getItem('shipsData')

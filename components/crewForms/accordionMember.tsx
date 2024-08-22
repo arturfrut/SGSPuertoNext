@@ -26,7 +26,7 @@ const mockAccordionMember: AccordionMemberInterface = {
 
 const crewFormsAccordion = [
   {
-    name: "Libreta de embarque",
+    name: "Libreta de embarque / cédula",
     code: "sailorBook",
     link: "/sailorBook",
   },
@@ -46,7 +46,7 @@ const crewFormsAccordion = [
     link: "/fp501",
   },
   {
-    name: "Formulario 502 - Entrega de Elementos de protección personal",
+    name: "F 502 - Entrega de Elementos de protección personal",
     code: "fp502",
     link: "/fp502",
   },

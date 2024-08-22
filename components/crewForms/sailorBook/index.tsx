@@ -1,64 +1,116 @@
 'use client'
 
+import { SignatureChecker } from '@/components/signatureChecker'
+import SignModal from '@/components/signModal'
+import useSignModal from '@/components/signModal/useSignModal'
 import {
+  Chip,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
-  TableRow,
-  Image
+  TableRow
 } from '@nextui-org/react'
-import { SailorBookModal } from './sailorBookModal'
+import { useState } from 'react'
 import ChargeImageModal from './chargeImageModal'
-import { SignatureChecker } from '@/components/signatureChecker'
-import SignaturePad from 'react-signature-pad-wrapper'
-import SignModal from '@/components/signModal'
-import useSignModal from '@/components/signModal/useSignModal'
+import { SailorBookModal } from './sailorBookModal'
 
 export const SailorBook = () => {
   const { signatures, handleSaveSignature } = useSignModal()
+  const [sailorBookImg, setSailorBookImg] = useState(null)
+  const [renovationImg, setRenovationImg] = useState(null)
+  const [medicalCertificationImg, setMedicalCertificationImg] = useState(null)
+  const [censeImg, setCenseImg] = useState(null)
+  const [stcw, setStcw] = useState(null)
+
+  const id_OMI = 8883339
+  const id_captain = 442
+  const sailorBookNumber = 123456
 
   const chargeImages = [
     {
-      chargeDate: '22/03/2024',
-      destination: 'portada',
-      section: 'frontPage',
-      text: 'Por favor tome una foto en horizontal de la portada de su libreta'
+      chargeDate: 'simula ultima carga',
+      destination: 'Libreta: Hoja 1 y 2',
+      docType: 'sailor_book_first',
+      textDescription:
+        'Por favor tome una foto en horizontal de las primeras dos páginas de su libreta',
+      id_OMI: id_OMI,
+      sailorBookNumber,
+      captainId: id_captain,
+      selectedFile: sailorBookImg,
+      setSelectedFile: setSailorBookImg,
+      expirationStatus: 'vence en 10 días'
     },
     {
-      chargeDate: '22/03/2024',
-      destination: 'pagina 1',
-      section: 'pag1',
-      text: 'Por favor tome una foto en horizontal de la primer página de su libreta'
+      chargeDate: 'simula ultima carga',
+      destination: 'Libreta: Renovaciones',
+      docType: 'renovation',
+      textDescription:
+        'Por favor tome una foto en horizontal de las ultimas páginas de su libreta',
+      id_OMI: id_OMI,
+      sailorBookNumber,
+      captainId: id_captain,
+      selectedFile: renovationImg,
+      setSelectedFile: setRenovationImg,
+      expirationStatus: 'vence en 10 días'
     },
     {
-      chargeDate: '22/03/2024',
-      destination: 'pagina 2',
-      section: 'pag2',
-      text: 'Por favor tome una foto en horizontal de la segunda página de su libreta'
+      chargeDate: 'simula ultima carga',
+      destination: 'Certificado Médico',
+      docType: 'medical_certification',
+      textDescription: 'Por favor tome una foto de su certificado médico',
+      id_OMI: id_OMI,
+      sailorBookNumber,
+      captainId: id_captain,
+      selectedFile: medicalCertificationImg,
+      setSelectedFile: setMedicalCertificationImg,
+      expirationStatus: 'vence en 10 días'
+    },
+    {
+      chargeDate: 'simula ultima carga',
+      destination: 'Censo',
+      docType: 'cense',
+      textDescription:
+        'Por favor tome una foto en horizontal de los censos en su libreta',
+      id_OMI: id_OMI,
+      sailorBookNumber,
+      captainId: id_captain,
+      selectedFile: censeImg,
+      setSelectedFile: setCenseImg,
+      expirationStatus: 'vence en 10 días'
+    },
+    {
+      chargeDate: 'simula ultima carga',
+      destination: 'STCW/95',
+      docType: 'stcw',
+      textDescription:
+        'Por favor tome una foto completa del certificado',
+      id_OMI: id_OMI,
+      sailorBookNumber,
+      captainId: id_captain,
+      selectedFile: stcw,
+      setSelectedFile: setStcw,
+      expirationStatus: 'vence en 10 días'
     }
   ]
-  const trainingsTabHeader = ['Fecha de carga', 'Sección', '', 'Status']
+  const sailorsTabHeader = ['Fecha de carga', 'Estado', 'Sección', '', 'Status']
   return (
     <div className='h-full lg:px-6 w-full'>
       <SailorBookModal initialOpen={true} />
 
       <div className='flex justify-center gap-4 xl:gap-6 pt-3 lg:px-0 flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full'>
         <div className='mt-6 gap-6 flex flex-col w-full justify-center'>
-
-          <div className='flex flex-col'>
-            <p className='text-xl'>
-              Carga de imágenes de libreta
-            </p>
-          </div>
+          {/* <div className='flex flex-col'>
+            <p className='text-xl'>Carga de imágenes de libreta</p>
+          </div> */}
           <div className='flex flex-col gap-5'>
             <Table
               aria-label='Example static collection table w-full'
               isStriped
             >
               <TableHeader>
-                {trainingsTabHeader.map(header => (
+                {sailorsTabHeader.map(header => (
                   <TableColumn key={header}>{header}</TableColumn>
                 ))}
               </TableHeader>
@@ -66,13 +118,10 @@ export const SailorBook = () => {
                 {chargeImages.map((row, index) => (
                   <TableRow key={index}>
                     <TableCell>{row.chargeDate}</TableCell>
+                    <TableCell><Chip color='danger'>{row.expirationStatus} </Chip></TableCell>
                     <TableCell>{row.destination}</TableCell>
                     <TableCell className='cursor-pointer'>
-                      <ChargeImageModal
-                        section={row.section}
-                        destination={row.destination}
-                        text={row.text}
-                      />
+                      <ChargeImageModal {...row} />
                     </TableCell>
                     <TableCell>
                       <SignatureChecker status={''} />

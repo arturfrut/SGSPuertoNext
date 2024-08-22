@@ -1,20 +1,49 @@
-"use client";
-import React from "react";
-import { Textarea, Divider, Card, CardBody, Button } from "@nextui-org/react";
-import useSignModal from "@/components/signModal/useSignModal";
-import SignModal from "@/components/signModal";
-import { SignatureChecker } from "@/components/signatureChecker";
+'use client'
+import SignModal from '@/components/signModal'
+import useSignModal from '@/components/signModal/useSignModal'
+import { SignatureChecker } from '@/components/signatureChecker'
+import { Card, CardBody, Divider, Input } from '@nextui-org/react'
+import axios from 'axios'
+import { useState } from 'react'
 
 export const Fp101 = () => {
-  const { signatures, handleSaveSignature } = useSignModal();
+  const { signatures, handleSaveSignature } = useSignModal()
+  const sailorName = 'Juan Martinez'
+  const sailorRol = 'Marinero'
+  const sailor_book_number = '22232'
+  const inTripDate = '08-10-2024' // Esta fecha se genera cuando se suma marinero a la tripulación
+
+  const [supervisor, setSupervisor] = useState<string | null>()
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSupervisor(e.target.value)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const response = await axios.put('/api/register_ship', ship)
+      console.log('Ship created successfully:', response.data)
+      alert('Barco registrado')
+    } catch (error) {
+      console.error('Error creating ship:', error)
+      alert('Error al registrar barco')
+    }
+  }
+
+  const isSpecial =
+    sailorRol === 'Capitan' ||
+    sailorRol === 'Jefe de máquinas' ||
+    sailorRol === 'Guardia'
+
   return (
-    <Card className="w-full md:w-2/3 md:px-10 md:py-5">
-      <CardBody className="my-4">
-        <p className="text-2xl text-center mb-4 underline">
+    <Card className='w-full md:w-2/3 md:px-10 md:py-5'>
+      <CardBody className='my-4'>
+        <p className='text-2xl text-center mb-4 underline'>
           POLÍTICA DE SEGURIDAD, PROTECCIÓN AMBIENTAL, NO DISCRIMINACIÓN Y NO
           VIOLENCIA DE GÉNERO
         </p>
-        <p className="text-l">
+        <p className='text-l'>
           <strong>AIRES MARINOS S.A. </strong>ha establecido un sistema de
           gestión de seguridad que cumple con las prescripciones: de la
           Ordenanza Nº 05/2018 DPSN TOMO 2 “Normas de Gestión de Seguridad
@@ -23,7 +52,7 @@ export const Fp101 = () => {
           personales o pérdidas de vidas humanas, daños al medio ambiente y a
           los bienes.
           <br />
-          <p className="ml-4">
+          <p className='ml-4'>
             Leyes N° 23.592 Penalización Actos discriminatorios y N°24.515
             Creación del INADI.
             <br />
@@ -31,22 +60,22 @@ export const Fp101 = () => {
             Compañía se compromete a:
           </p>
         </p>
-        <p className="mb-2 mt-2 ml-4">
+        <p className='mb-2 mt-2 ml-4'>
           1. Operar con elevados estándares de seguridad.
         </p>
-        <p className="mb-2 ml-4">
+        <p className='mb-2 ml-4'>
           2. Tomar precauciones contra todos los riesgos posibles.
         </p>
-        <p className="mb-2 ml-4">
+        <p className='mb-2 ml-4'>
           3. Conformar la tripulación con personal idóneo y en buen estado
           físico.
         </p>
-        <p className="mb-2 ml-4">
+        <p className='mb-2 ml-4'>
           4. Brindar el adecuado adiestramiento a todo el personal, a fin de que
           puedan actuar eficientemente ante emergencias, accidentes y
           situaciones de peligro que afecten a la seguridad y al medio ambiente.
         </p>
-        <p className="mb-2 ml-4">
+        <p className='mb-2 ml-4'>
           5. Nos comprometemos a promover la integración social fomentando
           grupos de trabajos estables, seguros y justos, y que estén basados en
           la promoción y protección de todos los derechos humanos, así como en
@@ -64,8 +93,8 @@ export const Fp101 = () => {
 
       <Divider />
 
-      <CardBody className="mb-4">
-        <p className="text-2xl text-center my-4 underline">
+      <CardBody className='mb-4'>
+        <p className='text-2xl text-center my-4 underline'>
           POLÍTICA DE ALCOHOL Y DROGAS
         </p>
         <p>
@@ -103,8 +132,8 @@ export const Fp101 = () => {
 
       <Divider />
 
-      <CardBody className="mb-4">
-        <p className="text-2xl text-center my-4 underline">POLÍTICA DE FUMAR</p>
+      <CardBody className='mb-4'>
+        <p className='text-2xl text-center my-4 underline'>POLÍTICA DE FUMAR</p>
         <p>
           <strong> AIRES MARINOS S.A. </strong> ha estudiado los antecedentes
           que demuestran los daños que la adicción de fumar produce a la salud
@@ -113,7 +142,7 @@ export const Fp101 = () => {
           cerrados produciendo en consecuencia enfermedades, disminución de la
           actitud física y de la vida de la misma.
           <p />
-          <p className="mt-1">
+          <p className='mt-1'>
             Además el acto de fumar es un posible foco de incendio, si las
             condiciones ambientales son favorables para que se produzcan, lo que
             constituye un riesgo identificado e inaceptable para la seguridad de
@@ -121,13 +150,13 @@ export const Fp101 = () => {
             contaminación de medio ambiente. Con el fin de evitar los riesgos
             señalados como presidente de la compañía dispongo:
           </p>
-          <p className="mb-2 mt-2 ml-4">
+          <p className='mb-2 mt-2 ml-4'>
             . Prohibido fumar a bordo de las embarcaciones a todas las personas
             que embarquen o cualquier otra persona que deba desarrollar, o no,
             alguna tarea a bordo, en los espacios comunes y cerrados. Así mismo
             no se objetara en los espacios al aire libre.
           </p>
-          <p className="mb-2 ml-4">
+          <p className='mb-2 ml-4'>
             . Prohibir fumar en la oficina de la Compañía, donde convivan
             fumadores y no fumadores y en los lugares destinados a archivo o
             depósito de materiales en general. Así mismo no se objetara en los
@@ -136,30 +165,34 @@ export const Fp101 = () => {
         </p>
       </CardBody>
       <Divider />
-      <CardBody className=" gap-4 mt-3">
-        <div className="w-full md:w-1/3 flex items-center gap-5">
-          <SignModal
-            onSave={(data: any) => handleSaveSignature(data, "nameAndLastName")}
-            title="NOMBRE Y APELLIDO"
-          />
-          <SignatureChecker status={signatures?.nameAndLastName} />
+      <CardBody className=' gap-4 mt-3'>
+        <div className='w-full  '>
+          <p className='text-xl  my-4'>
+            {'Adición a la tripulación: ' + inTripDate}
+          </p>
+          <p className='text-2xl  my-4'>{'Nombre tripulante: ' + sailorName}</p>
+          <p className='text-2xl my-4'>{'Puesto: ' + sailorRol}</p>
         </div>
-        <div className="w-full md:w-1/3 flex items-center gap-5">
+        <div className='w-full md:w-1/3 flex items-center gap-5'>
           <SignModal
-            onSave={(data: any) => handleSaveSignature(data, "signature")}
-            title="FIRMA"
+            onSave={(data: any) => handleSaveSignature(data, 'sailorSign')}
+            title='FIRMA'
           />
-          <SignatureChecker status={signatures?.signature} />
+          <SignatureChecker status={signatures?.sailorSign} />
         </div>
-        <div className="w-full md:w-1/3 flex items-center gap-5">
-          <SignModal
-            onSave={(data: any) => handleSaveSignature(data, "signatureDate")}
-            title="FECHA"
+        {isSpecial && (
+          <Input
+            placeholder={'Persona encargada de realizar su familiarización'}
+            value={supervisor ?? ''}
+            onChange={handleInputChange}
+            className='mb-4 w-1/3'
+            label='Persona encargada de realizar su familiarización'
+            labelPlacement={'outside'}
           />
-          <SignatureChecker status={signatures?.signatureDate} />
-        </div>
+        )}
+
         <Divider />
-        <p className="text-sm">
+        <p className='text-sm'>
           <strong>REFERENCIA: </strong>Ley 26687 Anti Tabaco y Ordenanzas Nº
           05/2018 TOMO 2 “Normas de Gestión de Seguridad Operacional de Buque y
           la Prevención de la Contaminación (NGS) Cláusula 7 y 02/2011 TOMO 5.
@@ -169,5 +202,5 @@ export const Fp101 = () => {
         </p>
       </CardBody>
     </Card>
-  );
-};
+  )
+}

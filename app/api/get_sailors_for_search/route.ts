@@ -6,7 +6,7 @@ export async function GET() {
     // Consultar solo los campos id, sailor_book_number y name de la tabla sailors
     const { data, error: selectError } = await supabase
       .from('sailors')
-      .select('id, sailor_book_number, name');
+      .select('sailor_book_number, name');
 
     if (selectError) {
       throw selectError;
