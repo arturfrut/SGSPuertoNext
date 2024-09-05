@@ -29,6 +29,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   Button,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -36,79 +37,119 @@ import {
   ModalHeader,
   useDisclosure
 } from '@nextui-org/react'
-import Link from 'next/link'
+
+import { useFilter } from '@react-aria/i18n'
 import { useState } from 'react'
 
-export const NewCrewMemberModal = (searchOptions : []) => {
+export const NewCrewMemberModal = ({ searchOptions }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [value, setValue] = useState("cat");
+  console.log('so',searchOptions)
+  const closeModal = () => {
+    onOpenChange(false) // Close the modal explicitly
+    setNewSailor({ ...newSailor, isNewSailor: false })
+  }
 
-  isOpen && console.log(searchOptions)
-  const animals = [
-    {
-      label: 'Cat',
-      value: 'cat',
-      description: 'The second most popular pet in the world'
-    },
-    {
-      label: 'Dog',
-      value: 'dog',
-      description: 'The most popular pet in the world'
-    }
-  ]
+  const [newSailor, setNewSailor] = useState({
+    isNewSailor: false,
+    newSailorName: '',
+    newSailorNumber: '',
+    newSailorCellNumber: ''
+  })
+
+  const [fieldState, setFieldState] = useState({
+    selectedKey: '',
+    inputValue: '',
+    items: searchOptions
+  })
+
+  const { startsWith } = useFilter({ sensitivity: 'base' })
+
+  const onSelectionChange = key => {
+    const selectedItem = fieldState.items.find(option => option.value === key)
+    setFieldState({
+      inputValue: selectedItem?.label || '',
+      selectedKey: key,
+      items: searchOptions.filter(item =>
+        startsWith(item.label, selectedItem?.label || '')
+      )
+    })
+  }
+
+  const onInputChange = value => {
+    const items = searchOptions.filter(item => startsWith(item.label, value))
+    setFieldState({
+      inputValue: value,
+      selectedKey: value === '' ? null : fieldState.selectedKey,
+      items: items
+    })
+    console.log({ value, items, fieldState })
+    value && !items.length && fieldState.inputValue !== ''
+      ? setNewSailor({ ...newSailor, isNewSailor: true })
+      : setNewSailor({ ...newSailor, isNewSailor: false })
+  }
+
+  const sendData = closeModal => {
+    closeModal()
+    const itemSelected = searchOptions.find(
+      item => item.value == fieldState.selectedKey
+    )
+    console.log(
+      'Data enviada',
+      newSailor.isNewSailor ? 'nuevo marinero' : itemSelected
+    )
+  }
 
   return (
     <>
       <Button onPress={onOpen}>Agregar Tripulante</Button>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={closeModal}>
         <ModalContent>
-          {onClose => (
-            <>
-              <ModalHeader className='flex flex-col gap-1'>
-                Cargar nuevo tripulante{' '}
-              </ModalHeader>
-              <ModalBody>
-                <p>Buscar Marinero en Base de datos</p>
+          <ModalHeader className='flex flex-col gap-1'>
+            Cargar nuevo tripulante
+          </ModalHeader>
+          <ModalBody>
+            <p>Buscar Marinero en Base de datos</p>
 
-                <div className='flex w-full flex-wrap md:flex-nowrap gap-4'>
-                  <Autocomplete
-                    label='Favorite Animal'
-                    placeholder='Search an animal'
-                    className='max-w-xs'
-                    defaultItems={animals}
-                    selectedKey={value}
-                    onSelectionChange={setValue}
-                    listboxProps={{
-                      emptyContent: 'Agregar marinero'
-                    }}
-                  >
-                    {item => (
-                      <AutocompleteItem key={item.value}>
-                        {item.label}
-                      </AutocompleteItem>
-                    )}
-                  </Autocomplete>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Link href='/crewForms' passHref>
-                  <Button
-                    as='a'
-                    color='danger'
-                    variant='light'
-                    onPress={onClose}
-                  >
-                    Volver atrás
-                  </Button>
-                </Link>
-
-                <Button color='primary' onPress={onClose}>
-                  Agregar
-                </Button>
-              </ModalFooter>
-            </>
-          )}
+            <div className='flex w-full flex-wrap'>
+              <Autocomplete
+                className='max-w-xs'
+                inputValue={fieldState.inputValue}
+                items={fieldState.items}
+                label='Lista de tripulantes'
+                placeholder='Seleccione tripulante'
+                selectedKey={fieldState.selectedKey}
+                variant='bordered'
+                onInputChange={onInputChange}
+                onSelectionChange={onSelectionChange}
+              >
+                {item => (
+                  <AutocompleteItem key={item.value}>
+                    {item.label + '' + item.value}
+                  </AutocompleteItem>
+                )}
+              </Autocomplete>
+            </div>
+            {newSailor.isNewSailor && (
+              <>
+                <p className='text-red-500'>
+                  El marinero no esta en la lista, desea agregarlo?
+                </p>
+                <Input label='Nombre de marinero' />
+                <Input label='Número de libreta de marinero' />
+                <Input label='Número de celular del marinero' />
+                <Button>Agregar marinero</Button>
+              </>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button as='a' color='danger' variant='light' onPress={closeModal}>
+              Volver atrás
+            </Button>
+            <Button color='primary' onPress={() => sendData(closeModal)}>
+              Agregar
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

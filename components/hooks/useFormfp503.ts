@@ -3,11 +3,12 @@ import { crewListMock } from '@/mocks/crewListMock'
 import { getLocalTimeZone, now } from '@internationalized/date'
 import { ChangeEvent, useEffect, useState } from 'react'
 import useSignModal from '../signModal/useSignModal'
+import useGlobalStore from '@/stores/useGlobalStore'
 
 const useFormfp503 = () => {
   const { signatures, handleSaveSignature } = useSignModal()
   const [typeSelect, setTypeSelect] = useState('Zafarrancho')
-  const [selectedShip, setSelectedShip] = useState<any>({})
+  const { selectedShip } = useGlobalStore()
   const [exerciseDescription, setExerciseDescription] = useState('')
   const [aditionalInfo, setAditionalInfo] = useState('')
   const [supervisorSelect, setSupervisorSelect] = useState('En tripulación')
@@ -81,9 +82,9 @@ const useFormfp503 = () => {
       return
     }
     const document = {
-      ship: selectedShip.idOMI,
-      shipName: selectedShip.name,
-      idOMI: selectedShip.idOMI,
+      ship: selectedShip?.idOMI,
+      shipName: selectedShip?.name,
+      idOMI: selectedShip?.idOMI,
       trainingDate: formDate.toString(),
       trainingType: typeSelect,
       zafarrancho:
@@ -115,10 +116,10 @@ const useFormfp503 = () => {
     )
   }
 
-  useEffect(() => {
-    const selectedShip = localStorage.getItem('selectedShipStored')
-    selectedShip && setSelectedShip(JSON.parse(selectedShip))
-  }, [])
+  // useEffect(() => {
+  //   const selectedShip = localStorage.getItem('selectedShipStored')
+  //   selectedShip && setSelectedShip(JSON.parse(selectedShip))
+  // }, [])
 
   return {
     createDocumentObject,

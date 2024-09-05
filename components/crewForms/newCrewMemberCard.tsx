@@ -1,22 +1,31 @@
 import { Card, CardBody } from '@nextui-org/react'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import { Community } from '../icons/community'
 import { NewCrewMemberModal } from './NewCrewMemberModal'
-import { useEffect, useState } from 'react'
 
 export const NewCrewMemberCard = () => {
-  const [searchOptions, setSearchOptions] = useState(null)
+  const [searchOptions, setSearchOptions] = useState([{label:'222', value:'222'}])
   const [isLoading, setIsLoading] = useState(true)
 
   async function fetchData() {
-    const res = await fetch(`/api/get_sailors_for_search`)
-    const data = await res.json()
-    setSearchOptions(data)
-    setIsLoading(false)
+    try {
+      const res = await axios.get(`/api/get_sailors_for_search`)
+      const data = await res.data.map(sailor => ({
+        label: sailor.name,
+        value: sailor.sailor_book_number,
+      }))
+      setSearchOptions(data)
+    } catch (error) {
+      console.error("Error fetching sailors:", error)
+    } finally {
+      setIsLoading(false)
+    }
   }
+
   useEffect(() => {
     fetchData()
   }, [])
-  
 
   return (
     <Card className='bg-danger rounded-xl shadow-md px-3 w-full'>
@@ -38,9 +47,10 @@ export const NewCrewMemberCard = () => {
           <span className='text-white'>OK</span>
         </div>
         <div className='flex gap-2.5 py-2 items-center justify-end'>
-
-          <NewCrewMemberModal searchOptions = {searchOptions}/>
-
+          <NewCrewMemberModal
+            searchOptions={searchOptions}
+            loadingOptions={isLoading}
+          />
         </div>
       </CardBody>
     </Card>

@@ -23,7 +23,7 @@ export const SailorBook = () => {
   const [medicalCertificationImg, setMedicalCertificationImg] = useState(null)
   const [censeImg, setCenseImg] = useState(null)
   const [stcw, setStcw] = useState(null)
-
+  
   const id_OMI = 8883339
   const id_captain = 442
   const sailorBookNumber = 123456

@@ -1,7 +1,7 @@
 import { manualsRoutes } from '@/constants/manualsRoutes'
+import useGlobalStore from '@/stores/useGlobalStore'
 import { Avatar, Select, SelectItem, Tooltip } from '@nextui-org/react'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import { AccidentReportIcon } from '../icons/sidebar/accidentReport-icon'
 import { AccountsIcon } from '../icons/sidebar/accounts-icon'
 import { CaptainHatIcon } from '../icons/sidebar/captainHat-icon'
@@ -16,52 +16,25 @@ import { NonCoformityIcon } from '../icons/sidebar/nonConformity-icon'
 import { NotificationIcon } from '../icons/sidebar/notificationicon'
 import { SettingsIcon } from '../icons/sidebar/settings-icon'
 import { WeatherReportIcon } from '../icons/sidebar/weatherReport-icon'
+import { WrenchIcon } from '../icons/sidebar/wrench-icon'
 import { useSidebarContext } from '../layout/layout-context'
 import { CollapseItems } from './collapse-items'
 import { SidebarItem } from './sidebar-item'
 import { SidebarMenu } from './sidebar-menu'
 import { Sidebar } from './sidebar.styles'
-import useGlobalStore from '@/stores/useGlobalStore'
-
-
-interface ShipInterface {
-  idOMI: string
-  name: string
-  company: string
-  matricula: string
-  type: string
-}
 
 export const SidebarWrapper = () => {
   const pathname = usePathname()
   const { collapsed, setCollapsed } = useSidebarContext()
-  const [ships, setShips] = useState<ShipInterface[]>([])
-  const [selectedShip, setSelectedShip] = useState<ShipInterface | null>(null)
-  const barcoSeleccionado = useGlobalStore((state) => state.selectedShip);
+  const { selectedShip, ships, setSelectedShip } = useGlobalStore()
 
-
-  useEffect(() => {
-    const storedShips = localStorage.getItem('shipsData')
-    if (storedShips) {
-      const parsedShips = JSON.parse(storedShips)
-      setShips(parsedShips)
-      setSelectedShip(selectedShip)
-    }
-
-    const storedSelectedShip = localStorage.getItem('selectedShipStored')
-    if (storedSelectedShip) {
-      setSelectedShip(JSON.parse(storedSelectedShip).idIomi)
-    }
-  }, [])
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedShipId = e.target.value
     const selectedShip =
-      ships.find(ship => ship.idOMI === selectedShipId) || null
+      ships.find(ship => (ship.idOMI as unknown as string) == selectedShipId) ||
+      null
     setSelectedShip(selectedShip)
-
-    localStorage.setItem('selectedShipStored', JSON.stringify(selectedShip))
   }
-
   return (
     <aside className='h-screen z-[202] sticky top-0'>
       {collapsed ? (
@@ -83,13 +56,21 @@ export const SidebarWrapper = () => {
             {ships.length < 0 ? (
               <h1>NO HAY BARCOS DISPONIBLES</h1>
             ) : (
-              <SidebarMenu title='SELECCIONE BARCO' bigText>
+              <SidebarMenu
+                title={selectedShip?.name ?? 'SIN BARCO SELECCIONADO'}
+                bigText
+              >
                 <div className='flex w-full flex-wrap md:flex-nowrap gap-4'>
                   <Select
                     color='warning'
-                    label='Barco seleccionado'
+                    label={
+                      selectedShip?.name
+                        ? 'Seleccionar otro barco'
+                        : 'SIN BARCO SELECCIONADO'
+                    }
                     className='max-w-xs'
                     onChange={handleSelectionChange}
+                    value={selectedShip?.name ?? ''}
                   >
                     {ships.map(ship => (
                       <SelectItem key={ship.idOMI}>{ship.name}</SelectItem>
@@ -131,7 +112,7 @@ export const SidebarWrapper = () => {
                 isActive={pathname === '/create-company'}
                 title='Registrar empresa'
                 icon={<AccountsIcon />} // TODO: Icono de crear usuario
-                href='create-ship'
+                href='create-company'
               />
               <SidebarItem
                 isActive={pathname === '/create-ship'}
@@ -204,6 +185,23 @@ export const SidebarWrapper = () => {
                 title='Cierre de viaje actual'
                 icon={<CloseTripIcon />}
                 href='/closeTrip'
+              />
+            </SidebarMenu>
+
+            <SidebarMenu title='Mantenimiento'>
+              <SidebarItem
+                isActive={pathname === '/maintenance-register'}
+                title='Registro de mantenimiento'
+                icon={<ChiefEngineerIcon />}
+                href='/maintenance-register'
+
+              />
+              <SidebarItem
+                isActive={pathname === '/order-repair'}
+                title='Ordenes y reparaciones'
+                icon={<WrenchIcon />}
+                href='/order-repair'
+
               />
             </SidebarMenu>
 

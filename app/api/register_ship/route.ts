@@ -6,12 +6,33 @@ export async function POST(request: Request) {
   try {
     const shipData: ShipInterface = await request.json()
 
-    const { ship_name, company } = shipData
+    const {
+      ship_name,
+      omi,
+      matricula,
+      ship_type,
+      eslora,
+      manga,
+      puntal,
+      TAT,
+      potencia,
+      company,
+      company_omi
+    } = shipData
 
     const { error: insertError } = await supabase.from('ships').insert([
       {
         ship_name,
-        company
+        omi: parseInt(omi),
+        matricula: parseInt(matricula),
+        ship_type,
+        eslora: parseInt(eslora),
+        manga: parseInt(manga),
+        puntal: parseInt(puntal),
+        TAT: parseInt(TAT),
+        potencia:parseInt(potencia),
+        company,
+        company_omi
       }
     ])
 

@@ -1,4 +1,4 @@
-
+en v2 no pueden ser los que estan en barcos no pueden ser usuarios de empresa
 
 Recordar arreglar politicas en bdd de storage, sobre todo de sailors_documents
 
@@ -8,8 +8,13 @@ No se reviso si esta comprimiendo imagen
 
 Algunos fetch estan hechos con axios y algunos no
 
+Hacer hook para fetch en selects
+
 No funciona vien redirección de barra de navegación cuando estas en agregar marinero
 
+Mejorar validaciones para formularios en general
+
+
 ////////////////////////////////////////////////// 
 ////////////////////////////////////////////////// 
 ////////////////////////////////////////////////// 
@@ -20,8 +25,50 @@ No funciona vien redirección de barra de navegación cuando estas en agregar ma
 ////////////////////////////////////////////////// 
 ////////////////////////////////////////////////// 
 
+
+AUDITORIA :
+es anual, se vence en un año
+
+
+Empresa Barco
+Tipo de auditoria : Interna ->   anual adicional
+Puede ser al buque o a la compañía (radio button)
+Fecha
+
+RESEÑA DE LOS ELEMENTOS VERIFICADOS, ENCONTRADOS EN ORDEN: (card)
+DESARROLLO    textArea
+GENERALIDADES   textArea
+CONCLUSIONES   textArea
+
+HALLAZGOS / DEFICIENCIAS IDENTIFICADAS (card)
+OBSERVACIONES (lista)
+adentro de observaciones hacer un checkbox para incumplimiento
+
+file:///C:/Users/artur/Downloads/F-12.1%20Informe%20de%20Auditoria%20Interna%20Svitzer%20HONOUR%202024%20.pdf
+
+
+
+////////////////////////////////////////////////// 
+////////////////////////////////////////////////// 
+////////////////////////////////////////////////// 
+////////////////////////////////////////////////// 
+////////////////////////////////////////////////// 
+////////////////////////////////////////////////// 
+////////////////////////////////////////////////// 
+////////////////////////////////////////////////// 
+////////////////////////////////////////////////// 
+AGREGAR EMPRESA BARCO USUARIO, falta q el form vuelva a 0 y se vuelva atras
+
+Agregar campos requeridos en registrar barco empresa usuario
+
+
+//////////////////////////////////////////////////////
+
 Hay q agregar marinero
-Aplicar estado global
+
+////////////////////////////////////////////////// 
+
+Hay q terminar command delivery
 
 
 ////////////////////////////////////////////////// 
@@ -38,6 +85,10 @@ en carga de libreta de embarque agregar :
 falta agregar función de vencimientos
 agregar cedula como caso con vencimiento, el cual frena todos los otros vencimientos, pero se cargan todos los vencimientos 
 El censo es como un censo nacional. Tiene una fecha q se ingresa por bdd
+
+------------------------
+
+En sistema general agregar una notificación en diciembre en el home que todos los certificados de politicas vencen en enero
 
 ------------------------
 
@@ -83,8 +134,6 @@ Enfermero/a
 Práctico / Baquiano 
 
 
-ECOGRAFIA y analisis de materia fecal Salchicha sábado o martes
-
 ////////////////////////////////////////////
 
 FP 101 políticas
@@ -93,6 +142,7 @@ Se vencen todos juntos en enero armar caso específico como el del censo
 
 
 ///////////////////////////////////////////
+
 
 
 
