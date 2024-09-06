@@ -1,44 +1,54 @@
-import supabase from '@/lib/supabase';
-import { NextResponse } from 'next/server';
-
-export interface MaintenanceDataInterface {
-  block: string;
-  description: string;
-  frecuency: string;
-  routeDate: string;  // Formato DD - MM - YYYY
-  routeTime: string | null;
-  nextRouteTime: number;
-}
-
-// falta agregar barco
-// capitan
-// jefe de maquinas
+import { NextResponse } from 'next/server'
+import supabase from '@/lib/supabase'
 
 export async function POST(request: Request) {
   try {
-    const maintenanceData: MaintenanceDataInterface[] = await request.json()
+    const maintenanceData = await request.json()
 
-    const filteredData = maintenanceData.filter(item => item.routeTime);
+    const { maintenanceData: maintenances, selectedShipIdOmi, idEngineerChief, chiefSign} = maintenanceData
 
-    // Inserta los datos filtrados en la base de datos
-    const { error: insertError } = await supabase.from('maintenance').insert(
-      filteredData.map(item => ({
-        block: item.block,
-        description: item.description,
-        frecuency: parseInt(item.frecuency),
-        routeDate: item.routeDate,
-        routeTime: parseInt(item.routeTime ?? '0'),
-        nextRouteTime: item.nextRouteTime,
-      }))
-    )
+    // Iterar sobre los datos de mantenimiento y realizar inserciones
+    
+    for (const maintenance of maintenances) {
+      const {
+        block,
+        description,
+        frecuency,
+        routeDate,
+        routeTime,
+        nextRouteTime,
+        
+      } = maintenance
 
-    if (insertError) {
-      throw insertError
+      // Convertir routeDate a un formato compatible con la base de datos (ISO 8601)
+
+      const [day, month, year, time] = routeDate.split(' - ')
+      const [hour, minute] = time.split(':')
+
+      const formattedRouteDate = new Date(`${year}-${month}-${day}T${hour}:${minute}:00Z`)
+
+      const { error: insertError } = await supabase.from('maintenance_reports').insert([
+        {
+          ShipIdOmi: selectedShipIdOmi,
+          chiefEngineerId: idEngineerChief,
+          block,
+          description,
+          frecuency,
+          routeDate: formattedRouteDate,
+          routeTime: parseInt(routeTime),
+          nextRouteTime,
+          chiefSign
+        }
+      ])
+
+      if (insertError) {
+        throw insertError
+      }
     }
 
-    return NextResponse.json({ message: 'Maintenance data registered successfully' })
+    return NextResponse.json({ message: 'Maintenance reports registered successfully' })
   } catch (error: any) {
-    console.error('Error registering maintenance data:', error)
+    console.error('Error registering maintenance reports:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

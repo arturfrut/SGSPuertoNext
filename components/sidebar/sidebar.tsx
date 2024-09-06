@@ -190,6 +190,13 @@ export const SidebarWrapper = () => {
 
             <SidebarMenu title='Mantenimiento'>
               <SidebarItem
+                isActive={pathname === '/maintenance-history'}
+                title='Historial de mantenimiento'
+                icon={<ChiefEngineerIcon />}
+                href='/maintenance-history'
+
+              />
+              <SidebarItem
                 isActive={pathname === '/maintenance-register'}
                 title='Registro de mantenimiento'
                 icon={<ChiefEngineerIcon />}
