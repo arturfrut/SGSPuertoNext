@@ -1,7 +1,7 @@
-import { OrderRepair } from "@/components/OrderRepair"
+import { OrderReapair } from "@/components/OrderRepair"
 
 const orderRepair = () => {
-  return <OrderRepair />
+  return <OrderReapair />
 }
 
 export default orderRepair

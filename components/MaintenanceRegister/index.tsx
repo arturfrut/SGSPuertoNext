@@ -14,7 +14,10 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
   DatePicker,
+  Divider,
+  Image,
   Input,
   Table,
   TableBody,
@@ -137,10 +140,21 @@ export const MaintenanceRegister = () => {
     return groups
   }, {})
 
-  return (
-    <div className='h-full lg:px-6 w-full'>
-      <div className='flex justify-center gap-4 xl:gap-6 pt-3 lg:px-0 flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full'>
-        <div className='mt-6 gap-6 flex flex-col w-full'>
+  return ( <Card className='w-full  md:px-10 md:py-5'>
+    <CardHeader className='flex gap-3'>
+      <Image
+        alt='nextui logo'
+        height={40}
+        radius='sm'
+        src='https://avatars.githubusercontent.com/u/86160567?s=200&v=4'
+        width={40}
+      />
+      <div className='flex flex-col'>
+        <p className='text-xl'>Nuevo registro de mantenimiento</p>
+      </div>
+    </CardHeader>
+    <Divider className='mb-4' />
+    <CardBody>
           <div className='flex flex-col gap-5'>
             <Card className='w-full'>
               <CardBody>
@@ -205,8 +219,7 @@ export const MaintenanceRegister = () => {
               </Button>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+    </CardBody>
+    </Card>
   )
 }

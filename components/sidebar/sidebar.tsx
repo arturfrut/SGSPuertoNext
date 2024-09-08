@@ -22,6 +22,7 @@ import { CollapseItems } from './collapse-items'
 import { SidebarItem } from './sidebar-item'
 import { SidebarMenu } from './sidebar-menu'
 import { Sidebar } from './sidebar.styles'
+import { AuditIcon } from '../icons/sidebar/audit-icon'
 
 export const SidebarWrapper = () => {
   const pathname = usePathname()
@@ -57,7 +58,10 @@ export const SidebarWrapper = () => {
               <h1>NO HAY BARCOS DISPONIBLES</h1>
             ) : (
               <SidebarMenu
-                title={selectedShip?.name ?? 'SIN BARCO SELECCIONADO'}
+                title={
+                  `Barco: ${selectedShip?.name}` ??
+                  'SIN BARCO SELECCIONADO'
+                }
                 bigText
               >
                 <div className='flex w-full flex-wrap md:flex-nowrap gap-4'>
@@ -186,6 +190,13 @@ export const SidebarWrapper = () => {
                 icon={<CloseTripIcon />}
                 href='/closeTrip'
               />
+              <SidebarItem
+                isDisabled={!selectedShip}
+                isActive={pathname === '/audit'}
+                title='Informe de auditoria'
+                icon={<AuditIcon />}
+                href='/audit'
+              />
             </SidebarMenu>
 
             <SidebarMenu title='Mantenimiento'>
@@ -194,21 +205,18 @@ export const SidebarWrapper = () => {
                 title='Historial de mantenimiento'
                 icon={<ChiefEngineerIcon />}
                 href='/maintenance-history'
-
               />
               <SidebarItem
                 isActive={pathname === '/maintenance-register'}
                 title='Registro de mantenimiento'
                 icon={<ChiefEngineerIcon />}
                 href='/maintenance-register'
-
               />
               <SidebarItem
                 isActive={pathname === '/order-repair'}
                 title='Ordenes y reparaciones'
                 icon={<WrenchIcon />}
                 href='/order-repair'
-
               />
             </SidebarMenu>
 

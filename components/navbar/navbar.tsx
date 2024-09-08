@@ -1,31 +1,33 @@
-import { Input, Link, Navbar, NavbarContent } from "@nextui-org/react";
-import React from "react";
-import { FeedbackIcon } from "../icons/navbar/feedback-icon";
-import { GithubIcon } from "../icons/navbar/github-icon";
-import { SupportIcon } from "../icons/navbar/support-icon";
-import { SearchIcon } from "../icons/searchicon";
-import { BurguerButton } from "./burguer-button";
-import { NotificationsDropdown } from "./notifications-dropdown";
-import { UserDropdown } from "./user-dropdown";
+import useGlobalStore from '@/stores/useGlobalStore'
+import { Navbar, NavbarContent } from '@nextui-org/react'
+import React from 'react'
+import { FeedbackIcon } from '../icons/navbar/feedback-icon'
+import { SupportIcon } from '../icons/navbar/support-icon'
+import { BurguerButton } from './burguer-button'
+import { NotificationsDropdown } from './notifications-dropdown'
+import { UserDropdown } from './user-dropdown'
 
 interface Props {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export const NavbarWrapper = ({ children }: Props) => {
+  const { selectedShip, ships, setSelectedShip } = useGlobalStore()
+
   return (
-    <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+    <div className='relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden'>
       <Navbar
         isBordered
-        className="w-full"
+        className='w-full'
         classNames={{
-          wrapper: "w-full max-w-full",
+          wrapper: 'w-full max-w-full'
         }}
       >
-        <NavbarContent className="md:hidden">
+        <NavbarContent className='md:hidden'>
           <BurguerButton />
         </NavbarContent>
-        <NavbarContent className="w-full max-md:hidden">
+          <h3>{`Barco seleccionado: ${selectedShip?.name}` ?? 'SIN BARCO SELECCIONADO'}</h3>
+        <NavbarContent className='w-full max-md:hidden'>
           {/* 
           TODO: Acomodar de forma dinamica
           <Input
@@ -38,20 +40,20 @@ export const NavbarWrapper = ({ children }: Props) => {
             }}
             placeholder="Search..."
           /> */}
-          <div/>
+          <div />
         </NavbarContent>
         <NavbarContent
-          justify="end"
-          className="w-fit data-[justify=end]:flex-grow-0"
+          justify='end'
+          className='w-fit data-[justify=end]:flex-grow-0'
         >
-          <div className="flex items-center gap-2 max-md:hidden">
+          <div className='flex items-center gap-2 max-md:hidden'>
             <FeedbackIcon />
             <span>Feedback?</span>
           </div>
 
           <NotificationsDropdown />
 
-          <div className="max-md:hidden">
+          <div className='max-md:hidden'>
             <SupportIcon />
           </div>
 
@@ -70,5 +72,5 @@ export const NavbarWrapper = ({ children }: Props) => {
       </Navbar>
       {children}
     </div>
-  );
-};
+  )
+}

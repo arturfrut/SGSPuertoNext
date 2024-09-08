@@ -14,6 +14,9 @@ No funciona vien redirección de barra de navegación cuando estas en agregar ma
 
 Mejorar validaciones para formularios en general
 
+maintenance-register falta algo para la carga
+
+eliminar pagina y link de maintenance
 
 ////////////////////////////////////////////////// 
 ////////////////////////////////////////////////// 
