@@ -2,7 +2,7 @@ import supabase from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const id = 939395
+  const id = 8883339
 
   try {
     const { data, error } = await supabase
@@ -13,14 +13,16 @@ export async function GET() {
     if (error) {
       throw error
     }
-
+console.log('data',data)
     const updateData = data.map(element => ({
       description: element.description,
       date: element.routeDate,
       type: 'mantenimiento'
     }))
+console.log('data actualizada',updateData)
 
-    return NextResponse.json(updateData)
+
+return NextResponse.json(updateData)
   } catch (error: any) {
     console.error('Error fetching history:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })

@@ -41,7 +41,7 @@ export default function SignModal({
         {title}
       </Button>
       <Modal
-        size="5xl"
+        size="3xl"
         isOpen={isOpen}
         onOpenChange={onClose}
         isDismissable={false}

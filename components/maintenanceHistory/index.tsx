@@ -34,9 +34,11 @@ const MaintenanceHistory = () => {
     const fetchMaintenanceData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/get_maintenance_history/${selectedShip?.idOMI}`
+          `http://localhost:3000/api/get_maintenance_history/${selectedShip?.idOMI}`,
+          { headers: { 'Cache-Control': 'no-cache' } }
         )
         const data = response.data
+        console.log(data)
         setHistoryData(
           data.map(element => ({ ...element, date: formatDate(element.date) }))
         )

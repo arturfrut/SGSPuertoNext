@@ -127,7 +127,7 @@ export const NewOrder = () => {
 
             <div className='md:flex md:align-items md:gap-4 '>
               <div className='md:w-1/2 my-4'>
-                <p className='my-2'>Unidad</p>
+                <p className='my-2'>Cantidad de packs a pedir</p>
                 <Input
                   className='w-full'
                   type='string'
@@ -136,7 +136,7 @@ export const NewOrder = () => {
                 />
               </div>
               <div className='md:w-1/2 my-4'>
-                <p className='my-2'>Cantidad</p>
+                <p className='my-2'>Cantidad de unidades por pack</p>
 
                 <Input
                   className='w-full'
@@ -179,6 +179,7 @@ export const NewOrder = () => {
             <Button className='md:w-1/2 mb-4'>Enviar </Button>
           </Card>
           <Divider className='my-4' />
+
           <Card>
             <p className='text-xl mt-4'>Paso 2: Recepción</p>
 
@@ -188,28 +189,11 @@ export const NewOrder = () => {
               <Radio value='refuse'>Rechazar</Radio>
             </RadioGroup>
 
-            <p className='my-4'>Argumente el porque del rechazo:</p>
+            <p className='my-4'>Añada comentarios o argumente el porque del rechazo:</p>
             <Textarea
               // {...register("accidentVerifications")}
               labelPlacement='outside'
-              placeholder='Describa el porque de rechazo'
-            />
-            <Button className='md:w-1/2 my-4'>Enviar </Button>
-          </Card>
-          <Card>
-            <p className='text-xl mt-4'>Paso 2: Recepción</p>
-
-            <p className='my-4'>Aceptar o rechazar pedido?</p>
-            <RadioGroup color='secondary' defaultValue='refuse'>
-              <Radio value='accept'>Aceptar</Radio>
-              <Radio value='refuse'>Rechazar</Radio>
-            </RadioGroup>
-
-            <p className='my-4'>Argumente el porque del rechazo:</p>
-            <Textarea
-              // {...register("accidentVerifications")}
-              labelPlacement='outside'
-              placeholder='Describa el porque de rechazo'
+              placeholder='Describa aqui'
             />
             <Button className='md:w-1/2 my-4'>Enviar </Button>
           </Card>
@@ -237,7 +221,7 @@ export const NewOrder = () => {
             <Textarea
               // {...register("accidentVerifications")}
               labelPlacement='outside'
-              placeholder='Describa el porque de rechazo'
+              placeholder='Puede ingresar aquí cualquier información'
             />
             <Button className='md:w-1/2 my-4'>Agregar imagen</Button>
             <Button className='md:w-1/2 my-4'>Enviar </Button>

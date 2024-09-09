@@ -53,6 +53,8 @@ export const MaintenanceRegister = () => {
         const response = await axios.get(
           `http://localhost:3000/api/get_maintenance/${selectedShip?.idOMI}`
         )
+        console.log(`http://localhost:3000/api/get_maintenance/${selectedShip?.idOMI}`)
+        console.log(response)
         const data = response.data.map(item => {
           const previousCharge = item.lastCharge
             ? parseAbsoluteToLocal(item.lastCharge)
@@ -158,6 +160,9 @@ export const MaintenanceRegister = () => {
           <div className='flex flex-col gap-5'>
             <Card className='w-full'>
               <CardBody>
+                <p>Horas del motor prinicpal:  10.000    horas previas     horas que corresponden</p>
+                <p>Horas del motor auxiliar</p>
+                <p>Horas del motor </p>
                 {Object.keys(groupedData).map((block, blockIndex) => (
                   <div key={blockIndex}>
                     <h3>{block}</h3>

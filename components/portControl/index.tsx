@@ -15,9 +15,9 @@ import {
 } from '@nextui-org/react'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { NewOrderRepairCard } from './newOrderRepairCard'
+import { NewPortControlCard } from './newPortControlCard'
 
-export const OrderReapair = () => {
+export const PortControl = () => {
   const { selectedShip } = useGlobalStore()
   const selectedShipOmi = selectedShip?.idOMI
   const [historyData, setHistoryData] = useState([])
@@ -70,7 +70,7 @@ export const OrderReapair = () => {
       <Divider className='mb-4' />
       <CardBody>
 
-        <NewOrderRepairCard />
+        <NewPortControlCard />
         <Table aria-label='Example static collection table w-full' isStriped className='my-4'>
           <TableHeader>
             {ordersTabHeader.map(header => (

@@ -1,6 +1,5 @@
 'use client'
 
-import { crewListMock } from '@/mocks/crewListMock'
 import {
   Table,
   TableBody,
@@ -11,9 +10,15 @@ import {
 } from '@nextui-org/react'
 import Modalfp503 from './TrainingDetailModal'
 import { NewTrainingCard } from './newTrainingCard'
+import useGlobalStore from '@/stores/useGlobalStore'
 
 export const WeatherAlert = () => {
-  const trainingsList = crewListMock
+
+  const { tripulation } = useGlobalStore()
+
+  const trainingsList = tripulation
+
+
   const trainingsTabHeader = [
     'Fecha',
     'Tipo',

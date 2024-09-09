@@ -52,7 +52,7 @@ import supabase from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const id = 939395
+  const id = 8883339
 
   try {
     // Obtener datos de la tabla `maintenance_reports`

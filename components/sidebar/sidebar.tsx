@@ -4,6 +4,7 @@ import { Avatar, Select, SelectItem, Tooltip } from '@nextui-org/react'
 import { usePathname } from 'next/navigation'
 import { AccidentReportIcon } from '../icons/sidebar/accidentReport-icon'
 import { AccountsIcon } from '../icons/sidebar/accounts-icon'
+import { AuditIcon } from '../icons/sidebar/audit-icon'
 import { CaptainHatIcon } from '../icons/sidebar/captainHat-icon'
 import { ChangeLogIcon } from '../icons/sidebar/changelog-icon'
 import { ChiefEngineerIcon } from '../icons/sidebar/chiefEngineer-icon'
@@ -22,7 +23,6 @@ import { CollapseItems } from './collapse-items'
 import { SidebarItem } from './sidebar-item'
 import { SidebarMenu } from './sidebar-menu'
 import { Sidebar } from './sidebar.styles'
-import { AuditIcon } from '../icons/sidebar/audit-icon'
 
 export const SidebarWrapper = () => {
   const pathname = usePathname()
@@ -59,8 +59,7 @@ export const SidebarWrapper = () => {
             ) : (
               <SidebarMenu
                 title={
-                  `Barco: ${selectedShip?.name}` ??
-                  'SIN BARCO SELECCIONADO'
+                  `Barco: ${selectedShip?.name}` ?? 'SIN BARCO SELECCIONADO'
                 }
                 bigText
               >
@@ -150,18 +149,12 @@ export const SidebarWrapper = () => {
               />
               <SidebarItem
                 isDisabled={!selectedShip}
-                isActive={pathname === '/accidentreports'}
+                isActive={pathname === '/weather-alert'}
                 title='Reporte A. Climática'
                 icon={<WeatherReportIcon />}
                 href='/weather-alert'
               />
-              <SidebarItem
-                isDisabled={!selectedShip}
-                isActive={pathname === '/maintenanceForms'}
-                title='Mantenimiento'
-                icon={<ChiefEngineerIcon />}
-                href='/maintenanceForms'
-              />
+
               <SidebarItem
                 isDisabled={!selectedShip}
                 isActive={pathname === '/crewForms'}
@@ -218,6 +211,34 @@ export const SidebarWrapper = () => {
                 icon={<WrenchIcon />}
                 href='/order-repair'
               />
+            </SidebarMenu>
+
+            <SidebarMenu title='Guardia en puerto'>
+              <SidebarItem
+                isActive={pathname === '/port-control'}
+                title='Control de guardia'
+                icon={<AccountsIcon />}
+                href='port-control'
+              />
+              <SidebarItem
+                isActive={pathname === '/accounts'}
+                title='FP 101 Políticas'
+                icon={<AccountsIcon />}
+                href='accounts'
+              />
+              <SidebarItem
+                isActive={pathname === '/accounts'}
+                title='FP 501 familiarizacion'
+                icon={<AccountsIcon />}
+                href='accounts'
+              />
+              <SidebarItem
+                isActive={pathname === '/accounts'}
+                title='FP 502 EPP'
+                icon={<AccountsIcon />}
+                href='accounts'
+              />
+
             </SidebarMenu>
 
             <SidebarMenu title='Updates'>
