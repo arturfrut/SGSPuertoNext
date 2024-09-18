@@ -55,7 +55,7 @@ const shipTypes = [
 export const roles = [
   { rolId: 1, rolName: 'administrador' },
   { rolId: 2, rolName: 'jefe de máquinas' },
-  { rolId: 3, rolName: 'responsable técnico' },
+  { rolId: 3, rolName: 'responsable/gerente técnico' },
   { rolId: 4, rolName: 'armador' },
   { rolId: 5, rolName: 'representante empresa' },
   { rolId: 6, rolName: 'responsable de personal' },

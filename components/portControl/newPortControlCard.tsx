@@ -11,7 +11,7 @@ export const NewPortControlCard = () => {
             <Community />
             <div className='flex flex-col'>
               <span className='text-white'>
-                Crear nueva orden de reparación
+                Nuevo control de puerto
               </span>
               <span className='text-white text-xs'>
                 Pensar bien que voy a meter aca adentro
@@ -21,12 +21,9 @@ export const NewPortControlCard = () => {
         </div>
 
         <div className='flex gap-2.5 py-2 items-center justify-end'>
-          {/* <NewCrewMemberModal
-            searchOptions={searchOptions}
-            loadingOptions={isLoading}
-          /> */}
+
           <Button>
-            <NextLink href={'/order-repair/new-order'}>Nueva reparación</NextLink>
+            <NextLink href={'/port-control/new-control'}>Nuevo registro</NextLink>
           </Button>
         </div>
       </CardBody>

@@ -1,12 +1,14 @@
 "use client";
-import { CrossIcon } from "@/components/icons/crossIcon";
+import SignModal from "@/components/signModal";
+import useSignModal from "@/components/signModal/useSignModal";
+import { SignatureChecker } from "@/components/signatureChecker";
 import {
   cardinalDirections,
   seaCurrentPower,
   seaPower,
   windPower,
 } from "@/constants/strings";
-import { crewListMock } from "@/mocks/crewListMock";
+import useGlobalStore from "@/stores/useGlobalStore";
 import {
   Button,
   Card,
@@ -14,6 +16,7 @@ import {
   CardFooter,
   CardHeader,
   Checkbox,
+  DatePicker,
   Divider,
   Image,
   Input,
@@ -30,13 +33,10 @@ import {
 } from "@nextui-org/react";
 import { useState } from "react";
 import Modalfr83 from "./modalFR802";
-import useSignModal from "@/components/signModal/useSignModal";
-import SignModal from "@/components/signModal";
-import { SignatureChecker } from "@/components/signatureChecker";
 
 export const FormFr83 = () => {
-  const {  onOpen } = useDisclosure();
-
+ const {  onOpen } = useDisclosure();
+ const {tripulation, selectedShip} = useGlobalStore()
   const weatherStepsArray = [
     {
       action: "Control totalidad cierres estacos",
@@ -86,7 +86,7 @@ export const FormFr83 = () => {
   ];
   const [weatherSteps, setWeatherSteps] = useState(weatherStepsArray);
   const { signatures, handleSaveSignature } = useSignModal();
-  const crewList = crewListMock;
+  const crewList = tripulation;
 
   const handleRowClick = (index: number) => {
     const step = weatherSteps[index];
@@ -116,8 +116,10 @@ export const FormFr83 = () => {
       <form>
         <Divider className="mb-4" />
         <p className="text-xl ">Información general</p>
-        <p className="mt-4"> Buque: de bdd</p>
-        <p className="my-4"> Fecha: Automática</p>
+        <p className="mt-4"> Buque: {selectedShip?.name}</p>
+       
+        <DatePicker granularity="day" className="w-1/2 mt-4"/>
+        <Divider className="my-4"/>
         <p className="my-4"> Posición:</p>
         <div className="flex gap-4 ">
           <Input placeholder="ingrese latitud" />

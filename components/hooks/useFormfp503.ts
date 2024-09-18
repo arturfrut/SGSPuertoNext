@@ -8,7 +8,7 @@ import useGlobalStore from '@/stores/useGlobalStore'
 const useFormfp503 = () => {
   const { signatures, handleSaveSignature } = useSignModal()
   const [typeSelect, setTypeSelect] = useState('Zafarrancho')
-  const { selectedShip } = useGlobalStore()
+  const { selectedShip, tripulation } = useGlobalStore()
   const [exerciseDescription, setExerciseDescription] = useState('')
   const [aditionalInfo, setAditionalInfo] = useState('')
   const [supervisorSelect, setSupervisorSelect] = useState('En tripulación')
@@ -20,8 +20,9 @@ const useFormfp503 = () => {
   const [inputValue, setInputValue] = useState('')
   const [supervisorSignSelect, setSupervisorSignSelect] = useState('')
 
-  const crewList = crewListMock
-  const [crewInExercise, setCrewInExercise] = useState(crewListMock)
+  const crewList = tripulation
+
+  const [crewInExercise, setCrewInExercise] = useState(tripulation)
 
   const removeWitness = (i: number) => {
     setCrewInExercise(prevState => prevState.filter((_, index) => index !== i))

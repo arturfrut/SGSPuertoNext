@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const { accidentType, voyageId, accidentDescription, shipCondition, weatherStatus, HC, accidentVerifications, accidentCaptainOpinion, witness, shipStatus } = data;
 
     const { error } = await supabase
-      .from('accidents_reports')
+      .from('accidents')
       .insert({
         accident_type_danos_al_buque: accidentType['Daños al buque'],
         accident_type_danos_a_terceros: accidentType['Daños a terceros'],

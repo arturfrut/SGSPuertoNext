@@ -123,6 +123,18 @@ export const SidebarWrapper = () => {
                 icon={<CloseTripIcon />} // TODO: Icono de crear usuario
                 href='create-ship'
               />
+              <SidebarItem
+                isActive={pathname === '/admin-companies'}
+                title='Empresas'
+                icon={<CloseTripIcon />} // TODO: Icono de crear usuario
+                href='admin-companies'
+              />
+              <SidebarItem
+                isActive={pathname === '/danger-alerts'}
+                title='Alerta climatica/accidentes'
+                icon={<CloseTripIcon />} // TODO: Icono de crear usuario
+                href='danger-alerts'
+              />
             </SidebarMenu>
 
             <SidebarMenu title='Tu barco'>
@@ -238,7 +250,6 @@ export const SidebarWrapper = () => {
                 icon={<AccountsIcon />}
                 href='accounts'
               />
-
             </SidebarMenu>
 
             <SidebarMenu title='Updates'>

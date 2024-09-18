@@ -2,11 +2,14 @@ import useSignModal from '@/components/signModal/useSignModal'
 import { FR802Values } from '@/types/FR802'
 import { useForm } from 'react-hook-form'
 import { useWitness } from './useWitness'
+import useGlobalStore from '@/stores/useGlobalStore'
 
-export const useFormReport = (accidentReportData: { crewList: any[] }) => {
+export const useFormReport = () => {
+  const { tripulation } = useGlobalStore()
+
   const { register, handleSubmit, setValue, watch } = useForm<FR802Values>()
   const { handleSelectChange, addWitness, removeWitness, witnessList } =
-    useWitness(accidentReportData.crewList, setValue)
+    useWitness(tripulation, setValue)
   const { signatures, handleSaveSignature } = useSignModal()
 
   // const onSubmit = (e: React.FormEvent, data: FR802Values) => {
@@ -48,6 +51,8 @@ export const useFormReport = (accidentReportData: { crewList: any[] }) => {
     handleAccidentTypes,
     handleShipCondition,
     signatures,
-    handleSaveSignature
+    handleSaveSignature,
+
+    setValue
   }
 }

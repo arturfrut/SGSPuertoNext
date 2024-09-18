@@ -1,27 +1,37 @@
 'use client'
 
+// Vencimiento anual se saca sola
+// sacar vencimiento anual y poner fecha de emisión
+// Balsa no tiene vencimiento anual
+// Sacar fecha de subida
+
+import useGlobalStore from '@/stores/useGlobalStore'
 import {
+  Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
+  Chip,
   Image,
-  Input
+  Input,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow
 } from '@nextui-org/react'
-import React, { useState } from 'react'
-import { Fc101CaptainForm } from '../fc101/Fc101Captain'
-import SignModal from '../signModal'
-import { SignatureChecker } from '../signatureChecker'
-import useSignModal from '../signModal/useSignModal'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { DateValue } from '@internationalized/date'
 import ModalFR802 from '../accidentreports/formReports/modalFR802'
-import { convertToDate } from '@/utils/dateFormat'
+import { SignatureChecker } from '../signatureChecker'
+import SignModal from '../signModal'
+import useSignModal from '../signModal/useSignModal'
+import { ExpirationTable } from './expirationTable'
 
 export const ExpirationControls = () => {
- 
- 
-
   type FN801Values = {
     title: string
     ncn?: number
@@ -40,34 +50,15 @@ export const ExpirationControls = () => {
       date: string
     }
   }
+
   const { signatures, handleSaveSignature } = useSignModal()
   const { register, handleSubmit, watch } = useForm<FN801Values>()
-
+  const { selectedShip, idCaptain } = useGlobalStore()
   const onSubmit = (data: any) => {
     console.log(data)
   }
+  console.log(selectedShip?.idOMI)
 
-  const [dates, setDates] = useState<{
-    [key: string]: {
-      annualExpiration: DateValue | null
-      indicatedExpiration: DateValue | null
-      finalExpiration: DateValue | null
-    }
-  }>({})
-
-  const handleDateChange =
-    (id: string, key: keyof (typeof dates)[keyof typeof dates]) =>
-    (date: DateValue | null) => {
-      console.log('date',date)
-      date && console.log('formatedDate', convertToDate(date))
-      setDates(prevDates => ({
-        ...prevDates,
-        [id]: {
-          ...prevDates[id],
-          [key]: date
-        }
-      }))
-    }
 
 
   return (
@@ -86,40 +77,16 @@ export const ExpirationControls = () => {
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardBody>
-          <p className='text-xl '>Ingreso de tripulante: Juan Perez </p>
-          <p className='my-4'> NCN: 1</p>
-          <p className='mb-4'> Buque:asdasd</p>
+          <p className='mt-4'> Buque: {selectedShip?.name}</p>
+          <p className='my-4'> Id OMI: {selectedShip?.idOMI}</p>
 
-          <Fc101CaptainForm dates={dates} handleDateChange={handleDateChange} />
-          <p className='text-lg my-4'>Persona designada </p>
-          <Input
-            className=' my-4 w-full'
-            type='string'
-            label='Escriba el nombre de la persona asignada'
-            {...register('emisorName')}
+          <Button>Actualizar Data</Button>
+          <ExpirationTable
+            idOmi={selectedShip?.idOMI}
+            idCaptain={idCaptain}
           />
         </CardBody>
-        <CardBody className='flex gap-4'>
-          <div className='w-full md:w-1/2 flex items-center gap-5'>
-            <SignModal
-              onSave={(data: any) => handleSaveSignature(data, 'captainSign')}
-              title='FIRMA CAPITÁN'
-            />
-            <SignatureChecker status={signatures?.captainSign} />
-          </div>
-          <div className='w-full md:w-1/2 flex items-center gap-5'>
-            <SignModal
-              onSave={(data: any) => handleSaveSignature(data, 'sgsSign')}
-              title='FIRMA RESPONSABLE SGS'
-            />
-            <SignatureChecker status={signatures?.sgsSign} />
-          </div>
-        </CardBody>
-        <CardFooter className=' flex gap-3 justify-end'>
-          <ModalFR802 formData={watch()} />
-          <button onClick={()=> console.log({watch:watch(),dates})}>COSO</button>
-          {/* TODO: EN V2 AGREGAR BOTÓN DE RESET EN FORMULARIOS */}
-        </CardFooter>
+        <CardFooter className=' flex gap-3 justify-end'></CardFooter>
       </form>
     </Card>
   )

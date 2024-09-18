@@ -27,11 +27,23 @@ import axios from 'axios'
 
 import { useEffect, useState } from 'react'
 
-export const PortControl = () => {
+export const NewControl = () => {
+  const today = parseAbsoluteToLocal(new Date().toISOString())
   const [loadingCompany, setLoadingCompany] = useState(true)
-  const [shipOptions, setCompanyOptions] = useState([])
-
+  const [shipOptions, setShipOptions] = useState([])
   const { signatures, handleSaveSignature } = useSignModal()
+  const [controlData, setControlData] = useState({
+    date: today,
+    observation: '',
+    isAllChecked: false,
+    checkedPoints: []
+  })
+
+  const globalData = {
+    shipIomi: 8883339,
+    libreta: 123456,
+    nombreTripulante: 'Juan Perezcuzo'
+  }
 
   const portGuardPoints = [
     'Sentina Control de Nivel',
@@ -44,11 +56,48 @@ export const PortControl = () => {
     'Sistema de control de estanqueidad'
   ]
 
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target
+    const selectedShip = shipOptions.find(
+      ship => ship.ship_omi === parseInt(value)
+    )
+
+    if (selectedShip) {
+      setControlData(prevData => ({
+        ...prevData,
+        shipOmi: selectedShip
+      }))
+    }
+  }
+
+  const handleCheckboxChange = (index: number) => {
+    setControlData(prevData => {
+      const updatedCheckedPoints = [...prevData.checkedPoints]
+      updatedCheckedPoints[index] = !updatedCheckedPoints[index]
+
+      const allChecked = updatedCheckedPoints.every(checked => checked === true)
+
+      return {
+        ...prevData,
+        checkedPoints: updatedCheckedPoints,
+        isAllChecked: allChecked
+      }
+    })
+  }
+
+  const handleCheckAll = () => {
+    setControlData(prevData => ({
+      ...prevData,
+      checkedPoints: Array(portGuardPoints.length).fill(true),
+      isAllChecked: true
+    }))
+  }
+
   async function fetchData() {
     try {
-      const res = await axios.get(`/api/get_ships/123`)
+      const res = await axios.get(`/api/get_ships/${globalData.shipIomi}`)
       const data = await res.data
-      setCompanyOptions(data)
+      setShipOptions(data)
       console.log(data)
     } catch (error) {
       console.error('Error fetching companies:', error)
@@ -60,11 +109,33 @@ export const PortControl = () => {
   useEffect(() => {
     fetchData()
   }, [])
+  const formattedDate = date => {
+    const day = date.day.toString().padStart(2, '0')
+    const month = date.month.toString().padStart(2, '0')
+    const year = date.year
 
-  const today = parseAbsoluteToLocal(new Date().toISOString())
+    return `${year}-${month}-${day}`
+  }
 
-  const handleSelectChange = () => {
-    console.log('asd')
+  const submitData = async () => {
+    try {
+      const submitedData = {
+        date: formattedDate(controlData.date),
+        shipOmi: globalData.shipIomi,
+        guardOmi: globalData.libreta,
+        sign: signatures.guardianSignature,
+        observation: controlData.observation
+      }
+      const response = await axios.post(
+        '/api/register_port_control/',
+        submitedData
+      )
+      console.log('Data submitted:', response.data)
+
+      console.log(submitedData)
+    } catch (error) {
+      console.error('Error submitting data:', error)
+    }
   }
 
   return (
@@ -84,7 +155,6 @@ export const PortControl = () => {
         </div>
       </CardHeader>
       <Divider />
-      {/* <form onSubmit={handleSubmit(onSubmit)}> */}
       <CardBody>
         <p className=''>Seleccione barco:</p>
         <Select
@@ -110,15 +180,15 @@ export const PortControl = () => {
           granularity='day'
           className='max-w-md my-2'
           label='Fecha'
-          value={today}
-          onChange={() => {
-            console.log('cascas')
-          }}
+          value={controlData.date}
+          onChange={date => setControlData(prevData => ({ ...prevData, date }))}
         />
 
-        <p className='mb-4'> Nombre del tripulante: Nombre de BDD</p>
-        <p className='mb-4'> Libreta de embarque: Nro deBDD,puede ser dni</p>
-        {/* <p className="mb-4"> Fecha: {dateGeratorWithFormat()}</p> */}
+        <p className='mb-4'>
+          {' '}
+          Nombre del tripulante: {globalData.nombreTripulante}
+        </p>
+        <p className='mb-4'> Libreta de embarque / DNI: {globalData.libreta}</p>
         <Divider />
         <p className='my-4 text-small'>
           * las presentes instrucciones, son obligatorias y de consignas para
@@ -141,15 +211,32 @@ export const PortControl = () => {
             <TableRow key={index}>
               <TableCell>{theme}</TableCell>
               <TableCell>
-                <Checkbox />
+                <Checkbox
+                  isSelected={controlData.checkedPoints[index]}
+                  onChange={() => handleCheckboxChange(index)}
+                />
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
 
+      <Button className='mt-4' onClick={handleCheckAll}>
+        Check All
+      </Button>
+
       <p className='mt-4 mb-2'>Observaciones:</p>
-      <Textarea labelPlacement='outside' placeholder='Escriba aqui su reseña' />
+      <Textarea
+        labelPlacement='outside'
+        placeholder='Escriba aqui su reseña'
+        value={controlData.observation}
+        onChange={(e: { target: { value: any } }) =>
+          setControlData(prevData => ({
+            ...prevData,
+            observation: e.target.value
+          }))
+        }
+      />
       <p className='my-4 text-tiny'>
         * En caso de emergencia ver listas de verificación LE-01, LE-07 y LE-10
       </p>
@@ -166,9 +253,10 @@ export const PortControl = () => {
         </div>
       </CardBody>
       <CardFooter className=' flex gap-3 justify-end'>
-        <Button>Enviar</Button>
+        <Button isDisabled={!controlData.isAllChecked} onClick={submitData}>
+          Enviar
+        </Button>
       </CardFooter>
-      {/* </form> */}
     </Card>
   )
 }

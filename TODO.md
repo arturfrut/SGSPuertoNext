@@ -18,6 +18,10 @@ maintenance-register falta algo para la carga
 
 eliminar pagina y link de maintenance
 
+guardia de puerto debería tener lista la familiarización para q le permita hacer registros
+
+Revisar maintenance-registar si funciona con los cambios de motors
+
 ////////////////////////////////////////////////// 
 ////////////////////////////////////////////////// 
 ////////////////////////////////////////////////// 
