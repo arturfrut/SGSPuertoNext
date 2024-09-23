@@ -40,11 +40,13 @@ export const CommandDelivery = () => {
   const { delivery, loadingDelivery, errorDelivery } = useDeliveryByShip(88888)
   const [formData, setFormData] = useState({
     shipState: 'En navegación',
-    receiptPerson: '',
-    receiptCharge: '',
-    deliveryPerson: '',
-    deliveryCharge: ''
+    receiptPersonName: '',
+    deliveryPersonName: '',
+    deliveryPersonCharge: '',
+    receiptPersonCharge: ''
   })
+
+
 
   const onSubmit = async () => {
     if (!allFieldsChecked) {
@@ -135,7 +137,7 @@ export const CommandDelivery = () => {
                 <TableRow key={field.title}>
                   <TableCell>{field.title}</TableCell>
                   <TableCell className='text-gray-400'>
-                    {'No hay observaciones previas'}
+                    {field.oldComments ?? 'No hay observaciones previas'}
                   </TableCell>
                   <TableCell>{'No hay observaciones nuevas'}</TableCell>
                   <TableCell>
@@ -164,9 +166,12 @@ export const CommandDelivery = () => {
               <Input
                 className='w-full md:w-1/2'
                 placeholder={'Ingrese su nombre'}
-                value={formData.delivery}
+                value={formData.receiptPersonName}
                 onChange={e =>
-                  setFormData({ ...formData, shipState: e.target.value })
+                  setFormData({
+                    ...formData,
+                    receiptPersonName: e.target.value
+                  })
                 }
               />
               <Select className='w-full md:w-1/2' label='Seleccione su cargo'>
@@ -175,7 +180,10 @@ export const CommandDelivery = () => {
                     key={shipState}
                     value={shipState}
                     onClick={e =>
-                      setFormData({ ...formData, shipState: e.target.value })
+                      setFormData({
+                        ...formData,
+                        receiptPersonCharge: e.target.value
+                      })
                     }
                   >
                     {shipState}
@@ -197,9 +205,12 @@ export const CommandDelivery = () => {
               <Input
                 className='w-full md:w-1/2'
                 placeholder={'Ingrese su nombre'}
-                value={formData.receiptPerson}
+                value={formData.deliveryPersonName}
                 onChange={e =>
-                  setFormData({ ...formData, shipState: e.target.value })
+                  setFormData({
+                    ...formData,
+                    deliveryPersonName: e.target.value
+                  })
                 }
               />
               <Select className=' w-full md:w-1/2' label='Seleccione su cargo'>
@@ -208,7 +219,10 @@ export const CommandDelivery = () => {
                     key={shipState}
                     value={shipState}
                     onClick={e =>
-                      setFormData({ ...formData, shipState: e.target.value })
+                      setFormData({
+                        ...formData,
+                        deliveryPersonCharge: e.target.value
+                      })
                     }
                   >
                     {shipState}

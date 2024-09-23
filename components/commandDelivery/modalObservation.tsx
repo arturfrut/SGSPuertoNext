@@ -7,20 +7,25 @@ import {
   Textarea,
   useDisclosure
 } from '@nextui-org/react'
+import { FC } from 'react'
 
-export const ModalObservation = ({
+interface ModalObervationInterface {
+  handleObservation: () => void
+  field: string
+}
+export const ModalObservation: FC<ModalObervationInterface> = ({
   handleObservation,
   field
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const handleNewObservation = onClose => {
+  const handleNewObservation = (onClose: () => void) => {
     handleObservation()
     onClose()
   }
 
   return (
     <div>
-      <Button onPress={onOpen} color='primary'>
+      <Button onPress={onOpen} >
         Agregar observación
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement='top-center'>

@@ -2,15 +2,23 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 interface DeliveryInterface {
-id: number
-title: string
+  id: number
+  title: string
+  oldComments: string | null
 }
-
 
 const useDeliveryByShip = (selectedShip: string | number) => {
   const [delivery, setDelivery] = useState<DeliveryInterface[]>([])
   const [loadingDelivery, setLoadingDelivery] = useState(false)
   const [errorDelivery, setErrorDelivery] = useState<unknown>(null)
+
+  const processData = (delivery: [any]) => {
+    return delivery.map(el => ({
+      ...el,
+      newComment: null,
+      checked: null
+    }))
+  }
 
   useEffect(() => {
     if (!selectedShip) return
@@ -22,7 +30,7 @@ const useDeliveryByShip = (selectedShip: string | number) => {
       try {
         const res = await axios.get(`/api/get_delivery/${selectedShip}`)
         const data = await res.data
-        setDelivery(data)
+        setDelivery(processData(data))
         console.log(data)
       } catch (error) {
         console.error('Error fetching ships:', error)
