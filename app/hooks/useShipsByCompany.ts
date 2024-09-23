@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-const useFetchShips = (selectedCompany: string | number) => {
+const useShipsByCompany = (selectedCompany: string | number) => {
   const [shipOptions, setShipOptions] = useState([])
   const [loadingShip, setLoadingShip] = useState(false)
   const [errorShip, setErrorShip] = useState<unknown>(null)
@@ -32,4 +32,4 @@ const useFetchShips = (selectedCompany: string | number) => {
   return { shipOptions, loadingShip, errorShip }
 }
 
-export default useFetchShips
+export default useShipsByCompany

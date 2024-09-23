@@ -1,6 +1,8 @@
 'use client'
 
-import supabase from '@/lib/supabase'
+import { calculateExpirationInfo } from '@/utils/calculateExpirations'
+import { getSupabaseSession } from '@/utils/getSupabaseSession'
+import { parseAbsoluteToLocal, ZonedDateTime } from '@internationalized/date'
 import {
   Accordion,
   AccordionItem,
@@ -8,7 +10,6 @@ import {
   Checkbox,
   Chip,
   DatePicker,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -17,8 +18,7 @@ import {
   useDisclosure
 } from '@nextui-org/react'
 import axios from 'axios'
-import imageCompression from 'browser-image-compression'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 
 const EvidenceModal = ({
   id_OMI,
@@ -30,86 +30,99 @@ const EvidenceModal = ({
   haveExpiration
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [pageAmmount, setPageAmmount] = useState(1)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  // Agrupamos los estados relacionados con las fechas en un objeto
+  const today = parseAbsoluteToLocal(new Date().toISOString())
+
   const [isLoading, setIsLoading] = useState(false)
-  const [nextExpiration, setNextExpiration] = useState(new Date())
-  const [finalExpiration, setFinalExpiration] = useState(new Date())
-  const [lapseExpiration, setLapseExpiration] = useState(new Date())
-  const [haveNewFinalExpiration, setHaveNewFinalExpiration] = useState(false)
+  const [expirations, setExpirations] = useState({
+    nextExpiration: today,
+    finalExpiration: today,
+    lapseExpiration: haveLapse ? today : null,
+    haveNewFinalExpiration: false
+  })
 
-  const handlePageChange = e => {
-    const value = parseInt(e.target.value, 10)
-    if (!isNaN(value)) {
-      setPageAmmount(value)
-    } else {
-      setPageAmmount(0) // Si no es un número válido, se resetea a 0
-    }
+  const [pageAmmount, setPageAmmount] = useState(1)
+  const [images, setImages] = useState(
+    Array(pageAmmount).fill({ file: null, previewUrl: null })
+  )
+
+  const formattedDate = (date: {
+    day: { toString: () => string }
+    month: { toString: () => string }
+    year: any
+  }) => {
+    const day = date.day.toString().padStart(2, '0')
+    const month = date.month.toString().padStart(2, '0')
+    const year = date.year
+
+    return `${year}-${month}-${day}`
   }
 
-  const compressImage = async (file: File) => {
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1024,
-      useWebWorker: true
-    }
-    try {
-      const compressedFile = await imageCompression(file, options)
-      setSelectedFile(compressedFile)
-    } catch (error) {
-      console.error('Error al comprimir la imagen:', error)
-    }
+  const handleDateChange = (field: string, value: ZonedDateTime) => {
+    setExpirations(prevState => ({
+      ...prevState,
+      [field]: value
+    }))
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null
+  // Maneja el cambio de checkbox para "nuevo vencimiento final"
+  const handleCheckboxChange = () => {
+    setExpirations(prevState => ({
+      ...prevState,
+      haveNewFinalExpiration: !prevState.haveNewFinalExpiration
+    }))
+  }
+
+  const handleImageChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const file = e.target.files[0]
     if (file) {
-      if (file.size > 1 * 1024 * 1024) {
-        compressImage(file)
-      } else {
-        setSelectedFile(file)
+      const newImages = [...images]
+      newImages[index] = {
+        file, // Guarda el archivo de la imagen
+        previewUrl: URL.createObjectURL(file) // Crea la URL temporal para la vista previa
       }
+      setImages(newImages)
     }
   }
 
-  const uploadImage = async (pageNumber: number) => {
-    if (selectedFile && captainId && id_OMI) {
+  const submitData = async (
+    event: React.FormEvent<HTMLFormElement>,
+    onClose: () => void
+  ) => {
+    event.preventDefault() // Evita el comportamiento por defecto del formulario
+
+    if (captainId && id_OMI) {
+      setIsLoading(true)
       const formData = new FormData()
-      formData.append('file', selectedFile)
-      formData.append('captain_id', String(captainId))
-      formData.append('id_OMI', String(id_OMI))
-      formData.append('expirationId', String(expirationId))
-      formData.append('pageNumber', String(pageNumber))
-      console.log({
-        selectedFile
+
+      images.forEach((image, index) => {
+        if (image.file) {
+          formData.append(`image_${index + 1}`, image.file) // Añade cada archivo con un nombre único
+        }
       })
+
+      formData.append(
+        'nextExpiration',
+        formattedDate(expirations.nextExpiration)
+      )
+      formData.append(
+        'finalExpiration',
+        formattedDate(expirations.finalExpiration)
+      )
+      formData.append(
+        'lapseExpiration',
+        formattedDate(expirations.lapseExpiration)
+      )
+      formData.append('id_OMI', id_OMI)
+      formData.append('capatain_id', captainId)
+      formData.append('expiration_id', expirationId)
+
       try {
-        const {
-          data: { session },
-          error: sessionError
-        } = await supabase.auth.getSession()
-
-        if (sessionError) {
-          throw sessionError
-        }
-
-        if (!session || !session.access_token) {
-          throw new Error(
-            'El usuario no está autenticado o el token no está disponible'
-          )
-        }
-
-        console.log('Token de autenticación:', session.access_token)
-
-        // Configurar los headers de la solicitud
-        const config = {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`, // Incluir el token de autenticación
-            'Content-Type': 'multipart/form-data' // Asegúrate de que estás enviando formData correctamente
-          }
-        }
+        const config = await getSupabaseSession()
 
         // Hacer la solicitud POST con Axios
         const response = await axios.post(
@@ -117,16 +130,29 @@ const EvidenceModal = ({
           formData,
           config
         )
+        // console.log(Array.from(formData.entries()))
 
-        alert('Imagen subida con éxito y datos guardados en la base de datos')
+        alert('Vencimiento cargado con exito')
+        setIsLoading(false)
+        onClose() // Cierra el modal solo si la imagen se sube con éxito
       } catch (error) {
+        console.log(Array.from(formData.entries()))
+
         console.error('Error en la solicitud:', error)
+        setIsLoading(false)
+
         alert('Hubo un error al enviar la solicitud.')
       }
     } else {
+      setIsLoading(false)
+
       alert('Por favor, complete todos los campos requeridos.')
     }
   }
+
+  const daysUntilExpirations = lastChargeData
+    ? calculateExpirationInfo(lastChargeData)
+    : null
 
   return (
     <>
@@ -137,101 +163,194 @@ const EvidenceModal = ({
         isDismissable={false}
         isKeyboardDismissDisabled={true}
         size='2xl'
+        scrollBehavior={'outside'}
       >
         <ModalContent>
           {onClose => (
-            <form onSubmit={console.log('')}>
+            <form onSubmit={e => submitData(e, onClose)}>
               <ModalHeader className='flex flex-col gap-1'>
                 Subir imagenes de: {expirationTitle}
               </ModalHeader>
               <ModalBody>
-                <p>{'Indicaciones'}</p>
-                <Chip> {'El documento esta al día'}</Chip>
-                {!lastChargeData ? (
+                <Chip
+                  color={
+                    lastChargeData
+                      ? daysUntilExpirations?.nearExpiration.color
+                      : 'default'
+                  }
+                >
+                  {' '}
+                  {lastChargeData
+                    ? daysUntilExpirations?.nearExpiration.message
+                    : 'Documento sin cargar'}
+                </Chip>
+
+                {lastChargeData ? (
                   <div>
                     <p>Datos de la última carga:</p>
-                    <p>Proximo vencimiento: </p>
-                    <p>Vencimiento final: </p>
-                    <p>Páginas subidas al sistema: </p>
+                    <p>
+                      Próximo vencimiento: {lastChargeData.next_expiration}{' '}
+                    </p>
+                    <p>Vencimiento final: {lastChargeData.final_expiration}</p>
 
-                    <Accordion>
-                      <AccordionItem
-                        aria-label={``}
-                        title={`últimos documentos subidos`}
-                      >
-                        <Accordion>
-                          {[1, 2].map(img => (
-                            <AccordionItem
-                              aria-label={``}
-                              title={'fecha de subida: '}
-                            >
-                              {'div con imagen'}
-                            </AccordionItem>
-                          ))}
-                        </Accordion>
-                      </AccordionItem>
-                    </Accordion>
+                    <p>Páginas subidas al sistema: </p>
+                    {lastChargeData.images_urls.length ? (
+                      <Accordion>
+                        <AccordionItem
+                          aria-label={``}
+                          title={`últimos documentos subidos`}
+                        >
+                          <Accordion>
+                            {lastChargeData.images_urls.map(img => (
+                              <AccordionItem
+                                aria-label={String(img)}
+                                key={img}
+                                title={'imagen ' + 1}
+                              >
+                                {/* <img src={img} className='h-20'/>
+                                 */}
+                                <a
+                                  href={img}
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                >
+                                  <img
+                                    src={img}
+                                    className='h-20 cursor-pointer'
+                                    alt='Preview'
+                                  />
+                                </a>
+                              </AccordionItem>
+                            ))}
+                          </Accordion>
+                        </AccordionItem>
+                      </Accordion>
+                    ) : (
+                      'No se Subieron imagenes'
+                    )}
                   </div>
                 ) : (
                   <p>Es la primera vez que se carga este documento</p>
                 )}
+
                 {haveExpiration && (
                   <>
                     <DatePicker
                       showMonthAndYearPickers
+                      granularity='day'
                       size='lg'
                       label='Próximo vencimiento'
+                      value={expirations.nextExpiration}
+                      onChange={date =>
+                        handleDateChange('nextExpiration', date)
+                      }
                       isRequired
                       className='mt-4'
                     />
                     <p className='text-gray-600 text-small'>
                       Suele ser vencimiento anual
                     </p>
-                    <Checkbox checked={haveNewFinalExpiration} onChange={(e)=>setHaveNewFinalExpiration(!haveNewFinalExpiration)}>Tiene nuevo vencimiento final</Checkbox>
-                    {haveNewFinalExpiration && (
+
+                    {haveLapse && (
+                      <>
+                        <DatePicker
+                          showMonthAndYearPickers
+                          granularity='day'
+                          size='lg'
+                          label='Ventana de vencimiento'
+                          value={expirations.lapseExpiration}
+                          onChange={date =>
+                            handleDateChange('lapseExpiration', date)
+                          }
+                          isRequired
+                          className='mt-4'
+                        />
+                        <p className='text-gray-600 text-small'>
+                          Fecha máxima para actualizar el documento
+                        </p>
+                      </>
+                    )}
+
+                    <Checkbox
+                      className='mt-2'
+                      checked={expirations.haveNewFinalExpiration}
+                      onChange={handleCheckboxChange}
+                    >
+                      Tiene nuevo vencimiento final
+                    </Checkbox>
+                    <p className='text-gray-600 mb-2 text-small'>
+                      Marcar en caso de que ya se hayan cumplido los
+                      vencimientos intermedios o nunca se haya cargado el final
+                    </p>
+
+                    {expirations.haveNewFinalExpiration && (
                       <DatePicker
                         showMonthAndYearPickers
+                        granularity='day'
                         size='lg'
                         label='Vencimiento final'
+                        value={expirations.finalExpiration}
+                        onChange={date =>
+                          handleDateChange('finalExpiration', date)
+                        }
                         isRequired
                         className='my-4'
                       />
                     )}
                   </>
                 )}
+
                 <p>Cantidad de páginas</p>
-                <Input
-                  className=' my-4 w-full'
-                  type='number'
-                  label='cantidad de páginas'
-                  onChange={handlePageChange}
-                />
 
                 <p className='mb-4'>Evidencia:</p>
 
                 {[...Array(pageAmmount)].map((_, i) => (
-                  <div key={i} className='flex my-4'>
+                  <div key={i} className='flex my-4 items-center'>
                     <label className='custom-file-upload'>
                       <input
                         required
                         type='file'
                         accept='image/*'
-                        onChange={handleFileChange}
+                        onChange={e => handleImageChange(e, i)}
                         style={{ display: 'none' }}
                       />
                       <span className='bg-[#3f3f46] rounded-[12px] leading-5 p-4 text-white cursor-pointer'>
-                        Subir imagen página {i + 1}
+                        {images[i]?.previewUrl === null ||
+                        images[i]?.previewUrl === undefined
+                          ? 'Subir imagen página '
+                          : 'Cambiar imagen '}
+                        {i + 1}
                       </span>
                     </label>
-                    <p>miniatura imagen</p>
+                    {images[i]?.previewUrl && (
+                      <img
+                        src={images[i].previewUrl}
+                        alt={`Miniatura página ${i + 1}`}
+                        className='w-20 h-20 object-cover ml-4'
+                      />
+                    )}
                   </div>
                 ))}
+
+                <Button
+                  isDisabled={
+                    images[pageAmmount - 1]?.previewUrl === null ||
+                    images[pageAmmount - 1]?.previewUrl === undefined
+                  }
+                  className='my-4'
+                  onClick={() => {
+                    console.log('images', images)
+                    setPageAmmount(pageAmmount + 1)
+                  }}
+                >
+                  Cargar otra imagen
+                </Button>
               </ModalBody>
               <ModalFooter>
                 <Button type='button' color='danger' onPress={onClose}>
                   Cerrar
                 </Button>
-                <Button type='submit' color='primary'>
+                <Button type='submit' color='primary' isLoading={isLoading}>
                   Subir imagen / Tomar foto
                 </Button>
               </ModalFooter>
@@ -242,4 +361,5 @@ const EvidenceModal = ({
     </>
   )
 }
+
 export default EvidenceModal

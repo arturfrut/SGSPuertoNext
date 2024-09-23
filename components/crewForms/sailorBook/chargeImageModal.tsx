@@ -1,5 +1,6 @@
 'use client'
 import supabase from '@/lib/supabase'
+import { getSupabaseSession } from '@/utils/getSupabaseSession'
 import {
   Button,
   Chip,
@@ -95,31 +96,8 @@ const ChargeImageModal: React.FC<ChargeImageModalInterface> = ({
       })
       console.log('formData', formData)
       try {
-        // Obtener la sesión actual (incluye el token)
-        const {
-          data: { session },
-          error: sessionError
-        } = await supabase.auth.getSession()
+        const config = await getSupabaseSession()
 
-        if (sessionError) {
-          throw sessionError
-        }
-
-        if (!session || !session.access_token) {
-          throw new Error(
-            'El usuario no está autenticado o el token no está disponible'
-          )
-        }
-
-        console.log('Token de autenticación:', session.access_token)
-
-        // Configurar los headers de la solicitud
-        const config = {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`, // Incluir el token de autenticación
-            'Content-Type': 'multipart/form-data' // Asegúrate de que estás enviando formData correctamente
-          }
-        }
 
         // Hacer la solicitud POST con Axios
         const response = await axios.post('/api/upload_image', formData, config)

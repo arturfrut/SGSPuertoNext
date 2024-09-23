@@ -7,11 +7,9 @@ import {
   Textarea,
   useDisclosure
 } from '@nextui-org/react'
-import React from 'react'
 
 export const ModalObservation = ({
   handleObservation,
-  observations,
   field
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -26,15 +24,13 @@ export const ModalObservation = ({
         Agregar observación
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement='top-center'>
-        <ModalContent>
+        <ModalContent className='px-4'>
           {onClose => (
             <>
               <ModalHeader className='flex flex-col gap-1'>
-                Agregar observación
+                Agregar observación para {field}
               </ModalHeader>
               <Textarea
-                variant='underlined'
-                label='Description'
                 labelPlacement='outside'
                 placeholder='Escriba su observación'
                 defaultValue=''

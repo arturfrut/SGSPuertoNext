@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
 
 export async function POST(request: Request) {
-  let fileName: string | null = null;
+  let fileName: string | null = null
 
   try {
     const formData = await request.formData()
@@ -17,12 +17,7 @@ export async function POST(request: Request) {
 
     // console.log({docType, captainId, expirationDate, sailorBookNumber, file})
 
-    if (
-      !file ||
-      !docType ||
-      isNaN(captainId) ||
-      !expirationDate
-    ) {
+    if (!file || !docType || isNaN(captainId) || !expirationDate) {
       return NextResponse.json(
         { error: 'Missing or invalid required fields' },
         { status: 400 }
@@ -44,7 +39,9 @@ export async function POST(request: Request) {
     const {
       data: { publicUrl },
       error: urlError
-    } = supabase.storage.from('sailors_documents_storage').getPublicUrl(fileName)
+    } = supabase.storage
+      .from('sailors_documents_storage')
+      .getPublicUrl(fileName)
 
     if (urlError) {
       console.error('URL error:', urlError)
@@ -70,8 +67,8 @@ export async function POST(request: Request) {
       // Eliminar la imagen del bucket si la inserción falla
       const { error: deleteError } = await supabase.storage
         .from('sailors_documents_storage')
-        .remove([fileName])
-      
+        .remove([`expirations/${fileName}`])
+
       if (deleteError) {
         console.error('Delete error:', deleteError)
         throw deleteError

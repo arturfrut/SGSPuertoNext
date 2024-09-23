@@ -1,27 +1,28 @@
 import supabase from '@/lib/supabase'
+import { apiUploadImage } from '@/utils/apiUploadImage'
 import { NextResponse } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
 
 export async function POST(request: Request) {
-  let fileName: string | null = null;
-
   try {
     const formData = await request.formData()
-    // console.log('Form data:', formData)
 
-    const docType = formData.get('doc_type') as string
-    const captainId = parseInt(formData.get('captain_id') as string, 10)
-    const expirationDate = formData.get('expiration_date') as string
-    const sailorBookNumber = formData.get('sailor_book_number') as string
-    const file = formData.get('file') as File
+    // Obtener los campos del formData
+    const nextExpiration = formData.get('nextExpiration') as string
+    const finalExpiration = formData.get('finalExpiration') as string
+    const lapseExpiration = formData.get('lapseExpiration') as string
+    const id_OMI = formData.get('id_OMI') as string
+    const captainId = formData.get('capatain_id') as string
+    const expirationId = formData.get('expiration_id') as string
 
-    // console.log({docType, captainId, expirationDate, sailorBookNumber, file})
-
+    // Asegúrate de que los campos requeridos estén presentes
     if (
-      !file ||
-      !docType ||
-      isNaN(captainId) ||
-      !expirationDate
+      !nextExpiration ||
+      !finalExpiration ||
+      !lapseExpiration ||
+      !id_OMI ||
+      !captainId ||
+      !expirationId
     ) {
       return NextResponse.json(
         { error: 'Missing or invalid required fields' },
@@ -29,62 +30,46 @@ export async function POST(request: Request) {
       )
     }
 
-    // 1. Subir la imagen al bucket
-    fileName = `${sailorBookNumber}_${uuidv4()}_${docType}_${expirationDate}`
-    const { error: uploadError } = await supabase.storage
-      .from('sailors_documents_storage')
-      .upload(fileName, file)
-
-    if (uploadError) {
-      console.error('Upload error:', uploadError)
-      throw uploadError
-    }
-
-    // 2. Obtener la URL pública de la imagen
-    const {
-      data: { publicUrl },
-      error: urlError
-    } = supabase.storage.from('sailors_documents_storage').getPublicUrl(fileName)
-
-    if (urlError) {
-      console.error('URL error:', urlError)
-      throw urlError
-    }
-
-    // 3. Insertar la información en la tabla
-    const { error: insertError } = await supabase
-      .from('sailors_documents')
-      .insert([
-        {
-          doc_type: docType,
-          captain_id: captainId,
-          charge_date: new Date().toISOString(), // Fecha actual
-          expiration_date: expirationDate,
-          sailor_book_number: sailorBookNumber,
-          img_url: publicUrl
+    // Manejar múltiples imágenes
+    const uploadedImages: string[] = await Promise.all(
+      Array.from(formData.entries()).map(async ([key, value]) => {
+        if (key.startsWith('image_') && value instanceof File) {
+          const uploadImageData = {
+            fileName: `expirations/${id_OMI}_${expirationId}_${key}_${uuidv4()}`,
+            bucketName: 'sailors_documents_storage',
+            file: value as File
+          }
+          const publicUrl = await apiUploadImage(uploadImageData)
+          return publicUrl // Retorna la URL de la imagen
         }
-      ])
+        return null // Si no es una imagen, retorna null
+      })
+    ).then(results => results.filter(url => url !== null)) // Filtra los valores nulos
+
+    // Insertar la información en la tabla `expirations`
+    const { error: insertError } = await supabase.from('expirations').insert([
+      {
+        next_expiration: nextExpiration,
+        final_expiration: finalExpiration,
+        lapse_expiration: lapseExpiration,
+        id_omi: id_OMI,
+        captain_id: captainId,
+        id_title: expirationId,
+        images_urls: uploadedImages
+      }
+    ])
 
     if (insertError) {
       console.error('Insert error:', insertError)
-      // Eliminar la imagen del bucket si la inserción falla
-      const { error: deleteError } = await supabase.storage
-        .from('sailors_documents_storage')
-        .remove([fileName])
-      
-      if (deleteError) {
-        console.error('Delete error:', deleteError)
-        throw deleteError
-      }
-
       throw insertError
     }
 
     return NextResponse.json({
-      message: 'Image uploaded and data saved successfully'
+      message: 'Expirations data and images uploaded successfully',
+      images: uploadedImages
     })
   } catch (error: any) {
-    console.error('Error uploading image:', error)
+    console.error('Error processing request:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

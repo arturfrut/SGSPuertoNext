@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react'
 import { CompanyOptionsInterface } from '../createShip'
 import { ExpirationTable } from '../expirationControls/expirationTable'
 import { MaintenanceHistoryTable } from '../maintenanceHistory/maintenanceHistoryTable'
+import { PortControlTable } from '../portControl/portControlTable'
 
 interface shipOptionsInterface {
   omi: number
@@ -139,35 +140,7 @@ const AdminCompanies = () => {
             aria-label='Accordion 3'
             title='Control puerto'
           >
-            <Table aria-label='Example static collection table'>
-              <TableHeader>
-                <TableColumn>NAME</TableColumn>
-                <TableColumn>ROLE</TableColumn>
-                <TableColumn>STATUS</TableColumn>
-              </TableHeader>
-              <TableBody>
-                <TableRow key='1'>
-                  <TableCell>Tony Reichert</TableCell>
-                  <TableCell>CEO</TableCell>
-                  <TableCell>Active</TableCell>
-                </TableRow>
-                <TableRow key='2'>
-                  <TableCell>Zoey Lang</TableCell>
-                  <TableCell>Technical Lead</TableCell>
-                  <TableCell>Paused</TableCell>
-                </TableRow>
-                <TableRow key='3'>
-                  <TableCell>Jane Fisher</TableCell>
-                  <TableCell>Senior Developer</TableCell>
-                  <TableCell>Active</TableCell>
-                </TableRow>
-                <TableRow key='4'>
-                  <TableCell>William Howard</TableCell>
-                  <TableCell>Community Manager</TableCell>
-                  <TableCell>Vacation</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <PortControlTable />
           </AccordionItem>
           <AccordionItem
             key='4'

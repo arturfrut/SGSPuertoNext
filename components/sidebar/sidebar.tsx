@@ -190,10 +190,10 @@ export const SidebarWrapper = () => {
               />
               <SidebarItem
                 isDisabled={!selectedShip}
-                isActive={pathname === '/closeTrip'}
-                title='Cierre de viaje actual'
+                isActive={pathname === '/command-delivery'}
+                title='Entrega/Cierre de comando'
                 icon={<CloseTripIcon />}
-                href='/closeTrip'
+                href='/command-delivery'
               />
               <SidebarItem
                 isDisabled={!selectedShip}
