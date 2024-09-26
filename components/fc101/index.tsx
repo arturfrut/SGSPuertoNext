@@ -19,17 +19,14 @@ import { Fc101CaptainForm } from './Fc101Captain'
 import SignModal from '../signModal'
 import { SignatureChecker } from '../signatureChecker'
 import useSignModal from '../signModal/useSignModal'
+import useGlobalStore from '@/stores/useGlobalStore'
 
 // TODO Preguntar que es NCN y de donde viene, preguntar si firma puede ir de otra forma, el emisor puede venir por bdd?, preguntar que es PD
 // Como se genera NCN?
 
-export const Fc101 = (data: { status: string; ncn: number }) => {
-  const dataMock = {
-    dataAnterior: 'Viene de bdd de una nota creada anteriormente',
-    status: 'Creación de la nota',
-    ncn: 23
-  }
-  data = dataMock
+export const Fc101 = () => {
+
+  const {selectedShip} = useGlobalStore()
 
   type FN801Values = {
     title: string
@@ -73,9 +70,8 @@ export const Fc101 = (data: { status: string; ncn: number }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardBody>
           <p className='text-xl '>Ingreso de tripulante: Juan Perez </p>
-          <p className='my-4'> NCN: {data.ncn}</p>
-          <p className='mb-4'> Buque: {data.ncn}</p>
-          <p>Apellido y nombre</p>
+          <p className='my-4'> Omi: {selectedShip?.idOMI}</p>
+          <p className='mb-4'> Buque: {selectedShip?.name}</p>
           <Input
             className=' my-4 w-full'
             type='string'
@@ -122,7 +118,7 @@ export const Fc101 = (data: { status: string; ncn: number }) => {
             <ClockIcon />
           </div>
           <Divider />
-          <Fc101CaptainForm />
+          {/* <Fc101CaptainForm /> */}
           <p className='text-lg my-4'>Persona designada </p>
           <Input
             className=' my-4 w-full'

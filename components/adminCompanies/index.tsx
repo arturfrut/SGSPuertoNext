@@ -12,71 +12,35 @@ import {
   TableHeader,
   TableRow
 } from '@nextui-org/react'
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import { CompanyOptionsInterface } from '../createShip'
+import { useState } from 'react'
 import { ExpirationTable } from '../expirationControls/expirationTable'
 import { MaintenanceHistoryTable } from '../maintenanceHistory/maintenanceHistoryTable'
 import { PortControlTable } from '../portControl/portControlTable'
-
-interface shipOptionsInterface {
-  omi: number
-  ship_name: string
-}
+import { DeliveryDataForCompanies } from '../commandDelivery/deliveryDataForCompanies'
+import useAllCompanies from '@/app/hooks/useAllCompanies'
+import useShipsByCompany, {
+  ShipOptionsInterface
+} from '@/app/hooks/useShipsByCompany'
+import TrainingsTable from '../trainings/TrainingsTable'
+import useGlobalStore from '@/stores/useGlobalStore'
+import { OrderRepairTable } from '../OrderRepair/orderRapairTable'
 
 const AdminCompanies = () => {
-  const [loadingCompany, setLoadingCompany] = useState<boolean>(true)
-  const [companyOptions, setCompanyOptions] = useState<
-    CompanyOptionsInterface[]
-  >([])
+  const { loadingCompanies } = useAllCompanies()
+  const { companies } = useGlobalStore()
   const [selectedCompany, setSelectedCompany] = useState<string>()
-  const [loadingShip, setLoadingShip] = useState<boolean>(true)
-  const [shipOptions, setShipOptions] = useState<shipOptionsInterface[]>([])
-  const [selectedShip, setSelectedShip] = useState<shipOptionsInterface>()
-
-  async function fetchData() {
-    try {
-      const res = await axios.get(`/api/get_companies`)
-      const data = await res.data
-      setCompanyOptions(data)
-      console.log(data)
-    } catch (error) {
-      console.error('Error fetching companies:', error)
-    } finally {
-      setLoadingCompany(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  async function fetchShipData() {
-    try {
-      const res = await axios.get(`/api/get_ships/${selectedCompany}`)
-      const data = await res.data
-      setShipOptions(data)
-      console.log(data)
-    } catch (error) {
-      console.error('Error fetching companies:', error)
-    } finally {
-      setLoadingShip(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchShipData()
-  }, [selectedCompany])
+  const { shipOptions, loadingShip } = useShipsByCompany(selectedCompany)
+  const [selectedShip, setSelectedShip] = useState<ShipOptionsInterface>()
 
   return (
     <div className=' w-full '>
       <Select
         label='Empresas'
         className='mb-4'
-        disabled={loadingCompany}
+        disabled={loadingCompanies}
         onChange={e => setSelectedCompany(e.target.value)}
       >
-        {companyOptions.map(company => (
+        {companies.map(company => (
           <SelectItem key={company.company_omi} value={company.company_omi}>
             {company.company_name}
           </SelectItem>
@@ -86,7 +50,7 @@ const AdminCompanies = () => {
         {shipOptions.map(ship => (
           <SelectItem
             key={ship?.omi}
-            value={ship?.omi}
+            value={ship?.omi ?? 'Sin barco seleccionado'}
             onClick={e => setSelectedShip(ship)}
           >
             {ship?.ship_name}
@@ -133,7 +97,7 @@ const AdminCompanies = () => {
             </Accordion>
           </AccordionItem>
           <AccordionItem key='2' aria-label='Accordion 2' title='Vencimientos'>
-            <ExpirationTable idOmi={selectedShip?.omi} idCaptain={undefined} />
+            <ExpirationTable idOmi={selectedShip?.omi}  />
           </AccordionItem>
           <AccordionItem
             key='3'
@@ -147,43 +111,14 @@ const AdminCompanies = () => {
             aria-label='Accordion 4'
             title='Condición de despacho'
           >
-            <h2>Vencimiento</h2>
-            <p>Estado: Navengando, en puerto, retiro de servicio</p>
+            <DeliveryDataForCompanies idOmi={selectedShip.omi} />
           </AccordionItem>
           <AccordionItem
             key='5'
             aria-label='Accordion 5'
             title='Capacitaciones'
           >
-            <Table aria-label='Example static collection table'>
-              <TableHeader>
-                <TableColumn>NAME</TableColumn>
-                <TableColumn>ROLE</TableColumn>
-                <TableColumn>STATUS</TableColumn>
-              </TableHeader>
-              <TableBody>
-                <TableRow key='1'>
-                  <TableCell>Tony Reichert</TableCell>
-                  <TableCell>CEO</TableCell>
-                  <TableCell>Active</TableCell>
-                </TableRow>
-                <TableRow key='2'>
-                  <TableCell>Zoey Lang</TableCell>
-                  <TableCell>Technical Lead</TableCell>
-                  <TableCell>Paused</TableCell>
-                </TableRow>
-                <TableRow key='3'>
-                  <TableCell>Jane Fisher</TableCell>
-                  <TableCell>Senior Developer</TableCell>
-                  <TableCell>Active</TableCell>
-                </TableRow>
-                <TableRow key='4'>
-                  <TableCell>William Howard</TableCell>
-                  <TableCell>Community Manager</TableCell>
-                  <TableCell>Vacation</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <TrainingsTable id_omi={selectedShip.omi} />
           </AccordionItem>
           <AccordionItem key='6' aria-label='Accordion 6' title='Mantenimiento'>
             <Accordion>
@@ -199,35 +134,7 @@ const AdminCompanies = () => {
                 aria-label='Accordion 2'
                 title='Ordenes y reparaciones'
               >
-                <Table aria-label='Example static collection table'>
-                  <TableHeader>
-                    <TableColumn>NAME</TableColumn>
-                    <TableColumn>ROLE</TableColumn>
-                    <TableColumn>STATUS</TableColumn>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow key='1'>
-                      <TableCell>Tony Reichert</TableCell>
-                      <TableCell>CEO</TableCell>
-                      <TableCell>Active</TableCell>
-                    </TableRow>
-                    <TableRow key='2'>
-                      <TableCell>Zoey Lang</TableCell>
-                      <TableCell>Technical Lead</TableCell>
-                      <TableCell>Paused</TableCell>
-                    </TableRow>
-                    <TableRow key='3'>
-                      <TableCell>Jane Fisher</TableCell>
-                      <TableCell>Senior Developer</TableCell>
-                      <TableCell>Active</TableCell>
-                    </TableRow>
-                    <TableRow key='4'>
-                      <TableCell>William Howard</TableCell>
-                      <TableCell>Community Manager</TableCell>
-                      <TableCell>Vacation</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                <OrderRepairTable idOmi={selectedShip.omi} />
               </AccordionItem>
             </Accordion>
           </AccordionItem>

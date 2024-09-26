@@ -45,7 +45,7 @@ export const NewCrewMemberModal = ({ searchOptions }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   console.log('so',searchOptions)
   const closeModal = () => {
-    onOpenChange(false) // Close the modal explicitly
+    onOpenChange() // Close the modal explicitly
     setNewSailor({ ...newSailor, isNewSailor: false })
   }
 
@@ -64,34 +64,33 @@ export const NewCrewMemberModal = ({ searchOptions }) => {
 
   const { startsWith } = useFilter({ sensitivity: 'base' })
 
-  const onSelectionChange = key => {
-    const selectedItem = fieldState.items.find(option => option.value === key)
+  const onSelectionChange = (key: any) => {
+    const selectedItem = fieldState.items.find((option: { value: any }) => option.value === key)
     setFieldState({
       inputValue: selectedItem?.label || '',
       selectedKey: key,
-      items: searchOptions.filter(item =>
+      items: searchOptions.filter((item: { label: string }) =>
         startsWith(item.label, selectedItem?.label || '')
       )
     })
   }
 
-  const onInputChange = value => {
-    const items = searchOptions.filter(item => startsWith(item.label, value))
+  const onInputChange = (value: string ) => {
+    const items = searchOptions.filter((item: { label: string }) => startsWith(item.label, value))
     setFieldState({
       inputValue: value,
-      selectedKey: value === '' ? null : fieldState.selectedKey,
+      selectedKey: value === '' ? '' : fieldState.selectedKey,
       items: items
     })
-    console.log({ value, items, fieldState })
     value && !items.length && fieldState.inputValue !== ''
       ? setNewSailor({ ...newSailor, isNewSailor: true })
       : setNewSailor({ ...newSailor, isNewSailor: false })
   }
 
-  const sendData = closeModal => {
+  const sendData = (closeModal: { (): void; (): void }) => {
     closeModal()
     const itemSelected = searchOptions.find(
-      item => item.value == fieldState.selectedKey
+      (      item: { value: string }) => item.value == fieldState.selectedKey
     )
     console.log(
       'Data enviada',
@@ -124,8 +123,8 @@ export const NewCrewMemberModal = ({ searchOptions }) => {
                 onSelectionChange={onSelectionChange}
               >
                 {item => (
-                  <AutocompleteItem key={item.value}>
-                    {item.label + '' + item.value}
+                  <AutocompleteItem key={1}>
+                    Falta completar
                   </AutocompleteItem>
                 )}
               </Autocomplete>

@@ -1,5 +1,4 @@
 import { trainingExercises } from '@/constants/strings'
-import { crewListMock } from '@/mocks/crewListMock'
 import { getLocalTimeZone, now } from '@internationalized/date'
 import { ChangeEvent, useEffect, useState } from 'react'
 import useSignModal from '../signModal/useSignModal'
@@ -69,7 +68,7 @@ const useFormfp503 = () => {
       alert('No hay tripulación.')
       return
     }
-    if (crewInExercise.some(member => !signatures[member.lastName])) {
+    if (crewInExercise.some(member => !signatures[member.name])) {
       alert(
         'Hay un tripulante que no firmó, puede firmar o eliminar ese tripulante.'
       )
@@ -94,10 +93,9 @@ const useFormfp503 = () => {
           : null,
       resultDescription: inputValue || 'sin información adicional',
       participants: crewInExercise.map(member => ({
-        id: member.id ? member.id : 'noId',
+        id: member.sailor_book_number ?? 'noId',
         name: member.name,
-        lastName: member.lastName,
-        signed: signatures?.[member.lastName] ?? null
+        signed: signatures?.[member.name] ?? null
       })),
       supervisor: supervisorSelected,
       supervisorSign: signatures?.personInChargeSignature,
@@ -111,9 +109,7 @@ const useFormfp503 = () => {
   const handleSupervisorInSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setSupervisorSignSelect(e.target.value)
     setSupervisorSelected(
-      `${crewInExercise[e.target.value as unknown as number].name} ${
-        crewInExercise[e.target.value as unknown as number].lastName
-      } `
+      `${crewInExercise[e.target.value as unknown as number].name}`
     )
   }
 

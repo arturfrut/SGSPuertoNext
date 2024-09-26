@@ -7,9 +7,13 @@ import {
   TableRow
 } from '@nextui-org/react'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 
-export const MaintenanceHistoryTable = ({ idOmi }) => {
+interface MaintenanceHistoryTableInterface {
+  idOmi : number | string | undefined
+}
+
+export const MaintenanceHistoryTable:FC<MaintenanceHistoryTableInterface> = ({ idOmi }) => {
   const [historyData, setHistoryData] = useState([])
 
   const formatDate = (dateStr: string) => {
@@ -31,7 +35,6 @@ export const MaintenanceHistoryTable = ({ idOmi }) => {
           { headers: { 'Cache-Control': 'no-cache' } }
         )
         const data = response.data
-        console.log('DATA', data)
         setHistoryData(
           data.map(element => ({ ...element, date: formatDate(element.date) }))
         )
@@ -55,7 +58,7 @@ export const MaintenanceHistoryTable = ({ idOmi }) => {
           <TableColumn key={header}>{header}</TableColumn>
         ))}
       </TableHeader>
-      <TableBody emptyContent={'No hay registros de mantenimiento'}>
+      <TableBody emptyContent={'Cargando data'}>
         {
           // !isLoading &&
           historyData.map((element, index) => (

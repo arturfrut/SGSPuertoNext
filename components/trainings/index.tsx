@@ -3,14 +3,11 @@
 import { useEffect, useState } from 'react'
 import { NewTrainingCard } from './newTrainingCard'
 import TrainingsTable from './TrainingsTable'
+import useGlobalStore from '@/stores/useGlobalStore'
 
 export const Trainings = () => {
-  const [selectedShip, setSelectedShip] = useState<any>({})
 
-  useEffect(() => {
-    const selectedShip = localStorage.getItem('selectedShipStored')
-    selectedShip && setSelectedShip(JSON.parse(selectedShip))
-  }, [])
+  const {selectedShip} = useGlobalStore()
 
 
   return (

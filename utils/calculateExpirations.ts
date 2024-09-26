@@ -1,12 +1,23 @@
-export function calculateExpirationInfo(expirationData) {
-  const now = new Date()
-  const nextExpiration = new Date(expirationData.next_expiration)
-  const finalExpiration = new Date(expirationData.final_expiration)
+export function calculateExpirationInfo(expirationData: {
+  id?: number
+  id_title?: number
+  id_omi?: number
+  captain_id?: number
+  next_expiration: any
+  final_expiration: any
+  lapse_expiration: any
+  creation_date?: string
+  images_urls?: string[]
+}) {
+  const now = new Date().getTime()
+  const nextExpiration = new Date(expirationData.next_expiration).getTime()
+  const finalExpiration = new Date(expirationData.final_expiration).getTime()
   const lapseExpiration = expirationData.lapse_expiration
-    ? new Date(expirationData.lapse_expiration)
+    ? new Date(expirationData.lapse_expiration).getTime()
     : null
 
   // Calcular los días restantes para cada tipo de expiración
+
   const daysUntilNext = Math.ceil(
     (nextExpiration - now) / (1000 * 60 * 60 * 24)
   ) // Días para next_expiration
@@ -19,7 +30,13 @@ export function calculateExpirationInfo(expirationData) {
 
   let nearExpiration = {
     message: '',
-    color: ''
+    color: '' as
+      | 'danger'
+      | 'warning'
+      | 'primary'
+      | 'default'
+      | 'secondary'
+      | 'success'
   }
   let lapseMessage = null
 
@@ -51,19 +68,11 @@ export function calculateExpirationInfo(expirationData) {
     } else if (now > lapseExpiration) {
       // Si ya pasó el período de lapse expiration
       lapseMessage = `El período de gracia venció hace ${Math.abs(
-        daysUntilLapse
+        daysUntilLapse!
       )} días`
       nearExpiration.color = 'danger' // Cambiar a rojo si ya pasó lapse_expiration
     }
   }
-
-  expirationData && console.log({
-    daysUntilNext,
-    daysUntilFinal,
-    daysUntilLapse,
-    nearExpiration,
-    lapseMessage
-  })
 
   return {
     daysUntilNext,

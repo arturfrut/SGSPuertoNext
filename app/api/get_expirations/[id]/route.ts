@@ -1,40 +1,3 @@
-// import supabase from '@/lib/supabase'
-// import { NextResponse } from 'next/server'
-
-// export async function GET() {
-//   const id = 8883339
-
-//   try {
-//     const { data, error } = await supabase
-//       .from('expirations_basic_data')
-//       .select('id,title, have_lapse, have_expiration')
-
-//     if (error) {
-//       throw error
-//     }
-
-//     const { data: dataExpirations, error: errorExpirations } = await supabase
-//       .from('expirations')
-//       .select('*')
-//       .eq('id_omi', id)
-
-  
-
-//     if (error) {
-//       throw errorExpirations
-//     }
-
-//     const showData = {
-//       basicData : data,
-//       expirations : dataExpirations
-//     }
-
-//     return NextResponse.json(showData)
-//   } catch (error: any) {
-//     console.error('Error fetching expirations:', error)
-//     return NextResponse.json({ error: error.message }, { status: 500 })
-//   }
-// }
 
 import supabase from '@/lib/supabase'
 import { NextResponse } from 'next/server'
@@ -70,7 +33,7 @@ export async function GET() {
       )
 
       // Obtener la última expiración en base a final_expiration
-      const lastExpiration = relatedExpirations.sort(
+      const lastExpiration = relatedExpirations.toSorted(
         (a: any, b: any) => new Date(b.final_expiration).getTime() - new Date(a.final_expiration).getTime()
       )[0]
 

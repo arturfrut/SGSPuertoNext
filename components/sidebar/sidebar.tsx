@@ -1,3 +1,4 @@
+import { useLogout } from '@/app/hooks/useLogout'
 import { manualsRoutes } from '@/constants/manualsRoutes'
 import useGlobalStore from '@/stores/useGlobalStore'
 import { Avatar, Select, SelectItem, Tooltip } from '@nextui-org/react'
@@ -6,7 +7,6 @@ import { AccidentReportIcon } from '../icons/sidebar/accidentReport-icon'
 import { AccountsIcon } from '../icons/sidebar/accounts-icon'
 import { AuditIcon } from '../icons/sidebar/audit-icon'
 import { CaptainHatIcon } from '../icons/sidebar/captainHat-icon'
-import { ChangeLogIcon } from '../icons/sidebar/changelog-icon'
 import { ChiefEngineerIcon } from '../icons/sidebar/chiefEngineer-icon'
 import { CloseTripIcon } from '../icons/sidebar/closeTrip-icon'
 import { CrewIcon } from '../icons/sidebar/crew-icon'
@@ -23,12 +23,22 @@ import { CollapseItems } from './collapse-items'
 import { SidebarItem } from './sidebar-item'
 import { SidebarMenu } from './sidebar-menu'
 import { Sidebar } from './sidebar.styles'
+import { useEffect, useState } from 'react'
 
 export const SidebarWrapper = () => {
   const pathname = usePathname()
   const { collapsed, setCollapsed } = useSidebarContext()
-  const { selectedShip, ships, setSelectedShip } = useGlobalStore()
+  const {
+    selectedShip,
+    ships,
+    setSelectedShip,
+    roles,
+    rolSelected,
+    setRolSelected,
+    userData
+  } = useGlobalStore()
 
+  const { handleLogout } = useLogout()
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedShipId = e.target.value
     const selectedShip =
@@ -36,6 +46,12 @@ export const SidebarWrapper = () => {
       null
     setSelectedShip(selectedShip)
   }
+
+  const handleSelectionRol = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRolSelected(e.target.value)
+  }
+
+
   return (
     <aside className='h-screen z-[202] sticky top-0'>
       {collapsed ? (
@@ -54,26 +70,36 @@ export const SidebarWrapper = () => {
               isActive={pathname === '/'}
               href='/'
             />
-            {ships.length < 0 ? (
-              <h1>NO HAY BARCOS DISPONIBLES</h1>
-            ) : (
-              <SidebarMenu
-                title={
-                  `Barco: ${selectedShip?.name}` ?? 'SIN BARCO SELECCIONADO'
-                }
-                bigText
-              >
+            {userData?.roles.includes(0) && (
+              <SidebarMenu title={`Cambiar rol ${rolSelected}`}>
                 <div className='flex w-full flex-wrap md:flex-nowrap gap-4'>
                   <Select
                     color='warning'
-                    label={
-                      selectedShip?.name
-                        ? 'Seleccionar otro barco'
-                        : 'SIN BARCO SELECCIONADO'
-                    }
+                    className='max-w-xs'
+                    onChange={handleSelectionRol}
+                    value={rolSelected ?? ''}
+                    aria-label='rolSelected'
+                  >
+                    {roles ? (
+                      roles.map(rol => <SelectItem key={rol}>{rol}</SelectItem>)
+                    ) : (
+                      <SelectItem key={'cargando'}>Cargando</SelectItem>
+                    )}
+                  </Select>
+                </div>
+              </SidebarMenu>
+            )}
+            {ships.length < 0 ? (
+              <h1>NO HAY BARCOS DISPONIBLES</h1>
+            ) : (
+              <SidebarMenu title={'Cambiar barco seleccionado'}>
+                <div className='flex w-full flex-wrap md:flex-nowrap gap-4'>
+                  <Select
+                    aria-label='select-ship'
+                    color='warning'
                     className='max-w-xs'
                     onChange={handleSelectionChange}
-                    value={selectedShip?.name ?? ''}
+                    value={selectedShip?.name ?? 'Seleccionar barco'}
                   >
                     {ships.map(ship => (
                       <SelectItem key={ship.idOMI}>{ship.name}</SelectItem>
@@ -253,11 +279,14 @@ export const SidebarWrapper = () => {
             </SidebarMenu>
 
             <SidebarMenu title='Updates'>
-              <SidebarItem
+              {/* <SidebarItem
                 isActive={pathname === '/changelog'}
                 title='Changelog'
                 icon={<ChangeLogIcon />}
-              />
+              /> */}
+              <p className='cursor-pointer' onClick={handleLogout}>
+                Cerrar sesión
+              </p>
             </SidebarMenu>
           </div>
           <div className={Sidebar.Footer()}>

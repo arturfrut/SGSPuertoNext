@@ -1,22 +1,27 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import useGlobalStore from '@/stores/useGlobalStore'
+
+
 
 const useAllCompanies = () => {
-  const [companyOptions, setCompanyOptions] = useState([])
   const [loadingCompanies, setLoadingCompanies] = useState(false)
   const [errorCompanies, setErrorCompanies] = useState<unknown>(null)
+  const {setCompanies, companies} = useGlobalStore()
+
+
+
 
   useEffect(() => {
 
-    const fetchShipData = async () => {
+    const fetchCompaniesData = async () => {
       setLoadingCompanies(true)
       setErrorCompanies(null)
 
       try {
         const res = await axios.get(`/api/get_companies`)
         const data = await res.data
-        setCompanyOptions(data)
-        console.log(data)
+        setCompanies(data)
       } catch (error) {
         console.error('Error fetching ships:', error)
         setErrorCompanies(error)
@@ -25,10 +30,11 @@ const useAllCompanies = () => {
       }
     }
 
-    fetchShipData()
+    fetchCompaniesData()
   }, [])
 
-  return { companyOptions,  loadingCompanies, errorCompanies }
+  
+  return { loadingCompanies, errorCompanies }
 }
 
 export default useAllCompanies

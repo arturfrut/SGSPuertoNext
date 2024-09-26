@@ -13,13 +13,11 @@ export async function GET() {
     if (error) {
       throw error
     }
-console.log('data',data)
     const updateData = data.map(element => ({
       description: element.description,
       date: element.routeDate,
       type: 'mantenimiento'
     }))
-console.log('data actualizada',updateData)
 
 
 return NextResponse.json(updateData)

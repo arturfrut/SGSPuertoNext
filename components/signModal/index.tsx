@@ -50,9 +50,9 @@ export default function SignModal({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              {/* <ModalHeader className="flex flex-col gap-1">
                 Entrega de nuevo material
-              </ModalHeader>
+              </ModalHeader> */}
               <ModalBody className="grid">
                 <div>
                   <SignaturePad
@@ -70,10 +70,10 @@ export default function SignModal({
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Close
+                  Cerrar
                 </Button>
                 <Button color="primary" onPress={handleSaveSignature}>
-                  Action
+                  Aceptar
                 </Button>
               </ModalFooter>
             </>

@@ -1,10 +1,5 @@
 'use client'
 
-// Vencimiento anual se saca sola
-// sacar vencimiento anual y poner fecha de emisión
-// Balsa no tiene vencimiento anual
-// Sacar fecha de subida
-
 import useGlobalStore from '@/stores/useGlobalStore'
 import {
   Button,
@@ -14,8 +9,6 @@ import {
   CardHeader,
   Image
 } from '@nextui-org/react'
-import { useForm } from 'react-hook-form'
-import useSignModal from '../signModal/useSignModal'
 import { ExpirationTable } from './expirationTable'
 
 export const ExpirationControls = () => {
@@ -38,9 +31,7 @@ export const ExpirationControls = () => {
     }
   }
 
-  const { signatures, handleSaveSignature } = useSignModal()
-  const { register, handleSubmit, watch } = useForm<FN801Values>()
-  const { selectedShip, idCaptain } = useGlobalStore()
+  const { selectedShip } = useGlobalStore()
 
 
   return (
@@ -64,7 +55,7 @@ export const ExpirationControls = () => {
         <Button className='my-4' onClick={() => window.location.reload()}>
           Actualizar Data
         </Button>
-        <ExpirationTable idOmi={selectedShip?.idOMI} idCaptain={idCaptain} />
+        <ExpirationTable idOmi={selectedShip?.idOMI}/>
       </CardBody>
       <CardFooter className=' flex gap-3 justify-end'></CardFooter>
     </Card>

@@ -7,26 +7,19 @@ import {
   TableHeader,
   TableRow
 } from '@nextui-org/react'
-import { useEffect, useState } from 'react'
 import TrainingDetailModal from './TrainingDetailModal'
+import { TrainingInterface, useAllTrainigs } from '@/app/hooks/useAllTrainings'
 
 interface TrainingsTableInterface {
-  id_omi: number
+  id_omi: number | undefined | null
 }
 
 const TrainingsTable: React.FC<TrainingsTableInterface> = ({ id_omi }) => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [trainingsList, setTrainingsList] = useState([])
-  async function fetchData(id_omi) {
-    const res = await fetch(`/api/get_trainings/${id_omi}`)
-    const data = await res.json()
-    setTrainingsList(data)
-    setIsLoading(false)
-  }
-  useEffect(() => {
-    id_omi && fetchData(id_omi)
-  }, [id_omi])
+const {isLoading, trainingsList} = useAllTrainigs(id_omi)
 
+console.log(trainingsList)
+
+console.log('TRAININGS LIST', trainingsList)
   const trainingsTabHeader = [
     'Fecha',
     'Tipo',
@@ -34,7 +27,7 @@ const TrainingsTable: React.FC<TrainingsTableInterface> = ({ id_omi }) => {
     'Encargado',
     'Ver'
   ]
-  const calculateDaysUntilExpiration = trainingData => {
+  const calculateDaysUntilExpiration = (trainingData:TrainingInterface) => {
     const { training_date, zafarrancho_frequency, training_type } = trainingData
 
     if (training_type === 'Zafarrancho') {
@@ -75,7 +68,7 @@ const TrainingsTable: React.FC<TrainingsTableInterface> = ({ id_omi }) => {
       }
     }
   }
-  const setTableData = (trainingsData) => {
+  const setTableData = (trainingsData: TrainingInterface[]) => {
     // Filtra los zafarranchos y agrúpalos por nombre
     const zafarranchosGroupedByName = trainingsData
       .filter((training) => training.training_type === 'Zafarrancho')
@@ -134,7 +127,7 @@ const TrainingsTable: React.FC<TrainingsTableInterface> = ({ id_omi }) => {
   console.log('trainingsList',trainingsList)
   console.log('tableData',tableData)
   const modalData = (trainingId: string) =>
-    trainingsList.find(training => training.training_id === trainingId)
+    trainingsList.find(training => training.training_id === parseInt(trainingId))
 
   return (
     <Table aria-label='Example static collection table w-full' isStriped>
@@ -148,7 +141,7 @@ const TrainingsTable: React.FC<TrainingsTableInterface> = ({ id_omi }) => {
           isLoading ? 'Cargando data...' : 'No hay capacitaciones registradas'
         }
       >
-        {!isLoading &&
+        {
           tableData.map((training, index) => (
             <TableRow key={index}>
               <TableCell>{training.trainingDate}</TableCell>
@@ -160,7 +153,7 @@ const TrainingsTable: React.FC<TrainingsTableInterface> = ({ id_omi }) => {
               <TableCell>{training.supervisor}</TableCell>
               <TableCell className='cursor-pointer'>
                 <TrainingDetailModal
-                  trainingData={modalData(training.training_id)}
+                  trainingData={modalData(String(training.training_id))}
                 />
               </TableCell>
               {/* <TableCell className={`${training.rowColor }cursor-pointer`}>Crear Nueva</TableCell> */}

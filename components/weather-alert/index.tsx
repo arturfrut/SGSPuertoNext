@@ -1,23 +1,17 @@
 'use client'
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow
-} from '@nextui-org/react'
+import { Card, CardBody, CardHeader, Divider, Image } from '@nextui-org/react'
 import Modalfp503 from './TrainingDetailModal'
-import { NewTrainingCard } from './newTrainingCard'
+import { NewWeaterAlertCard } from './newWeaterAlertCard'
 import useGlobalStore from '@/stores/useGlobalStore'
+import { NonConformityCard } from '../nonConformity/nonConformityCard'
+import { NonConformityTable } from '../nonConformity/nonConformityTable'
+import { WeatherReportTable } from './watherAlertTable'
 
 export const WeatherAlert = () => {
-
   const { tripulation } = useGlobalStore()
 
   const trainingsList = tripulation
-
 
   const trainingsTabHeader = [
     'Fecha',
@@ -27,57 +21,24 @@ export const WeatherAlert = () => {
     'Ver'
   ]
   return (
-    <div className='h-full lg:px-6 w-full'>
-      <div className='flex justify-center gap-4 xl:gap-6 pt-3  lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full'>
-        <div className='mt-6 gap-6 flex flex-col w-full'>
-          {/* Card Section Top */}
-          <div className='flex flex-col gap-5'>
-            <div className='flex justify-center w-full gap-5'>
-              <NewTrainingCard />
-            </div>
-            <p>La información de la tabla debe venir de bdd y debe traer toda la data que corresponda al usuario</p>
-            <Table
-              aria-label='Example static collection table w-full'
-              isStriped
-            >
-              <TableHeader>
-                {trainingsTabHeader.map(header => (
-                  <TableColumn key={header}>{header}</TableColumn>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {trainingsList.length > 0 ? (
-                  trainingsList.map((witness, index) => (
-                    <TableRow
-                      key={index}
-                    >
-                      <TableCell>24/23/2024</TableCell>
-                      <TableCell>Capacitación</TableCell>
-                      <TableCell> 24</TableCell>
-                      <TableCell>Juan Perez</TableCell>
-                      <TableCell className='cursor-pointer'><Modalfp503 formData={undefined} /></TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell>No hay gente en la lista</TableCell>
-
-                    <TableCell>
-                      <p></p>
-                    </TableCell>
-                    <TableCell>
-                      <p></p>
-                    </TableCell>
-                    <TableCell>
-                      <p></p>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+    <Card className='w-full  md:px-10 md:py-5'>
+      <CardHeader className='flex gap-3'>
+        <Image
+          alt='nextui logo'
+          height={40}
+          radius='sm'
+          src='https://avatars.githubusercontent.com/u/86160567?s=200&v=4'
+          width={40}
+        />
+        <div className='flex flex-col'>
+          <p className='text-xl'>Ordenes y reparaciones</p>
         </div>
-      </div>
-    </div>
+      </CardHeader>
+      <Divider className='mb-4' />
+      <CardBody>
+        <NewWeaterAlertCard />
+        <WeatherReportTable idOmi={123} />
+      </CardBody>
+    </Card>
   )
 }

@@ -8,31 +8,13 @@ import {
   Chip
 } from '@nextui-org/react'
 import EvidenceModal from './evidenceModal'
-import axios from 'axios'
-import { useState, useEffect } from 'react'
 import { calculateExpirationInfo } from '@/utils/calculateExpirations'
+import { useExpirationsByShip } from '@/app/hooks/useExpirationsByShip'
+import useGlobalStore from '@/stores/useGlobalStore'
 
-export const ExpirationTable = ({ idOmi, idCaptain }) => {
-  const [expirationsData, setExpirationsData] = useState([])
-
-  useEffect(() => {
-    const fetchExpirationData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/api/get_expirations/${idOmi}`
-        )
-        const data = response.data
-        setExpirationsData(data)
-      } catch (error) {
-        console.error('Error fetching history data:', error)
-      }
-    }
-
-    if (idOmi) {
-      fetchExpirationData()
-    }
-  }, [idOmi])
-
+export const ExpirationTable = ({ idOmi }: {idOmi: string | number | undefined}) => {
+  const {expirationsData} = useExpirationsByShip(idOmi)
+  const {idCaptain} = useGlobalStore()
   return (
     <Table aria-label='Table for port guard points' className='w-full'>
       <TableHeader>
@@ -65,9 +47,9 @@ export const ExpirationTable = ({ idOmi, idCaptain }) => {
             <TableCell>
               <EvidenceModal
                 expirationTitle={theme?.title}
-                expirationId={theme?.id}
-                id_OMI={idOmi}
-                captainId={idCaptain}
+                expirationId={String(theme?.id)}
+                id_OMI={String(idOmi)}
+                captainId={String(idCaptain)}
                 lastChargeData={theme?.lastChargeData}
                 haveExpiration={theme?.have_expiration}
                 haveLapse={theme?.have_lapse}

@@ -18,9 +18,30 @@ import {
   useDisclosure
 } from '@nextui-org/react'
 import axios from 'axios'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, FC, useState } from 'react'
 
-const EvidenceModal = ({
+interface EvidenceModalInterface {
+  id_OMI: string
+  captainId: string
+  expirationTitle: string
+  lastChargeData: {
+    // Information about the last time the document was charged
+    id: number
+    id_title: number
+    id_omi: number
+    captain_id: number
+    next_expiration: string // Date in YYYY-MM-DD format
+    final_expiration: string // Date in YYYY-MM-DD format
+    lapse_expiration: string | null // Date in YYYY-MM-DD format or null if no lapse
+    creation_date: string // Date and time in YYYY-MM-DDTHH:mm:ss.ssssss format
+    images_urls: string[] // Array of image URLs as strings
+  } | null
+  expirationId: string
+  haveLapse: boolean
+  haveExpiration: boolean
+}
+
+const EvidenceModal:FC<EvidenceModalInterface> = ({
   id_OMI,
   captainId,
   expirationTitle,
@@ -78,16 +99,16 @@ const EvidenceModal = ({
     e: ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    const file = e.target.files[0]
-    if (file) {
-      const newImages = [...images]
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const newImages = [...images];
       newImages[index] = {
         file, // Guarda el archivo de la imagen
-        previewUrl: URL.createObjectURL(file) // Crea la URL temporal para la vista previa
-      }
-      setImages(newImages)
+        previewUrl: URL.createObjectURL(file), // Crea la URL temporal para la vista previa
+      };
+      setImages(newImages);
     }
-  }
+  };
 
   const submitData = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -115,7 +136,7 @@ const EvidenceModal = ({
       )
       formData.append(
         'lapseExpiration',
-        formattedDate(expirations.lapseExpiration)
+        expirations.lapseExpiration ? formattedDate(expirations.lapseExpiration) : ''
       )
       formData.append('id_OMI', id_OMI)
       formData.append('capatain_id', captainId)

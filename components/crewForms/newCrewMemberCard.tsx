@@ -11,7 +11,7 @@ export const NewCrewMemberCard = () => {
   async function fetchData() {
     try {
       const res = await axios.get(`/api/get_sailors_for_search`)
-      const data = await res.data.map(sailor => ({
+      const data = await res.data.map((sailor: { name: any; sailor_book_number: any }) => ({
         label: sailor.name,
         value: sailor.sailor_book_number,
       }))
@@ -49,7 +49,7 @@ export const NewCrewMemberCard = () => {
         <div className='flex gap-2.5 py-2 items-center justify-end'>
           <NewCrewMemberModal
             searchOptions={searchOptions}
-            loadingOptions={isLoading}
+            // loadingOptions={isLoading}
           />
         </div>
       </CardBody>

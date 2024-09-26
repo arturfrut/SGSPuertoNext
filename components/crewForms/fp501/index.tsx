@@ -19,13 +19,13 @@ import {
 } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 
-export const Fp501 = (data: { status: string; ncn: number }) => {
+export const Fp501 = () => {
   const dataMock = {
     dataAnterior: "Viene de bdd de una nota creada anteriormente",
     status: "Creación de la nota",
     ncn: 23,
   };
-  data = dataMock;
+  const data = dataMock;
 
   type FN801Values = {
     title: string;

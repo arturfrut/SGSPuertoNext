@@ -2,9 +2,9 @@ import { Button, Card, CardBody, Tooltip } from '@nextui-org/react'
 import Link from 'next/link'
 import { Community } from '../icons/community'
 
-export const NewTrainingCard = () => {
+export const NewWeaterAlertCard = () => {
   return (
-    <Card className=' rounded-xl shadow-md px-3 w-full'>
+    <Card className='bg-red-500 rounded-xl shadow-md px-3 w-full'>
       <CardBody className='py-5'>
         <div className='flex justify-between'>
           <div className='flex gap-2.5'>

@@ -41,6 +41,7 @@ const shipTypes = [
 ]
 
 // export const roles = [
+//   "developer"
 //   "administrador", // acceso total
 //   "jefe de máquinas", // ve reparaciones y mantenimiento
 //   "responsable técnico", // ve reparaciones y mantenimiento
@@ -61,7 +62,7 @@ export const roles = [
   { rolId: 6, rolName: 'responsable de personal' },
   { rolId: 7, rolName: 'guardia de puerto' },
   { rolId: 8, rolName: 'capitan' },
-  { rolId: 9, rolName: 'coordinador SGS' }
+  { rolId: 9, rolName: 'coordinador SGS' },
 ]
 
 // Permite varios roles a la vez
