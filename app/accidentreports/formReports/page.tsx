@@ -1,7 +1,7 @@
 import { FormReports } from "@/components/accidentreports/formReports";
 
 const formReports = () => {
-  return <FormReports ship={undefined} crewList={undefined}/>
+  return <FormReports />
 }
 
 export default formReports

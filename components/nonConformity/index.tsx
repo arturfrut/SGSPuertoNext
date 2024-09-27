@@ -1,48 +1,29 @@
-import { Form502 } from "../captainForms/form502"
-import { NonConformityCard } from "./nonConformityCard"
+'use client'
+import { Card, CardHeader, Divider, CardBody, Image } from '@nextui-org/react'
+import { NonConformityCard } from './nonConformityCard'
+import { NonConformityTable } from './nonConformityTable'
 
 export const NonCoformity = () => {
-  return ( 
-        <div className='h-full lg:px-6'>
-      <div className='flex justify-center gap-4 xl:gap-6 pt-3  lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full'>
-        <div className='mt-6 gap-6 flex flex-col w-full'>
-          {/* Card Section Top */}
-          <div className='flex flex-col gap-5'>
-            <div className='flex justify-center w-full gap-5'>
-              <NonConformityCard />
-            </div>
-            <div className='grid md:grid-cols-2 grid-cols-1 2xl:grid-cols-3 gap-5  justify-center w-full'>
-              <Form502 />
-              <Form502 />
-            </div>
-          </div>
+
+  return (
+    <Card className='w-full  md:px-10 md:py-5'>
+      <CardHeader className='flex gap-3'>
+        <Image
+          alt='nextui logo'
+          height={40}
+          radius='sm'
+          src='https://avatars.githubusercontent.com/u/86160567?s=200&v=4'
+          width={40}
+        />
+        <div className='flex flex-col'>
+          <p className='text-xl'>Ordenes y reparaciones</p>
         </div>
-      </div>
-    </div>
+      </CardHeader>
+      <Divider className='mb-4' />
+      <CardBody>
+        <NonConformityCard />
+        <NonConformityTable idOmi={123} />
+      </CardBody>
+    </Card>
   )
-  
 }
-
-// import { Form502 } from '../captainForms/form502'
-// import { AccidentReportCard } from './accidentReportCard'
-
-// export const AccidentReports = () => {
-//   return (
-//     <div className='h-full lg:px-6'>
-//       <div className='flex justify-center gap-4 xl:gap-6 pt-3  lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full'>
-//         <div className='mt-6 gap-6 flex flex-col w-full'>
-//           {/* Card Section Top */}
-//           <div className='flex flex-col gap-5'>
-//             <div className='flex justify-center w-full gap-5'>
-//               <AccidentReportCard />
-//             </div>
-//             <div className='grid md:grid-cols-2 grid-cols-1 2xl:grid-cols-3 gap-5  justify-center w-full'>
-//               <Form502 />
-//               <Form502 />
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }

@@ -1,13 +1,13 @@
 import { trainingExercises } from '@/constants/strings'
-import { crewListMock } from '@/mocks/crewListMock'
 import { getLocalTimeZone, now } from '@internationalized/date'
 import { ChangeEvent, useEffect, useState } from 'react'
 import useSignModal from '../signModal/useSignModal'
+import useGlobalStore from '@/stores/useGlobalStore'
 
 const useFormfp503 = () => {
   const { signatures, handleSaveSignature } = useSignModal()
   const [typeSelect, setTypeSelect] = useState('Zafarrancho')
-  const [selectedShip, setSelectedShip] = useState<any>({})
+  const { selectedShip, tripulation } = useGlobalStore()
   const [exerciseDescription, setExerciseDescription] = useState('')
   const [aditionalInfo, setAditionalInfo] = useState('')
   const [supervisorSelect, setSupervisorSelect] = useState('En tripulación')
@@ -19,8 +19,9 @@ const useFormfp503 = () => {
   const [inputValue, setInputValue] = useState('')
   const [supervisorSignSelect, setSupervisorSignSelect] = useState('')
 
-  const crewList = crewListMock
-  const [crewInExercise, setCrewInExercise] = useState(crewListMock)
+  const crewList = tripulation
+
+  const [crewInExercise, setCrewInExercise] = useState(tripulation)
 
   const removeWitness = (i: number) => {
     setCrewInExercise(prevState => prevState.filter((_, index) => index !== i))
@@ -28,6 +29,7 @@ const useFormfp503 = () => {
   const handleAdd = () => {
     const [name, lastName] = inputValue.split(' ')
     const newCrewMember = { name, lastName }
+                      // @ts-ignore
     setCrewInExercise(prevState => [...prevState, newCrewMember])
     setInputValue('')
   }
@@ -67,7 +69,7 @@ const useFormfp503 = () => {
       alert('No hay tripulación.')
       return
     }
-    if (crewInExercise.some(member => !signatures[member.lastName])) {
+    if (crewInExercise.some(member => !signatures[member.name])) {
       alert(
         'Hay un tripulante que no firmó, puede firmar o eliminar ese tripulante.'
       )
@@ -81,9 +83,9 @@ const useFormfp503 = () => {
       return
     }
     const document = {
-      ship: selectedShip.idOMI,
-      shipName: selectedShip.name,
-      idOMI: selectedShip.idOMI,
+      ship: selectedShip?.idOMI,
+      shipName: selectedShip?.name,
+      idOMI: selectedShip?.idOMI,
       trainingDate: formDate.toString(),
       trainingType: typeSelect,
       zafarrancho:
@@ -92,10 +94,9 @@ const useFormfp503 = () => {
           : null,
       resultDescription: inputValue || 'sin información adicional',
       participants: crewInExercise.map(member => ({
-        id: member.id ? member.id : 'noId',
+        id: member.sailor_book_number ?? 'noId',
         name: member.name,
-        lastName: member.lastName,
-        signed: signatures?.[member.lastName] ?? null
+        signed: signatures?.[member.name] ?? null
       })),
       supervisor: supervisorSelected,
       supervisorSign: signatures?.personInChargeSignature,
@@ -109,16 +110,14 @@ const useFormfp503 = () => {
   const handleSupervisorInSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setSupervisorSignSelect(e.target.value)
     setSupervisorSelected(
-      `${crewInExercise[e.target.value as unknown as number].name} ${
-        crewInExercise[e.target.value as unknown as number].lastName
-      } `
+      `${crewInExercise[e.target.value as unknown as number].name}`
     )
   }
 
-  useEffect(() => {
-    const selectedShip = localStorage.getItem('selectedShipStored')
-    selectedShip && setSelectedShip(JSON.parse(selectedShip))
-  }, [])
+  // useEffect(() => {
+  //   const selectedShip = localStorage.getItem('selectedShipStored')
+  //   selectedShip && setSelectedShip(JSON.parse(selectedShip))
+  // }, [])
 
   return {
     createDocumentObject,

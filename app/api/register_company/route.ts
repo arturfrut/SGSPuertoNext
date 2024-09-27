@@ -1,17 +1,30 @@
-import { ShipInterface } from '@/components/createShip'
+import { CompanyInterface } from '@/components/createCompany'
 import supabase from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   try {
-    const shipData: ShipInterface = await request.json()
+    const companyData: CompanyInterface = await request.json()
 
-    const { ship_name, company } = shipData
+    const {
+      company_name,
+      CUIT: cuit,
+      direction,
+      company_OMI: company_omi,
+      company_representant,
+      contact_number,
+      company_email
+    } = companyData
 
-    const { error: insertError } = await supabase.from('companys').insert([
+    const { error: insertError } = await supabase.from('companies').insert([
       {
-        ship_name,
-        company
+        company_name,
+        cuit,
+        direction,
+        company_omi,
+        company_representant,
+        contact_number,
+        company_email
       }
     ])
 
@@ -19,12 +32,10 @@ export async function POST(request: Request) {
       throw insertError
     }
 
-    return NextResponse.json({ message: 'Ship registered successfully' })
+    return NextResponse.json({ message: 'Company registered successfully' })
   } catch (error: any) {
-    console.error('Error registering ship:', error)
+    console.error('Error registering company:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
 
-
-// API SIN TERMINAR, NO ESTA HECHA LA TABLA NI LA SOLICITUD

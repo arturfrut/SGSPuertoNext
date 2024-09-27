@@ -9,8 +9,8 @@ interface Params {
 
 export async function GET(request: Request, { params }: Params) {
   try {
-    const id_OMI = params.id_OMI;
-
+    // const id_OMI = params.id_OMI;
+    const id_OMI = 8883339;
     if (!id_OMI) {
       return NextResponse.json({ error: 'id_OMI is required' }, { status: 400 });
     }

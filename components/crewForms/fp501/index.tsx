@@ -1,13 +1,12 @@
 "use client";
 import ModalFR802 from "@/components/accidentreports/formReports/modalFR802";
-import { CheckIcon } from "@/components/icons/checkIcon";
-import { CrossIcon } from "@/components/icons/crossIcon";
+// import { CheckIcon } from "@/components/icons/checkIcon";
+// import { CrossIcon } from "@/components/icons/crossIcon";
 import SignModal from "@/components/signModal";
 import useSignModal from "@/components/signModal/useSignModal";
 import { SignatureChecker } from "@/components/signatureChecker";
 import { fc501Themes } from "@/constants/formsLists";
-import { FR802Values } from "@/types/FR802";
-import { dateGeratorWithFormat } from "@/utils/dateFormat";
+// import { dateGeratorWithFormat } from "@/utils/dateFormat";
 import {
   Button,
   Card,
@@ -20,13 +19,13 @@ import {
 } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 
-export const Fp501 = (data: { status: string; ncn: number }) => {
+export const Fp501 = () => {
   const dataMock = {
     dataAnterior: "Viene de bdd de una nota creada anteriormente",
     status: "Creación de la nota",
     ncn: 23,
   };
-  data = dataMock;
+  const data = dataMock;
 
   type FN801Values = {
     title: string;
@@ -75,7 +74,7 @@ export const Fp501 = (data: { status: string; ncn: number }) => {
         <CardBody>
           <p className="mb-4"> Nombre del tripulante: Nombre de BDD</p>
           <p className="mb-4"> Libreta de embarque: Nro deBDD</p>
-          <p className="mb-4"> Fecha: {dateGeratorWithFormat()}</p>
+          {/* <p className="mb-4"> Fecha: {dateGeratorWithFormat()}</p> */}
           <Divider />
           <p className="my-4">
             Las presentes instrucciones, son obligatorias para todos aquellos

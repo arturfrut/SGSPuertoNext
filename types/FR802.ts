@@ -1,12 +1,6 @@
 export type FR802Values = {
   accidentDescription: {
-    accidentTime: {
-      year: number
-      month: string
-      day: number
-      hour: number
-      minute: number
-    }
+    accidentTime:string,
     accidentPlace: string
     LE?: string
   }

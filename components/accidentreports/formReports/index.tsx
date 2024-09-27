@@ -1,20 +1,21 @@
 'use client'
-import { CrossIcon } from '@/components/icons/crossIcon'
+
+//  TODO : Calado proa y popa llevan inputs de metros
+// Si hay comite firma personal de empresa
+
+import { SignatureChecker } from '@/components/signatureChecker'
+import SignModal from '@/components/signModal'
+import useSignModal from '@/components/signModal/useSignModal'
 import {
   accidentTypes,
   cardinalDirections,
   hydrocarbonsTypes,
-  monthsSelect,
   seaCurrentPower,
   seaPower,
-  shipCondition,
-  shipStatusRadios,
-  windPower,
-  yesNoSelect
+  windPower
 } from '@/constants/strings'
-import { crewListMock } from '@/mocks/crewListMock'
-import { shipMock } from '@/mocks/shipMock'
-import { getCurrentDateTime } from '@/utils/dateSelector'
+import useGlobalStore from '@/stores/useGlobalStore'
+import { parseAbsoluteToLocal } from '@internationalized/date'
 import {
   Button,
   Card,
@@ -23,58 +24,173 @@ import {
   CardHeader,
   Checkbox,
   CheckboxGroup,
+  DatePicker,
   Divider,
   Image,
   Input,
-  Radio,
-  RadioGroup,
   Select,
   SelectItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
   Textarea
 } from '@nextui-org/react'
-import ModalFR802 from './modalFR802'
-import SignModal from '@/components/signModal'
-import { SignatureChecker } from '@/components/signatureChecker'
+import { ChangeEvent, useState } from 'react'
 import { useFormReport } from './useFormReport'
+import WitnessesComponent from './WitnessComponent'
 
-// TODO: validaciones, modal en caso de testigo repetido, botón de reset, revisar alerts y componentes unhandled, agregar required y manejar error en caso de ser necesario con react hook forms, separar componente de tabla de testigos
+export interface AccidentData {
+  accidentType: string[]
+  date: string
+  place: string
+  crewMemberLe: string
+  crewMemberLeId: string
+  LEId: string
+  LEname: string
+  whitness: string[]
+  whitnessIds: string[]
+  shipCondition: string
+  caladoProa: string
+  caladoPopa: string
+  otherCircunstances: string | null
+  fondeado: boolean
+  windPower: number | null
+  windDirection: string | null
+  seaPower: number | null
+  seaDirection: string | null
+  seaCurrentPower: number | null
+  seaCurrentDirection: string | null
+  seaHeight: number | null
+  HC: boolean
+  HCtype: string
+  HClts: string
+  HCActions: string
+  verifications: string
+  capitanOpinions: string
+}
 
-// En modal tener en cuenta que la fecha va unificada, puede no haber testigos, En calado de proa, popa y fondeado va un si o no, en las condiciones meteor va de a pares Ej: Viento: sur magnitud 5, Derrame de hidrocarburos mostrara las otras opciones dependiendo de si es un si o un no
+export const FormReports = () => {
+  console.log('cons for deploy')
+  const { handleSubmit, onSubmit } = useFormReport()
 
-// TODO: Actualizar selectores de fecha con nueva versión de MUI
+  const { tripulation, selectedShip } = useGlobalStore()
+  const shipName = selectedShip?.name
+  const shipNumber = selectedShip?.idOMI
+  const today = parseAbsoluteToLocal(new Date().toISOString())
+  const { signatures, handleSaveSignature } = useSignModal()
 
-export const FormReports = (accidentReportData: {
-  ship: any
-  crewList: any
-}) => {
-  accidentReportData = {
-    ship: shipMock,
-    crewList: crewListMock
+  const [accidentData, setAccidentData] = useState({
+    accidentType: [''],
+    date: '',
+    place: '',
+    crewMemberLe: '',
+    crewMemberLeId: '',
+    LEId: '',
+    LEname: '',
+    whitness: [],
+    whitnessIds: [],
+    shipCondition: '',
+    caladoProa: '',
+    caladoPopa: '',
+    otherCircunstances: '',
+    fondeado: false,
+    windPower: null,
+    windDirection: null,
+    seaPower: null,
+    seaDirection: null,
+    seaCurrentPower: null,
+    seaCurrentDirection: null,
+    seaHeight: null,
+    HC: false,
+    HCtype: '',
+    HClts: '',
+    HCActions: '',
+    verifications: '',
+    capitanOpinions: '',
+    needComite: false
+  })
+
+  interface DateValue {
+    day: number
+    month: number
+    year: number
+    hour: number
+    minute: number
+  }
+  const formattedDate = (date: DateValue) => {
+    const day = date.day.toString().padStart(2, '0')
+    const month = date.month.toString().padStart(2, '0')
+    const year = date.year
+    const hour = date.hour.toString().padStart(2, '0')
+    const minute = date.minute.toString().padStart(2, '0')
+    return `${year}-${month}-${day}T${hour}:${minute}`
   }
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    handleSelectChange,
-    addWitness,
-    removeWitness,
-    onSubmit,
-    handleShipStatus,
-    handleAccidentTypes,
-    handleShipCondition,
-    handleSaveSignature,
-    shipStatusConditional,
-    HCValue,
-    signatures,
-    witnessList
-  } = useFormReport(accidentReportData)
+  const handleAccidentTypes = (e: { target: { value: any; checked: any } }) => {
+    const { value, checked } = e.target
+    setAccidentData(prevData => {
+      if (checked) {
+        return { ...prevData, accidentType: [...prevData.accidentType, value] }
+      } else {
+        return {
+          ...prevData,
+          accidentType: prevData.accidentType.filter(type => type !== value)
+        }
+      }
+    })
+  }
+
+  //MARCA ERROR POR LOS NULL
+  const handleDateChange = (date: DateValue) => {
+    // @ts-ignore
+
+    setAccidentData((prevData: AccidentData) => ({
+      ...prevData,
+      date: formattedDate(date)
+    }))
+  }
+
+  const selectLE = (value: number | ChangeEvent<HTMLSelectElement>) => {
+    const selectedMember = tripulation.find(
+      member => member.sailor_book_number === value
+    )
+    setAccidentData({
+      ...accidentData,
+      LEId: String(selectedMember?.sailor_book_number) || '',
+      LEname: selectedMember?.name || ''
+    })
+  }
+
+  const handleSelectChange = (field: string, value: string) => {
+    setAccidentData(prevData => ({
+      ...prevData,
+      [field]: value
+    }))
+  }
+
+  const handleHChange = (e: { target: { checked: any } }) => {
+    setAccidentData(prevData => ({
+      ...prevData,
+      HC: e.target.checked
+    }))
+  }
+
+  const handleComiteChange = (e: { target: { checked: any } }) => {
+    setAccidentData(prevData => ({
+      ...prevData,
+      needComite: e.target.checked
+    }))
+  }
+
+  const submitData = async () => {
+    console.log(accidentData)
+    // try {
+    //   const submitData = { ...signatures, shipNumber, ...accidentData }
+    //   const response = await axios.post('/api/register_accident/', submitData)
+    //   console.log('Data submitted:', response.data)
+    //   alert('Accidente registrado con éxito')
+    // } catch (error) {
+    //   alert('Error registrando accidente')
+    //   console.error('Error submitting data:', error)
+    // }
+  }
 
   return (
     <Card className='w-full md:w-2/3 md:px-10 md:py-5'>
@@ -96,9 +212,7 @@ export const FormReports = (accidentReportData: {
         <Divider />
         <CardBody>
           <div className='flex flex-col md:flex-row md:justify-between md:w-2/4 '>
-            <p className='text-xl'>
-              Buque: {accidentReportData.ship.shipName}{' '}
-            </p>
+            <p className='text-xl'>Buque: {shipName}</p>
           </div>
         </CardBody>
         <Divider />
@@ -109,7 +223,6 @@ export const FormReports = (accidentReportData: {
               <Checkbox
                 key={`accidentTypeId-${value}`}
                 value={value}
-                {...register(`accidentType.${value}`)}
                 onChange={handleAccidentTypes}
                 name={value}
               >
@@ -122,185 +235,76 @@ export const FormReports = (accidentReportData: {
         <CardBody>
           <p className='text-xl pb-4'>Descripción del acontecimiento</p>
           <div className='w-full md:flex md:gap-4'>
-            <div className='md:w-1/2'>
-              <p className='my-2'>Fecha</p>
-              <div className='flex w-full  flex-nowrap  gap-4'>
-                <Input
-                  type='number'
-                  max={getCurrentDateTime().year + 2}
-                  // TODO: No funciona el Max, probar poniendolo como variable de renderizado
-                  defaultValue={getCurrentDateTime().year}
-                  label='Año'
-                  {...register('accidentDescription.accidentTime.year', {
-                    required: 'Este campo es requerido'
-                  })}
-                />
-
-                <Select
-                  label='Mes'
-                  value={'Marzo'}
-                  {...register('accidentDescription.accidentTime.month')}
-                >
-                  {monthsSelect.map(month => (
-                    <SelectItem key={`monthsSelectId-${month}`} value={month}>
-                      {month}
-                    </SelectItem>
-                  ))}
-                </Select>
-                {/* TODO: HACER FUNCIÓN PARA QUE TOME VALOR DEL MES ACTUAL POR DEFECTO */}
-                {/* TODO: HACER FUNCIÓN PAR CANTIDAD MÁXIMA DE DÍAS Y QUE SE HABILITE DESPUES DE TENERUN DATO EN EL MES */}
-                <Input
-                  type='number'
-                  max={31}
-                  label='Día'
-                  defaultValue={getCurrentDateTime().day}
-                  {...register('accidentDescription.accidentTime.day')}
-                />
-              </div>
-            </div>
-            <div className='md:w-1/2'>
-              <div>
-                <p className='w-1/2 my-2'>Hora</p>
-                <div className='flex w-full  flex-nowrap gap-4'>
-                  <Input
-                    type='number'
-                    max={24}
-                    label='Hora'
-                    {...register('accidentDescription.accidentTime.hour')}
-                  />
-                  <Input
-                    type='number'
-                    max={60}
-                    label='Minutos'
-                    {...register('accidentDescription.accidentTime.hour')}
-                  />
-                </div>
-              </div>
+            <div className='flex flex-col w-full'>
+              <p className='my-2'>Fecha:</p>
+              <DatePicker
+                hideTimeZone={true}
+                hourCycle={24}
+                granularity='minute'
+                className='max-w-md my-2'
+                label='Fecha'
+                defaultValue={today}
+                onChange={handleDateChange}
+              />
             </div>
           </div>
-          <p className='my-2'>Lugar:</p>
+          <p className='my-2 w-full'>Lugar/Posición (QTH):</p>
           <Input
             className='w-full'
             type='string'
             label='Indique lugar'
-            {...register('accidentDescription.accidentPlace', {
-              required: 'Este campo es requerido'
-            })}
+            value={accidentData.place}
+            onChange={e =>
+              setAccidentData({ ...accidentData, place: e.target.value })
+            }
           />
 
           <p className='my-2'>Tripulante L.E</p>
           <Select
             label='Seleccione un tripulante de la lista'
             className='w-full'
-            {...register('accidentDescription.LE')}
+            onChange={value => selectLE(value)}
           >
-            {accidentReportData.crewList.map(
-              (member: { id: number; name: string; lastName: string }) => (
-                <SelectItem key={member.id} value={member.id}>
-                  {`${member.name} ${member.lastName}`}
-                </SelectItem>
-              )
-            )}
+            {tripulation.map(member => (
+              <SelectItem
+                key={member.sailor_book_number}
+                value={member.sailor_book_number}
+              >
+                {member.name}
+              </SelectItem>
+            ))}
           </Select>
         </CardBody>
         <Divider />
-        <CardBody>
-          <p className='text-xl pb-4'>Testigos:</p>
-          <div className='flex w-full items-center gap-4'>
-            <Select
-              label='Seleccione Tripulante'
-              className='w-full my-4'
-              onChange={handleSelectChange}
-            >
-              {accidentReportData.crewList.map(
-                (
-                  member: { id: number; name: string; lastName: string },
-                  index: number
-                ) => (
-                  <SelectItem key={member.id} value={index}>
-                    {`${member.name} ${member.lastName}`}
-                  </SelectItem>
-                )
-              )}
-            </Select>
-            <Button onClick={addWitness} size='lg'>
-              Agregar
-            </Button>
-          </div>
-          <Table aria-label='Example static collection table' isStriped>
-            <TableHeader>
-              <TableColumn>Nombre</TableColumn>
-              <TableColumn className='flex justify-end items-center px-8'>
-                Eliminar
-              </TableColumn>
-            </TableHeader>
-            <TableBody emptyContent={'No hay testigos'}>
-              {witnessList.witness.map((witness, index) => (
-                <TableRow
-                  key={index}
-                  className='cursor-pointer'
-                  onClick={() => removeWitness(index)}
-                >
-                  <TableCell>{witness?.name}</TableCell>
-                  <TableCell className='flex justify-end px-10'>
-                    <CrossIcon />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardBody>
-        <Divider />
-        <CardBody>
-          <p className={`text-xl mb-4 `}>Condición del buque</p>
-          <RadioGroup name='shipStatus' onChange={handleShipStatus}>
-            {shipStatusRadios.map(option => (
-              <Radio key={`shipStatusId-${option}`} value={option}>
-                {option}
-              </Radio>
-            ))}
-          </RadioGroup>
-          {shipStatusConditional && (
-            <Input
-              className='my-4'
-              type='text'
-              label='Describa la circunstancia'
-              {...register('shipStatus.shipStatus')}
-            />
-          )}
-          <CheckboxGroup className={`${!shipStatusConditional && 'mt-2'}`}>
-            {shipCondition.map(option => (
-              <Checkbox
-                key={`shipConditionId-${option}`}
-                {...register(`shipCondition.${option}`)}
-                onChange={handleShipCondition}
-                value={option}
-                name={option}
-              >
-                {option}
-              </Checkbox>
-            ))}
-          </CheckboxGroup>
-        </CardBody>
+        <WitnessesComponent
+          tripulation={tripulation}
+          accidentData={accidentData}
+          setAccidentData={setAccidentData}
+        />
         <Divider />
         <CardBody>
           <p className='text-xl my-4'>Condiciones hidrometeorológicas</p>
           <p className='my-2'>Viento</p>
           <div className='flex gap-4 '>
-            <Select label='Fuerza' {...register('weatherStatus.windPower')}>
+            <Select
+              label='Fuerza'
+              onChange={e => handleSelectChange('windPower', e.target.value)}
+            >
               {windPower.map(power => (
-                <SelectItem key={`windPower-${power}`} value={power}>
+                <SelectItem key={power} value={power}>
                   {power}
                 </SelectItem>
               ))}
             </Select>
             <Select
               label='Dirección'
-              {...register('weatherStatus.windDirection')}
+              onChange={e =>
+                handleSelectChange('windDirection', e.target.value)
+              }
             >
               {cardinalDirections.map(direction => (
                 <SelectItem
-                  key={`windDirection-${direction}`}
+                  key={direction}
                   value={direction}
                 >
                   {direction}
@@ -311,20 +315,25 @@ export const FormReports = (accidentReportData: {
           <div>
             <p className='my-2'>Mar</p>
             <div className='flex gap-4'>
-              <Select label='Fuerza' {...register('weatherStatus.seaPower')}>
+              <Select
+                label='Fuerza'
+                onChange={e => handleSelectChange('seaPower', e.target.value)}
+              >
                 {seaPower.map(power => (
-                  <SelectItem key={`seaPower-${power}`} value={power}>
+                  <SelectItem key={power} value={power}>
                     {power}
                   </SelectItem>
                 ))}
               </Select>
               <Select
                 label='Dirección'
-                {...register('weatherStatus.seaDirection')}
+                onChange={e =>
+                  handleSelectChange('seaDirection', e.target.value)
+                }
               >
                 {cardinalDirections.map(direction => (
                   <SelectItem
-                    key={`seaDirection-${direction}`}
+                    key={direction}
                     value={direction}
                   >
                     {direction}
@@ -337,21 +346,25 @@ export const FormReports = (accidentReportData: {
           <div className='flex gap-4'>
             <Select
               label='Fuerza'
-              {...register('weatherStatus.seaCurrentPower')}
+              onChange={e =>
+                handleSelectChange('seaCurrentPower', e.target.value)
+              }
             >
               {seaCurrentPower.map(power => (
-                <SelectItem key={`seaCurrentPower-${power}`} value={power}>
+                <SelectItem key={power} value={power}>
                   {power}
                 </SelectItem>
               ))}
             </Select>
             <Select
               label='Dirección'
-              {...register('weatherStatus.seaCurrentDirection')}
+              onChange={e =>
+                handleSelectChange('seaCurrentDirection', e.target.value)
+              }
             >
               {cardinalDirections.map(direction => (
                 <SelectItem
-                  key={`seaCurrentDirection-${direction}`}
+                  key={direction}
                   value={direction}
                 >
                   {direction}
@@ -359,9 +372,9 @@ export const FormReports = (accidentReportData: {
               ))}
             </Select>
           </div>
-          <p className='my-4'>Altura de la marea</p>
+          <p className='my-4'>Altura de la marea / ola</p>
           <Input
-            {...register('weatherStatus.tideHeight')}
+            onChange={e => handleSelectChange('seaHeight', e.target.value)}
             endContent={
               <div className='pointer-events-none flex items-center'>
                 <span className='text-default-400 text-small'>Mts</span>
@@ -374,27 +387,21 @@ export const FormReports = (accidentReportData: {
         </CardBody>
         <Divider />
         <CardBody>
-          <p className='text-xl my-4'>
-            Derrame de hidrocarburos Radiobutton condicional
-          </p>
-          <Select
-            label='Seleccione una opción'
-            className='w-full'
-            {...register('HC.HC')} // Registra el Select con react-hook-form
+          <Checkbox
+            className='text-xxl my-4'
+            isSelected={accidentData.HC}
+            onChange={handleHChange}
           >
-            {yesNoSelect.map(selection => (
-              <SelectItem
-                key={`hydrocarbonsSelect-${selection}`}
-                value={selection}
-              >
-                {selection}
-              </SelectItem>
-            ))}
-          </Select>
-          {HCValue === 'hydrocarbonsSelect-Si' && (
+            Derrame de hidrocarburos
+          </Checkbox>
+
+          {accidentData.HC && (
             <>
               <div className='flex gap-4 my-4'>
-                <Select label='Tipo de derrame' {...register('HC.HCType')}>
+                <Select
+                  label='Tipo de derrame'
+                  onChange={e => handleSelectChange('HCtype', e.target.value)}
+                >
                   {hydrocarbonsTypes.map(selection => (
                     <SelectItem
                       key={`hydrocarbonsTypesSelect-${selection}`}
@@ -410,7 +417,7 @@ export const FormReports = (accidentReportData: {
                       <span className='text-default-400 text-small'>Lts</span>
                     </div>
                   }
-                  {...register('HC.HCAmmount')}
+                  onChange={e => handleSelectChange('HClts', e.target.value)}
                   type='number'
                   label='Cantidad de litros'
                 />
@@ -418,7 +425,7 @@ export const FormReports = (accidentReportData: {
               <p className='mb-4'>Medidas adoptadas</p>
               <Input
                 type='email'
-                {...register('HC.HCActions')}
+                onChange={e => handleSelectChange('HCActions', e.target.value)}
                 label='Describa las medidas que adopto'
               />
             </>
@@ -431,7 +438,7 @@ export const FormReports = (accidentReportData: {
             Verificaciones realizadas en el acontecimiento
           </p>
           <Textarea
-            {...register('accidentVerifications')}
+            onChange={e => handleSelectChange('verifications', e.target.value)}
             labelPlacement='outside'
             placeholder='Recuerde detallar el antes durante y después'
           />
@@ -442,10 +449,24 @@ export const FormReports = (accidentReportData: {
             Opinión del capitán/compañía sobre las medidas correctivas a aplicar
           </p>
           <Textarea
-            {...register('accidentCaptainOpinion')}
+            onChange={e =>
+              handleSelectChange('capitanOpinions', e.target.value)
+            }
             labelPlacement='outside'
             placeholder='Describa su opinión aquí'
           />
+        </CardBody>
+        <Divider />
+        <Divider />
+        <CardBody>
+          <Checkbox
+            className='my-4'
+            key={'needComite'}
+            checked={accidentData.needComite}
+            onChange={handleComiteChange}
+          >
+            Corresponde reunión con el comite
+          </Checkbox>
         </CardBody>
         <Divider />
         <CardBody className='flex gap-4'>
@@ -463,6 +484,18 @@ export const FormReports = (accidentReportData: {
             />
             <SignatureChecker status={signatures?.sgsSign} />
           </div>
+          {accidentData.needComite && (
+            <div className='w-full md:w-1/2 flex items-center gap-5'>
+              <SignModal
+                onSave={(data: any) =>
+                  handleSaveSignature(data, 'companyResponsableSign')
+                }
+                title='Firma Responsable Empresa'
+              />
+              <SignatureChecker status={signatures?.sgsSign} />
+            </div>
+          )}
+
           <div className='w-full md:w-1/2 flex items-center gap-5'>
             <SignModal
               onSave={(data: any) => handleSaveSignature(data, 'witnessSign')}
@@ -473,7 +506,7 @@ export const FormReports = (accidentReportData: {
         </CardBody>
         <Divider />
         <CardFooter className=' flex gap-3 justify-end'>
-          <ModalFR802 formData={watch()} />
+          <Button onClick={submitData}>Enviar</Button>
         </CardFooter>
       </form>
     </Card>

@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Button,
   Card,
@@ -11,39 +10,45 @@ import {
   Image,
   Input
 } from '@nextui-org/react'
+import axios from 'axios'
+import { useState } from 'react'
 
-interface CompanyInterface {
-  company: string
-  CUIL: string,
-  company_representant: string,
+export interface CompanyInterface {
+  company_name: string
+  CUIT: string
+  direction: string
+  company_OMI: string
+  company_representant: string
   contact_number: string
   company_email: string
 }
 
 export const CreateCompany = () => {
-  const createCompanyInitialValue = {
-    company: '',
-    CUIL: '',
+  const createCompanyInitialValue: CompanyInterface = {
+    company_name: '',
+    CUIT: '',
+    direction: '',
+    company_OMI: '',
     company_representant: '',
     contact_number: '',
-    company_email: '',
+    company_email: ''
   }
 
   const formFields = [
-    { name: 'company', placeholder: 'company' },
-    { name: 'CUIL', placeholder: 'CUIL' },
+    { name: 'company_name', placeholder: 'Nombre de compañía' },
+    { name: 'cuit', placeholder: 'CUIT sin puntos, espacios ni guiones' },
+    { name: 'direction', placeholder: 'Dirección' },
+    { name: 'company_omi', placeholder: 'Número de OMI de compañía' }, // sirve de id
     { name: 'company_representant', placeholder: 'Representante legal' },
     { name: 'contact_number', placeholder: 'Número de contacto' },
-    { name: 'company_email', placeholder: 'Email', type: 'email' }
+    { name: 'company_email', placeholder: 'Email' }
   ]
 
-  const [user, setUser] = useState<CompanyInterface>(createCompanyInitialValue)
-
-  const [password, setPassword] = useState('')
+  const [company, setCompany] = useState<CompanyInterface>(createCompanyInitialValue)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setUser(prevState => ({
+    setCompany(prevState => ({
       ...prevState,
       [name]: value
     }))
@@ -51,14 +56,14 @@ export const CreateCompany = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log()
-    // try {
-    //   await registerUser(user.email, password, user);
-    //   alert('User registered successfully');
-    // } catch (error) {
-    //   console.error('Error registering user:', error);
-    //   alert('Error registering user');
-    // }
+    try {
+      const response = await axios.post('/api/register_company', company)
+      console.log('Company created successfully:', response.data)
+      alert('Compañía registrada')
+    } catch (error) {
+      console.error('Error creating company:', error)
+      alert('Error al registrar compañía')
+    }
   }
 
   return (
@@ -72,32 +77,27 @@ export const CreateCompany = () => {
           width={40}
         />
         <div className='flex flex-col'>
-          <p className='text-xl'>REGISTRAR EMPRESA</p>
+          <p className='text-xl'>REGISTRAR COMPAÑÍA</p>
         </div>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <Divider className='mb-4' />
 
         <CardBody>
-          {formFields.map(({ name, placeholder, type = 'text' }) => (
+          {formFields.map(({ name, placeholder }) => (
+            <>
+            <p className='mb-4'>{`Ingrese ${placeholder}:`}</p>
             <Input
               key={name}
               name={name}
               placeholder={placeholder}
-              type={type}
-              value={(user as any)[name]}
+              value={(company as any)[name]}
               onChange={handleInputChange}
               className='mb-4'
-            />
+              required // Marca los campos como obligatorios
+              />
+              </>
           ))}
-          <Input
-            name='password'
-            placeholder='Password'
-            type='password'
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className='mb-4'
-          />
         </CardBody>
 
         <Divider />

@@ -1,6 +1,6 @@
 // CONSTANTS FOR formReports
 
-export const cardinalDirections = ['Norte', 'Sur', 'Este', 'Oeste']
+export const cardinalDirections = ['Norte', 'Sur', 'Este', 'Oeste', 'Noreste', 'Noroeste', 'Sureste', 'Suroeste']
 export const windPower = ['1', '2', '3', '4', '5']
 export const seaPower = ['1', '2', '3', '4', '5']
 export const seaCurrentPower = ['1', '2', '3', '4', '5']

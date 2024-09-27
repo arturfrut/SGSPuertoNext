@@ -144,7 +144,7 @@ export const NewNote = (data: { status: string; ncn: number }) => {
     accidentCaptainOpinion: string;
   };
 
-  const { register, handleSubmit, setValue, watch } = useForm<FN801Values>();
+  const { register, setValue, watch } = useForm<FN801Values>();
 
   const onSubmit = (data: FR802Values) => {
     console.log(data);
@@ -189,7 +189,7 @@ export const NewNote = (data: { status: string; ncn: number }) => {
           <p className="text-xl">FN-802 NOTA DE NO CONFORMIDAD</p>
         </div>
       </CardHeader>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form>
         <Divider />
         <CardBody>
           <div className="flex flex-col flex-wrap gap-4 w-full">

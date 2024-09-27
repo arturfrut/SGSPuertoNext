@@ -1,4 +1,4 @@
-import { UserInterface } from "@/app/api/register/route";
+import { UserInterface } from "@/app/api/register_user/route";
 import supabase from "@/lib/supabase";
 
 export const registerUser = async (
