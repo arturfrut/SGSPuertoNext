@@ -54,6 +54,8 @@ export const usePortControl = () => {
     for (let i = 0; i < n; i++) {
       const date = new Date()
       date.setDate(date.getDate() - i)
+                                                                    // @ts-ignore
+
       dates.push(formatDate(date.toISOString()))
     }
     return dates

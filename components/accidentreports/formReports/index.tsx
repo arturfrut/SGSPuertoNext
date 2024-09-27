@@ -465,7 +465,7 @@ export const FormReports = () => {
             checked={accidentData.needComite}
             onChange={handleComiteChange}
           >
-            Corresponde reunión con el comite
+            Corresponde reunión con el comité de análisis de accidente
           </Checkbox>
         </CardBody>
         <Divider />

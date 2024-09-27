@@ -102,7 +102,7 @@ const AdminCompanies = () => {
           <AccordionItem
             key='3'
             aria-label='Accordion 3'
-            title='Control puerto'
+            title='Control de guardia en puerto'
           >
             <PortControlTable />
           </AccordionItem>
