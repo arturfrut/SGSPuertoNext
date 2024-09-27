@@ -67,6 +67,7 @@ export interface AccidentData {
 }
 
 export const FormReports = () => {
+  console.log('cons for deploy')
   const { handleSubmit, onSubmit } = useFormReport()
 
   const { tripulation, selectedShip } = useGlobalStore()
