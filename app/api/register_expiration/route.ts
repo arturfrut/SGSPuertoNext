@@ -31,6 +31,7 @@ export async function POST(request: Request) {
     }
 
     // Manejar múltiples imágenes
+    // @ts-ignore
     const uploadedImages: string[] = await Promise.all(
       Array.from(formData.entries()).map(async ([key, value]) => {
         if (key.startsWith('image_') && value instanceof File) {

@@ -8,6 +8,7 @@ import React from 'react'
 import { AlertIcon } from '../icons/alertIcon'
 import { CheckIcon } from '../icons/checkIcon'
 import { CrossIcon } from '../icons/crossIcon'
+import {  ZonedDateTime } from '@internationalized/date'
 
 const crewFormsAccordion = [
   {
@@ -50,7 +51,7 @@ export const AccordionMember: React.FC<{
   const missingDocs: string[] = []
   const expiringDocs: string[] = []
 
-  const checkExpirationStatus = (date: string | null | undefined) => {
+  const checkExpirationStatus = (date: string | null | undefined ) => {
     if (!date) return 'expired'
     const { days } = getExpirationStatus(date)
     if (days < 0) return 'expired'
@@ -67,7 +68,7 @@ export const AccordionMember: React.FC<{
 
     if (sailorBookData) {
       Object.values(sailorBookData).forEach(date => {
-        const status = checkExpirationStatus(date)
+        const status = checkExpirationStatus(date as string)
         if (status === 'expired') errors++
         if (status === 'alert') alerts++
       })

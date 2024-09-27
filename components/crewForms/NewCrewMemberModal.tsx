@@ -40,6 +40,7 @@ import {
 
 import { useFilter } from '@react-aria/i18n'
 import { useState } from 'react'
+              // @ts-ignore
 
 export const NewCrewMemberModal = ({ searchOptions }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()

@@ -1,4 +1,4 @@
-interface AccidentReport {
+export interface AccidentReport {
   accidentType: {
     'Daños al buque': boolean
     'Daños a terceros': boolean
@@ -65,7 +65,7 @@ interface AccidentReportDB {
   ship_status: string
 }
 
-function transformAccidentReport(data: AccidentReportDB): AccidentReport {
+export function transformAccidentReport(data: AccidentReportDB): AccidentReport {
   return {
     accidentType: {
       'Daños al buque': data.accident_type_danos_al_buque,

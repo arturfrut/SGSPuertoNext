@@ -2,7 +2,8 @@
 import SignModal from '@/components/signModal'
 import useSignModal from '@/components/signModal/useSignModal'
 import { SignatureChecker } from '@/components/signatureChecker'
-import { parseAbsoluteToLocal } from '@internationalized/date'
+import useGlobalStore from '@/stores/useGlobalStore'
+import { parseAbsoluteToLocal, ZonedDateTime } from '@internationalized/date'
 import {
   Button,
   Card,
@@ -27,12 +28,18 @@ import axios from 'axios'
 
 import { useEffect, useState } from 'react'
 
+interface ControlData {
+  date: ZonedDateTime;
+  observation: string;
+  isAllChecked: boolean;
+  checkedPoints: boolean[]; // Assuming checkedPoints is an array of strings
+}
+
 export const NewControl = () => {
   const today = parseAbsoluteToLocal(new Date().toISOString())
-  const [loadingCompany, setLoadingCompany] = useState(true)
-  const [shipOptions, setShipOptions] = useState([])
   const { signatures, handleSaveSignature } = useSignModal()
-  const [controlData, setControlData] = useState({
+  const {ships, } = useGlobalStore()
+   const [controlData, setControlData] = useState<ControlData>({
     date: today,
     observation: '',
     isAllChecked: false,
@@ -58,8 +65,8 @@ export const NewControl = () => {
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target
-    const selectedShip = shipOptions.find(
-      ship => ship.ship_omi === parseInt(value)
+    const selectedShip = ships.find(
+      ship => ship.idOMI === parseInt(value)
     )
 
     if (selectedShip) {
@@ -93,23 +100,7 @@ export const NewControl = () => {
     }))
   }
 
-  async function fetchData() {
-    try {
-      const res = await axios.get(`/api/get_ships/${globalData.shipIomi}`)
-      const data = await res.data
-      setShipOptions(data)
-      console.log(data)
-    } catch (error) {
-      console.error('Error fetching companies:', error)
-    } finally {
-      setLoadingCompany(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-  const formattedDate = date => {
+  const formattedDate = (date: ZonedDateTime) => {
     const day = date.day.toString().padStart(2, '0')
     const month = date.month.toString().padStart(2, '0')
     const year = date.year
@@ -156,22 +147,7 @@ export const NewControl = () => {
       </CardHeader>
       <Divider />
       <CardBody>
-        <p className=''>Seleccione barco:</p>
-        <Select
-          name='ship'
-          placeholder='Seleccione buque'
-          value={'asd'}
-          onChange={handleSelectChange}
-          className='my-4 max-w-md'
-          isDisabled={loadingCompany}
-          aria-label='Empresa'
-        >
-          {shipOptions.map(ship => (
-            <SelectItem key={ship.omi} value={ship.omi}>
-              {ship?.ship_name}
-            </SelectItem>
-          ))}
-        </Select>
+
         <p className=''>Fecha de revisión</p>
 
         <DatePicker

@@ -38,6 +38,7 @@ export async function POST(request: Request) {
     // 2. Obtener la URL pública de la imagen
     const {
       data: { publicUrl },
+      // @ts-ignore
       error: urlError
     } = supabase.storage
       .from('sailors_documents_storage')

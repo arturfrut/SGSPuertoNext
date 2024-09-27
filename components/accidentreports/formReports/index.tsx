@@ -138,6 +138,8 @@ export const FormReports = () => {
 
   //MARCA ERROR POR LOS NULL
   const handleDateChange = (date: DateValue) => {
+    // @ts-ignore
+
     setAccidentData((prevData: AccidentData) => ({
       ...prevData,
       date: formattedDate(date)

@@ -6,7 +6,6 @@ import { NewCrewMemberModal } from './NewCrewMemberModal'
 
 export const NewCrewMemberCard = () => {
   const [searchOptions, setSearchOptions] = useState([{label:'222', value:'222'}])
-  const [isLoading, setIsLoading] = useState(true)
 
   async function fetchData() {
     try {
@@ -18,9 +17,7 @@ export const NewCrewMemberCard = () => {
       setSearchOptions(data)
     } catch (error) {
       console.error("Error fetching sailors:", error)
-    } finally {
-      setIsLoading(false)
-    }
+    } 
   }
 
   useEffect(() => {

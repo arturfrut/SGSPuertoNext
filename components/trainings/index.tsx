@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { NewTrainingCard } from './newTrainingCard'
 import TrainingsTable from './TrainingsTable'
 import useGlobalStore from '@/stores/useGlobalStore'
@@ -23,7 +22,7 @@ export const Trainings = () => {
               La información de la tabla debe venir de bdd y debe traer toda la
               data que corresponda al usuario
             </p>
-            <TrainingsTable id_omi={selectedShip.idOMI} />
+            {selectedShip && <TrainingsTable id_omi={selectedShip.idOMI} />}
           </div>
         </div>
       </div>

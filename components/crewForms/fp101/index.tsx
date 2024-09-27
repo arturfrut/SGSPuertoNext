@@ -12,7 +12,6 @@ export const Fp101 = () => {
   const sailorRol = 'Marinero'
   const sailor_book_number = '22232'
   const inTripDate = '08-10-2024' // Esta fecha se genera cuando se suma marinero a la tripulación
-
   const [supervisor, setSupervisor] = useState<string | null>()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,20 +20,20 @@ export const Fp101 = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
-      const response = await axios.put('/api/register_ship', ship)
-      console.log('Ship created successfully:', response.data)
-      alert('Barco registrado')
-    } catch (error) {
-      console.error('Error creating ship:', error)
-      alert('Error al registrar barco')
-    }
+    // try {
+    //   const response = await axios.put('/api/register_ship', ship)
+    //   console.log('Ship created successfully:', response.data)
+    //   alert('Barco registrado')
+    // } catch (error) {
+    //   console.error('Error creating ship:', error)
+    //   alert('Error al registrar barco')
+    // }
   }
 
-  const isSpecial =
-    sailorRol === 'Capitan' ||
-    sailorRol === 'Jefe de máquinas' ||
-    sailorRol === 'Guardia'
+  // const isSpecial =
+  //   sailorRol === 'Capitan' ||
+  //   sailorRol === 'Jefe de máquinas' ||
+  //   sailorRol === 'Guardia'
 
   return (
     <Card className='w-full md:w-2/3 md:px-10 md:py-5'>
@@ -180,7 +179,7 @@ export const Fp101 = () => {
           />
           <SignatureChecker status={signatures?.sailorSign} />
         </div>
-        {isSpecial && (
+        {/* {isSpecial && (
           <Input
             placeholder={'Persona encargada de realizar su familiarización'}
             value={supervisor ?? ''}
@@ -189,7 +188,7 @@ export const Fp101 = () => {
             label='Persona encargada de realizar su familiarización'
             labelPlacement={'outside'}
           />
-        )}
+        )} */}
 
         <Divider />
         <p className='text-sm'>

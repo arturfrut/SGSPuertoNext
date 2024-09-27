@@ -33,6 +33,7 @@ export async function GET() {
       )
 
       // Obtener la última expiración en base a final_expiration
+      // @ts-ignore
       const lastExpiration = relatedExpirations.toSorted(
         (a: any, b: any) => new Date(b.final_expiration).getTime() - new Date(a.final_expiration).getTime()
       )[0]

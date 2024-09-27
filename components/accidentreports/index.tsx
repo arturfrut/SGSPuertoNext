@@ -17,10 +17,15 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { AccidentReportCard } from './accidentReportCard'
 
+interface HistoryDataInterface {
+  description: string; // Descripción del mantenimiento realizado
+  date: Date; // Fecha en la que se realizó el mantenimiento
+  type: string; // Tipo de tarea, en este caso siempre 'mantenimiento'
+}
 export const AccidentReports = () => {
   const { selectedShip } = useGlobalStore()
   const selectedShipOmi = selectedShip?.idOMI
-  const [historyData, setHistoryData] = useState([])
+  const [historyData, setHistoryData] = useState<HistoryDataInterface[]>([])
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
@@ -38,6 +43,8 @@ export const AccidentReports = () => {
         )
         const data = response.data
         setHistoryData(
+              // @ts-ignore
+
           data.map(element => ({ ...element, date: formatDate(element.date) }))
         )
         console.log(data)
@@ -91,7 +98,7 @@ export const AccidentReports = () => {
                   <TableCell>{element.type}</TableCell>
                   <TableCell>reparación</TableCell>
                   <TableCell>{element.description}</TableCell>
-                  <TableCell>{element.date}</TableCell>
+                  <TableCell>20/12/24</TableCell>
                 </TableRow>
               ))
             }

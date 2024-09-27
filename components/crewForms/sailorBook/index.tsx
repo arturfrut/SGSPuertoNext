@@ -23,7 +23,7 @@ export const SailorBook = () => {
   const [medicalCertificationImg, setMedicalCertificationImg] = useState(null)
   const [censeImg, setCenseImg] = useState(null)
   const [stcw, setStcw] = useState(null)
-  
+
   const id_OMI = 8883339
   const id_captain = 442
   const sailorBookNumber = 123456
@@ -84,8 +84,7 @@ export const SailorBook = () => {
       chargeDate: 'simula ultima carga',
       destination: 'STCW/95',
       docType: 'stcw',
-      textDescription:
-        'Por favor tome una foto completa del certificado',
+      textDescription: 'Por favor tome una foto completa del certificado',
       id_OMI: id_OMI,
       sailorBookNumber,
       captainId: id_captain,
@@ -118,10 +117,13 @@ export const SailorBook = () => {
                 {chargeImages.map((row, index) => (
                   <TableRow key={index}>
                     <TableCell>{row.chargeDate}</TableCell>
-                    <TableCell><Chip color='danger'>{row.expirationStatus} </Chip></TableCell>
+                    <TableCell>
+                      <Chip color='danger'>{row.expirationStatus} </Chip>
+                    </TableCell>
                     <TableCell>{row.destination}</TableCell>
                     <TableCell className='cursor-pointer'>
-                      <ChargeImageModal {...row} />
+                      {/* <ChargeImageModal {...row} /> */}
+                      Corregir componente carga imagen
                     </TableCell>
                     <TableCell>
                       <SignatureChecker status={''} />

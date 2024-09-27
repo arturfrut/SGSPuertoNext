@@ -1,5 +1,5 @@
 'use client'
-import { Accordion, AccordionItem, Divider } from '@nextui-org/react'
+import { Accordion, AccordionItem } from '@nextui-org/react'
 import { ExpirationTable } from '../expirationControls/expirationTable'
 import { MaintenanceHistoryTable } from '../maintenanceHistory/maintenanceHistoryTable'
 import { PortControlTable } from '../portControl/portControlTable'
@@ -30,7 +30,7 @@ export const Content = () => {
         <h4>
           Barcos a cargo :
           {ships.length > 1 &&
-            ships.map((ship, i) => <span>{ship?.name},</span>)}{' '}
+            ships.map((ship, i) => <span key={i}>{ship?.name},</span>)}{' '}
         </h4>
       )}
 

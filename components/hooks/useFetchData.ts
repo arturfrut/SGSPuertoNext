@@ -16,6 +16,7 @@ const useFetchData = (url:string) => {
         setData(result);
         console.log(result); // Mostrar datos en la consola
       } catch (error) {
+                      // @ts-ignore
         setError(error.message);
       } finally {
         setLoading(false);

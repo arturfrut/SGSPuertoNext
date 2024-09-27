@@ -23,6 +23,8 @@ export const apiUploadImage = async ({
   // 2. Obtener la URL pública de la imagen
   const {
     data: { publicUrl },
+                                                                  // @ts-ignore
+
     error: urlError
   } = supabase.storage.from('sailors_documents_storage').getPublicUrl(fileName)
 

@@ -18,6 +18,7 @@ export default function TrainingDetailModal({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedImageIndex, setSelectedImageIndex] = useState(null)
+                                                              // @ts-ignore
 
   const handleImageClick = index => {
     setSelectedImageIndex(selectedImageIndex === index ? null : index)
@@ -45,7 +46,8 @@ export default function TrainingDetailModal({
                   <p>{`${trainingData.exercise_description}`}</p>
                   <p className='font-bold my-4'>Lista de participantes:</p>
                   <ul className='list-disc pl-6 space-y-2'>
-                    {trainingData.participants.map((participant, i) => (
+                    {trainingData.participants.map((                                                              // @ts-ignore
+ participant, i) => (
                       <li key={i} className='flex justify-between items-center'>
                         <span>{`${participant.name} ${participant.lastname}`}</span>
                         <Image

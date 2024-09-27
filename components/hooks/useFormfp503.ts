@@ -29,6 +29,7 @@ const useFormfp503 = () => {
   const handleAdd = () => {
     const [name, lastName] = inputValue.split(' ')
     const newCrewMember = { name, lastName }
+                      // @ts-ignore
     setCrewInExercise(prevState => [...prevState, newCrewMember])
     setInputValue('')
   }

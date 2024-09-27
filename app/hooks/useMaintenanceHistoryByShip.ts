@@ -1,17 +1,15 @@
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-
+import axios from "axios"
+import { useState, useEffect } from "react"
 
 interface HistoryDataInterface {
-  description: string;
-  date: string; // Puedes usar Date si prefieres objetos Date
-  type: string
+  description: string; // Descripción del mantenimiento realizado
+  date: Date; // Fecha en la que se realizó el mantenimiento
+  type: string; // Tipo de tarea, en este caso siempre 'mantenimiento'
 }
 
-export const useOrderRepairByShip = (
-  selectedShipOmi: string | number | undefined
-) => {
+export const useMaintenanceHistoryByShip = (idOmi: string | null | undefined | number) => {
   const [historyData, setHistoryData] = useState<HistoryDataInterface[]>([])
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
     const day = String(date.getUTCDate()).padStart(2, '0')
@@ -19,29 +17,29 @@ export const useOrderRepairByShip = (
     const year = date.getUTCFullYear()
     return `${day} - ${month} - ${year}`
   }
+  
   useEffect(() => {
     const fetchMaintenanceData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/get_maintenance_history/${selectedShipOmi}`
+          `http://localhost:3000/api/get_maintenance_history/${idOmi}`,
+          { headers: { 'Cache-Control': 'no-cache' } }
         )
         const data = response.data
         setHistoryData(
-          data.map((element: { date: string }) => ({ ...element, date: formatDate(element.date) }))
+          data.map((element: HistoryDataInterface)=> ({ ...element, date: formatDate(String(element.date)) }))
         )
-        console.log('maintenance', data)
+        console.log(data)
       } catch (error) {
         console.error('Error fetching history data:', error)
       }
     }
 
-    if (selectedShipOmi) {
+    if (idOmi) {
       fetchMaintenanceData()
     }
-  }, [selectedShipOmi])
+  }, [idOmi])
 
-  return {
-    historyData,
-    setHistoryData
-  }
+  return {historyData, setHistoryData}
+
 }
