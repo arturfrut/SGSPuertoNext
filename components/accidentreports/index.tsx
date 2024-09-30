@@ -39,7 +39,7 @@ export const AccidentReports = () => {
     const fetchMaintenanceData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/get_maintenance_history/${selectedShip?.idOMI}`
+          `/api/get_maintenance_history/${selectedShip?.idOMI}`
         )
         const data = response.data
         setHistoryData(
