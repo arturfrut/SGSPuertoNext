@@ -1,13 +1,5 @@
 {
   "extends": "next/core-web-vitals",
-  "compilerOptions":{
-    "noImplicitAny": false,
-    "skipLibCheck": true,
-    "allowJs": true,
-    "noEmitOnError": false,
-    "target": "esnext",
-    "module": "esnext"
-  },
   "rules": {
     
     // "@typescript-eslint/no-unsafe-member-access": "warn"
