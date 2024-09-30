@@ -27,9 +27,7 @@ export const useExpirationsByShip = (idOmi: string | number | undefined) => {
   useEffect(() => {
     const fetchExpirationData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/get_expirations/${idOmi}`
-        )
+        const response = await axios.get(`/api/get_expirations/${idOmi}`)
         const data = response.data
         setExpirationsData(data)
       } catch (error) {

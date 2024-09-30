@@ -28,7 +28,7 @@ export const usePortControl = () => {
     const fetchPortControlData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/get_port_control/${selectedShip?.idOMI}`
+          `/api/get_port_control/${selectedShip?.idOMI}`
         )
         const data = response.data
         setHistoryData(

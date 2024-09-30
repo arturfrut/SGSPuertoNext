@@ -19,7 +19,7 @@ export const SidebarItem = ({
   isDisabled
 }: Props) => {
   const { setCollapsed } = useSidebarContext()
-
+  console.log('HREF', href)
   const handleClick = () => {
     if (window.innerWidth < 768) {
       setCollapsed()

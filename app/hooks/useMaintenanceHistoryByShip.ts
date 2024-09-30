@@ -22,7 +22,7 @@ export const useMaintenanceHistoryByShip = (idOmi: string | null | undefined | n
     const fetchMaintenanceData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/get_maintenance_history/${idOmi}`,
+          `/api/get_maintenance_history/${idOmi}`,
           { headers: { 'Cache-Control': 'no-cache' } }
         )
         const data = response.data

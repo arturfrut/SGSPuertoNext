@@ -36,7 +36,7 @@ const useFormfp503 = () => {
 
   const submitTrainingData = async (document: any) => {
     try {
-      const response = await fetch('http://localhost:3000/api/new_training', {
+      const response = await fetch('/api/new_training', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

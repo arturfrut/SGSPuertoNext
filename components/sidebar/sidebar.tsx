@@ -114,7 +114,7 @@ export const SidebarWrapper = () => {
                 isActive={pathname === '/accounts'}
                 title='Mi usuario'
                 icon={<AccountsIcon />}
-                href='accounts'
+                href='/accounts'
               />
               <SidebarItem
                 isActive={pathname === '/notifications'}
@@ -135,31 +135,31 @@ export const SidebarWrapper = () => {
                 isActive={pathname === '/create-user'}
                 title='Crear usuario'
                 icon={<AccountsIcon />} // TODO: Icono de crear usuario
-                href='create-user'
+                href='/create-user'
               />
               <SidebarItem
                 isActive={pathname === '/create-company'}
                 title='Registrar empresa'
                 icon={<AccountsIcon />} // TODO: Icono de crear usuario
-                href='create-company'
+                href='/create-company'
               />
               <SidebarItem
                 isActive={pathname === '/create-ship'}
                 title='Registrar barco'
                 icon={<CloseTripIcon />} // TODO: Icono de crear usuario
-                href='create-ship'
+                href='/create-ship'
               />
               <SidebarItem
                 isActive={pathname === '/admin-companies'}
                 title='Empresas'
                 icon={<CloseTripIcon />} // TODO: Icono de crear usuario
-                href='admin-companies'
+                href='/admin-companies'
               />
               <SidebarItem
                 isActive={pathname === '/danger-alerts'}
                 title='Alerta climatica/accidentes'
                 icon={<CloseTripIcon />} // TODO: Icono de crear usuario
-                href='danger-alerts'
+                href='/danger-alerts'
               />
             </SidebarMenu>
 
@@ -256,25 +256,25 @@ export const SidebarWrapper = () => {
                 isActive={pathname === '/port-control'}
                 title='Control de guardia'
                 icon={<AccountsIcon />}
-                href='port-control'
+                href='/port-control'
               />
               <SidebarItem
                 isActive={pathname === '/accounts'}
                 title='FP 101 Políticas'
                 icon={<AccountsIcon />}
-                href='accounts'
+                href='/accounts'
               />
               <SidebarItem
                 isActive={pathname === '/accounts'}
                 title='FP 501 familiarizacion'
                 icon={<AccountsIcon />}
-                href='accounts'
+                href='/accounts'
               />
               <SidebarItem
                 isActive={pathname === '/accounts'}
                 title='FP 502 EPP'
                 icon={<AccountsIcon />}
-                href='accounts'
+                href='/accounts'
               />
             </SidebarMenu>
 
