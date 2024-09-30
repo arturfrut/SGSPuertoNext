@@ -88,7 +88,7 @@ export const useMaintenanceRegister = () => {
     const fetchMaintenanceData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/get_maintenance/${selectedShip?.idOMI}`
+          `/api/get_maintenance/${selectedShip?.idOMI}`
         )
 
         console.log('maint', response)

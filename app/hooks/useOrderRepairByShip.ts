@@ -23,7 +23,7 @@ export const useOrderRepairByShip = (
     const fetchMaintenanceData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/get_maintenance_history/${selectedShipOmi}`
+          `/api/get_maintenance_history/${selectedShipOmi}`
         )
         const data = response.data
         setHistoryData(
