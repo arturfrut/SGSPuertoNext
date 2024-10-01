@@ -2,13 +2,12 @@ import supabase from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
 export interface UserInterface {
+  chargedBy: number,
   name: string
-  last_name: string
   email: string
   cellphone_number: string
   document_number: string
   document_type: string
-  age: number
   city: string
   nationality: string
   roles: string[]
@@ -24,13 +23,12 @@ export async function POST(request: Request) {
     const userData: UserInterface = await request.json();
 
     const {
+      chargedBy,
       name,
-      last_name,
       email,
       cellphone_number,
       document_number,
       document_type,
-      age,
       city,
       nationality,
       roles,
@@ -61,13 +59,12 @@ export async function POST(request: Request) {
       .from('users')
       .insert([
         {
+          chargedBy,
           name,
-          last_name,
           email,
           cellphone_number,
           document_number,
           document_type,
-          age,
           city,
           nationality,
           roles,

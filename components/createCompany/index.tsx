@@ -15,9 +15,9 @@ import { useState } from 'react'
 
 export interface CompanyInterface {
   company_name: string
-  CUIT: string
+  cuit: string
   direction: string
-  company_OMI: string
+  company_omi: string
   company_representant: string
   contact_number: string
   company_email: string
@@ -26,9 +26,9 @@ export interface CompanyInterface {
 export const CreateCompany = () => {
   const createCompanyInitialValue: CompanyInterface = {
     company_name: '',
-    CUIT: '',
+    cuit: '',
     direction: '',
-    company_OMI: '',
+    company_omi: '',
     company_representant: '',
     contact_number: '',
     company_email: ''
@@ -45,6 +45,7 @@ export const CreateCompany = () => {
   ]
 
   const [company, setCompany] = useState<CompanyInterface>(createCompanyInitialValue)
+  const [awaitResponse, setAwaitResponse] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -56,14 +57,17 @@ export const CreateCompany = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setAwaitResponse(true)
     try {
       const response = await axios.post('/api/register_company', company)
       console.log('Company created successfully:', response.data)
+      console.log(company)
       alert('Compañía registrada')
     } catch (error) {
       console.error('Error creating company:', error)
       alert('Error al registrar compañía')
     }
+    setAwaitResponse(false)
   }
 
   return (
@@ -102,7 +106,7 @@ export const CreateCompany = () => {
 
         <Divider />
         <CardFooter className='flex gap-3 justify-end'>
-          <Button type='submit'>Enviar</Button>
+          <Button type='submit' isLoading={awaitResponse}>Enviar</Button>
         </CardFooter>
       </form>
     </Card>

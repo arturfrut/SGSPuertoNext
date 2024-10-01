@@ -30,8 +30,8 @@ export interface ShipInterface {
 }
 
 export interface CompanyOptionsInterface {
-  company_omi: 1234
-  company_name: 'prueba compañia'
+  company_omi: number
+  company_name: string
 }
 
 export const CreateShip = () => {
@@ -55,7 +55,7 @@ export const CreateShip = () => {
     { name: 'matricula', placeholder: 'matricula' },
     {
       name: 'ship_type',
-      placeholder: 'ship_type',
+      placeholder: 'Tipo de barco',
       defaultValue: '',
       values: [
         'Buque de pasaje',
@@ -80,11 +80,12 @@ export const CreateShip = () => {
   ]
 
   const [ship, setShip] = useState<ShipInterface>(createShipInitialValue)
+  const [awaitResponse, setAwaitResponse] = useState(false)
   const [loadingCompany, setLoadingCompany] = useState<boolean>(true)
   const [companyOptions, setCompanyOptions] = useState<
     CompanyOptionsInterface[]
   >([])
-  
+
   async function fetchData() {
     try {
       const res = await axios.get(`/api/get_companies`)
@@ -117,22 +118,24 @@ export const CreateShip = () => {
     )
 
     if (selectedCompany) {
-    setShip(prevState => ({
-      ...prevState,
-      company: selectedCompany.company_name, // actualizar company
-      company_omi: selectedCompany.company_omi // actualizar company_omi
-    }))
+      setShip(prevState => ({
+        ...prevState,
+        company: selectedCompany.company_name, // actualizar company
+        company_omi: selectedCompany.company_omi // actualizar company_omi
+      }))
     }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setAwaitResponse(true)
     try {
       const response = await axios.post('/api/register_ship', ship)
       alert('Barco registrado')
     } catch (error) {
       alert('Error al registrar barco')
     }
+    setAwaitResponse(false)
   }
 
   return (
@@ -213,7 +216,9 @@ export const CreateShip = () => {
 
         <Divider />
         <CardFooter className='flex gap-3 justify-end'>
-          <Button type='submit'>Enviar</Button>
+          <Button type='submit' isLoading={awaitResponse}>
+            Enviar
+          </Button>
         </CardFooter>
       </form>
     </Card>

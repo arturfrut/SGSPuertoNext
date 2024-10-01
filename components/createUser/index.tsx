@@ -1,7 +1,8 @@
 'use client'
 
 import { UserInterface } from '@/app/api/register_user/route'
-import { have_companies, have_ships, roles } from '@/mocks/localStorageShips'
+import {  have_ships, roles } from '@/mocks/localStorageShips'
+import useGlobalStore from '@/stores/useGlobalStore'
 import {
   Button,
   Card,
@@ -35,35 +36,39 @@ export const CreateUser = () => {
     CompanyOptionsInterface[]
   >([])
   const [shipOptions, setShipOptions] = useState<ShipOptionInterface[]>([])
+  const [waitingResponse, setWaitingResponse] = useState(false)
   const [loadingCompany, setLoadingCompany] = useState(true)
   const [loadingShip, setLoadingShip] = useState(true)
-
+  const { userData } = useGlobalStore()
+  const { id } = userData
   const [user, setUser] = useState<UserInterface>({
     name: '',
-    last_name: '',
     email: '',
     cellphone_number: '',
     document_number: '',
-    document_type: '',
-    age: 0,
+    document_type: 'DNI',
     city: '',
     nationality: '',
     roles: [],
     comments: '',
     ships_in_charge: [], // Inicializamos como arreglo vacío
-    password: '' // Inicializamos la contraseña
+    password: '', // Inicializamos la contraseña
+    chargedBy: id,
+    company: null,
   })
 
   useEffect(() => {
-    fetchShips()
     fetchCompanies()
   }, [])
 
+  useEffect(() => {
+    user.company && fetchShips()
+  }, [user.company])
+
   const fetchShips = async () => {
     try {
-      const { data } = await axios.get(`/api/get_ships`)
+      const { data } = await axios.get(`/api/get_ships/${user.company}`)
       setShipOptions(data)
-      console.log('ships', data)
     } catch (error) {
       console.error('Error fetching ships:', error)
     } finally {
@@ -75,13 +80,13 @@ export const CreateUser = () => {
     try {
       const { data } = await axios.get(`/api/get_companies`)
       setCompanyOptions(data)
-      console.log('companies', data)
     } catch (error) {
       console.error('Error fetching companies:', error)
     } finally {
       setLoadingCompany(false)
     }
   }
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -94,33 +99,26 @@ export const CreateUser = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setWaitingResponse(true)
     try {
       const response = await axios.post('/api/register_user', user)
       console.log('Company created successfully:', response.data)
-      alert('Usuario registradp')
+      console.log('USER', user)
+      alert('Usuario registrado')
+      setWaitingResponse(false)
     } catch (error) {
       console.error('Error creating company:', error)
       alert('Error al registrar usuario')
+      setWaitingResponse(false)
+
     }
   }
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   try {
-  //     await registerUser(user.email, user.password, user)
-  //     alert('User registered successfully')
-  //   } catch (error) {
-  //     console.error('Error registering user:', error)
-  //     alert('Error registering user')
-  //   }
-  // }
 
   const handleCheckboxChange = (newSelectedValues: string[]) => {
     setUser(prevState => ({
       ...prevState,
       roles: newSelectedValues
     }))
-
-    console.log(user)
   }
 
   const handleCheckboxChangeShip = (newSelectedValues: string[]) => {
@@ -129,20 +127,27 @@ export const CreateUser = () => {
       ships_in_charge: newSelectedValues
     }))
   }
+  const handleCompany = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setUser(prevState => ({
+      ...prevState,
+      company: e.target.value
+    }))
+  }
 
-  const haveCompaniesAsString = have_companies.map(String)
+  // const haveCompaniesAsString = have_companies.map(String)
 
-  const renderCompanies = user.roles.some(role =>
-    haveCompaniesAsString.includes(role)
-  )
+  // const renderCompanies = user.roles.some(role =>
+  //   haveCompaniesAsString.includes(role)
+  // )
 
   const haveShipsAsString = have_ships.map(String)
 
   const renderShips = user.roles.some(role => haveShipsAsString.includes(role))
 
   const formFields = [
-    { name: 'name', placeholder: 'Nombre' },
-    { name: 'last_name', placeholder: 'Apellido' },
+    { name: 'name', placeholder: 'nombre y apellido' },
     { name: 'email', placeholder: 'Email', type: 'email' },
     {
       name: 'cellphone_number',
@@ -155,17 +160,17 @@ export const CreateUser = () => {
       type: 'number'
     },
     { name: 'document_type', placeholder: 'Tipo de documento' },
-    { name: 'age', placeholder: 'Edad', type: 'number' },
     { name: 'city', placeholder: 'Ciudad' },
     { name: 'nationality', placeholder: 'Nacionalidad' },
+    {
+      name: 'company'
+    },
     {
       name: 'role_id',
       placeholder: 'roles',
       values: roles
     },
-    {
-      name: 'company'
-    },
+
     { name: 'ships' },
     { name: 'comments', placeholder: 'Comentarios' },
     {
@@ -201,41 +206,40 @@ export const CreateUser = () => {
           </Fragment>
         )
       case 'company':
-        if (renderCompanies) {
-          return (
-            <Fragment key={name}>
-              <p className='mb-4'>Seleccione compañía:</p>
-              <Select
-                name='company'
-                placeholder='Selecciona empresa'
-                onChange={handleInputChange}
-                className='mb-4'
-                isDisabled={loadingCompany}
-                aria-label='Empresa'
-              >
-                {companyOptions.map(company => (
-                  <SelectItem
-                    key={company.company_omi}
-                    value={company.company_name}
-                  >
-                    {company.company_name}
-                  </SelectItem>
-                ))}
-              </Select>
-            </Fragment>
-          )
-        }
-        break
+        return (
+          <Fragment key={name}>
+            <p className='mb-4'>Seleccione compañía:</p>
+            <Select
+              name='company'
+              placeholder='Selecciona empresa'
+              onChange={handleCompany}
+              className='mb-4'
+              isDisabled={loadingCompany}
+              aria-label='Empresa'
+            >
+              {companyOptions.map(company => (
+                <SelectItem
+                  key={company.company_omi}
+                  value={company.company_name}
+                >
+                  {company.company_name}
+                </SelectItem>
+              ))}
+            </Select>
+          </Fragment>
+        )
       case 'ships':
         if (renderShips) {
           return (
             <Fragment key={name}>
               <p className='mb-4'>Seleccione de qué barco se encargará:</p>
+              {!user.company && <p className='text-red-600 '>Sin empresa seleccionada</p>}
               <CheckboxGroup
                 className='mb-4'
                 value={user.ships_in_charge} // Manejado dentro de user
                 onChange={handleCheckboxChangeShip}
                 aria-label={name}
+                isDisabled={loadingShip}
               >
                 {shipOptions ? (
                   shipOptions?.map(ship => (
@@ -292,7 +296,7 @@ export const CreateUser = () => {
         </CardBody>
         <Divider />
         <CardFooter className='flex gap-3 justify-end'>
-          <Button type='submit'>Enviar</Button>
+          <Button type='submit' isLoading={waitingResponse}>Enviar</Button>
         </CardFooter>
       </form>
     </Card>

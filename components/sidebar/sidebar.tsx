@@ -23,7 +23,6 @@ import { CollapseItems } from './collapse-items'
 import { SidebarItem } from './sidebar-item'
 import { SidebarMenu } from './sidebar-menu'
 import { Sidebar } from './sidebar.styles'
-import { useEffect, useState } from 'react'
 
 export const SidebarWrapper = () => {
   const pathname = usePathname()
