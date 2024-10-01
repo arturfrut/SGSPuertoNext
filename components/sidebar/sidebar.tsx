@@ -50,7 +50,6 @@ export const SidebarWrapper = () => {
     setRolSelected(e.target.value)
   }
 
-
   return (
     <aside className='h-screen z-[202] sticky top-0'>
       {collapsed ? (
@@ -247,6 +246,12 @@ export const SidebarWrapper = () => {
                 title='Ordenes y reparaciones'
                 icon={<WrenchIcon />}
                 href='/order-repair'
+              />
+              <SidebarItem
+                isActive={pathname === '/machine-delivery'}
+                title='Entrega/recepción cargo máquinas'
+                icon={<WrenchIcon />}
+                href='/machine-delivery'
               />
             </SidebarMenu>
 

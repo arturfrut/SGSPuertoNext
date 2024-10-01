@@ -130,7 +130,7 @@ export const CreateShip = () => {
     e.preventDefault()
     setAwaitResponse(true)
     try {
-      const response = await axios.post('/api/register_ship', ship)
+      await axios.post('/api/register_ship', ship)
       alert('Barco registrado')
     } catch (error) {
       alert('Error al registrar barco')
