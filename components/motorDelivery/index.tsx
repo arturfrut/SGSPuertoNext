@@ -1,5 +1,4 @@
 'use client'
-import useDeliveryByShip from '@/app/hooks/useDeliveryByShip'
 import SignModal from '@/components/signModal'
 import useSignModal from '@/components/signModal/useSignModal'
 import { SignatureChecker } from '@/components/signatureChecker'
@@ -47,9 +46,10 @@ export const MotorDelivery = () => {
 
   const { signatures, handleSaveSignature } = useSignModal()
   const { selectedShip, userData } = useGlobalStore()
+  const [isSending, setIsSending] = useState(false)
   const shipOmi = selectedShip?.idOMI
   const { delivery, loadingDelivery, setDelivery, lastCharge } =
-  useMotorDeliveryByShip(88888)
+    useMotorDeliveryByShip(88888)
   const [formData, setFormData] = useState({
     shipState: '',
     receiptPersonName: '',
@@ -80,30 +80,31 @@ export const MotorDelivery = () => {
       receiptPersonCharge
     } = formData
 
-    console.log({ delivery })
     if (!allFieldsChecked) {
       alert('Todos los campos deben ser aceptados.')
       return
     }
-
+    setIsSending(true)
     try {
-      // const submitData = {
-      //   shipOmi,
-      //   idCaptain,
-      //   newComments: delivery.map(item => item.newComment),
-      //   shipState,
-      //   receiptPersonName,
-      //   deliveryPersonName,
-      //   deliveryPersonCharge,
-      //   receiptPersonCharge,
-      //   receiptSign: signatures.receiptSign,
-      //   deliverySign: signatures.deliverySign
-      // }
-      // await axios.post('/api/register_delivery', submitData)
+      const submitData = {
+        shipOmi,
+        chargedBy: userData.id,
+        newComments: delivery.map(item => item.newComment),
+        shipState,
+        receiptPersonName,
+        deliveryPersonName,
+        deliveryPersonCharge,
+        receiptPersonCharge,
+        receiptSign: signatures.receiptSign,
+        deliverySign: signatures.deliverySign
+      }
+      await axios.post('/api/register_motor_delivery', submitData)
       alert('Formulario enviado correctamente')
+      setIsSending(false)
     } catch (error) {
       console.log(error)
       alert('Error al enviar el formulario:')
+      setIsSending(false)
     }
   }
 
@@ -275,7 +276,7 @@ export const MotorDelivery = () => {
         )}
 
         <CardFooter className=' flex gap-3 justify-end'>
-          <Button color='warning' onClick={onSubmit}>
+          <Button color='warning' onClick={onSubmit} isLoading={isSending}>
             Enviar
           </Button>
         </CardFooter>
