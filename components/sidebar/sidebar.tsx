@@ -23,7 +23,6 @@ import { CollapseItems } from './collapse-items'
 import { SidebarItem } from './sidebar-item'
 import { SidebarMenu } from './sidebar-menu'
 import { Sidebar } from './sidebar.styles'
-import { useEffect, useState } from 'react'
 
 export const SidebarWrapper = () => {
   const pathname = usePathname()
@@ -50,7 +49,6 @@ export const SidebarWrapper = () => {
   const handleSelectionRol = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRolSelected(e.target.value)
   }
-
 
   return (
     <aside className='h-screen z-[202] sticky top-0'>
@@ -248,6 +246,12 @@ export const SidebarWrapper = () => {
                 title='Ordenes y reparaciones'
                 icon={<WrenchIcon />}
                 href='/order-repair'
+              />
+              <SidebarItem
+                isActive={pathname === '/machine-delivery'}
+                title='Entrega/recepción cargo máquinas'
+                icon={<WrenchIcon />}
+                href='/machine-delivery'
               />
             </SidebarMenu>
 

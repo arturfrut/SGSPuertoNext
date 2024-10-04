@@ -8,9 +8,9 @@ export async function POST(request: Request) {
 
     const {
       company_name,
-      CUIT: cuit,
+      cuit,
       direction,
-      company_OMI: company_omi,
+      company_omi,
       company_representant,
       contact_number,
       company_email

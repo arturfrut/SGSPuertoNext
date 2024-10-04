@@ -2,7 +2,7 @@ import supabase from "@/lib/supabase";
 import useGlobalStore from "@/stores/useGlobalStore";
 
 export const useLogout = () => {
-  const { reset, setUserData, setShips, setRoles, setRolSelected } = useGlobalStore();
+  const { reset } = useGlobalStore();
 
  
   const handleLogout = async () => {
