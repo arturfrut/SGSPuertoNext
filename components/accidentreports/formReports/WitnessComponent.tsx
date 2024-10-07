@@ -119,7 +119,7 @@ const WitnessesComponent = ({ tripulation, accidentData, setAccidentData }) => {
           </TableColumn>
         </TableHeader>
         <TableBody emptyContent={'No hay testigos'}>
-          {accidentData.whitness.map(
+          {accidentData?.whitness?.map(
             (
               witness: {
                 name:

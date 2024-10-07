@@ -372,7 +372,7 @@ const EvidenceModal:FC<EvidenceModalInterface> = ({
                   Cerrar
                 </Button>
                 <Button type='submit' color='primary' isLoading={isLoading}>
-                  Subir imagen / Tomar foto
+                  Cargar nuevo vencimiento
                 </Button>
               </ModalFooter>
             </form>

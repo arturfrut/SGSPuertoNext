@@ -177,14 +177,14 @@ export const useMaintenanceRegister = () => {
     console.log(motorData)
     console.log('Data to be submitted:', postData)
 
-    // try {
-    //   const response = await axios.post('/api/register_maintenance', postData)
-    //   console.log('maintenance report created successfully:', response.data)
-    //   alert('Mantenimiento registrado')
-    // } catch (error) {
-    //   console.error('Error creating maintenance report:', error)
-    //   alert('Error al registrar mantenimiento')
-    // }
+    try {
+      const response = await axios.post('/api/register_maintenance', postData)
+      console.log('maintenance report created successfully:', response.data)
+      alert('Mantenimiento registrado')
+    } catch (error) {
+      console.error('Error creating maintenance report:', error)
+      alert('Error al registrar mantenimiento')
+    }
   }
 
   const groupedData = maintenanceData.reduce((groups, item) => {

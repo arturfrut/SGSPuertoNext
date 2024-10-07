@@ -12,6 +12,7 @@ import {
   hydrocarbonsTypes,
   seaCurrentPower,
   seaPower,
+  shipCondition,
   windPower
 } from '@/constants/strings'
 import useGlobalStore from '@/stores/useGlobalStore'
@@ -28,6 +29,8 @@ import {
   Divider,
   Image,
   Input,
+  Radio,
+  RadioGroup,
   Select,
   SelectItem,
   Textarea
@@ -35,6 +38,7 @@ import {
 import { ChangeEvent, useState } from 'react'
 import { useFormReport } from './useFormReport'
 import WitnessesComponent from './WitnessComponent'
+import axios from 'axios'
 
 export interface AccidentData {
   accidentType: string[]
@@ -47,10 +51,6 @@ export interface AccidentData {
   whitness: string[]
   whitnessIds: string[]
   shipCondition: string
-  caladoProa: string
-  caladoPopa: string
-  otherCircunstances: string | null
-  fondeado: boolean
   windPower: number | null
   windDirection: string | null
   seaPower: number | null
@@ -66,31 +66,40 @@ export interface AccidentData {
   capitanOpinions: string
 }
 
-export const FormReports = () => {
-  console.log('cons for deploy')
-  const { handleSubmit, onSubmit } = useFormReport()
+const shipConditions = [
+  'En navegación',
+  'Maniobra Puerto',
+  'Alijo',
+  'Carga / Descarga',
+  'Otras circunstancias'
+]
 
-  const { tripulation, selectedShip } = useGlobalStore()
+export const FormReports = () => {
+  const { handleSubmit, onSubmit } = useFormReport()
+  const formattedDate = (date: DateValue) => {
+    const day = date.day.toString().padStart(2, '0')
+    const month = date.month.toString().padStart(2, '0')
+    const year = date.year
+    const hour = date.hour.toString().padStart(2, '0')
+    const minute = date.minute.toString().padStart(2, '0')
+    return `${year}-${month}-${day}T${hour}:${minute}`
+  }
+
+  const { tripulation, selectedShip,userData } = useGlobalStore()
   const shipName = selectedShip?.name
   const shipNumber = selectedShip?.idOMI
   const today = parseAbsoluteToLocal(new Date().toISOString())
+  const [specialCondition, setSecialCondition] = useState(null)
   const { signatures, handleSaveSignature } = useSignModal()
-
+  const [sendingData, setSendingData] = useState(false)
   const [accidentData, setAccidentData] = useState({
     accidentType: [''],
-    date: '',
+    date: formattedDate(today),
     place: '',
-    crewMemberLe: '',
-    crewMemberLeId: '',
     LEId: '',
     LEname: '',
-    whitness: [],
+    whitness: null,
     whitnessIds: [],
-    shipCondition: '',
-    caladoProa: '',
-    caladoPopa: '',
-    otherCircunstances: '',
-    fondeado: false,
     windPower: null,
     windDirection: null,
     seaPower: null,
@@ -98,6 +107,7 @@ export const FormReports = () => {
     seaCurrentPower: null,
     seaCurrentDirection: null,
     seaHeight: null,
+    shipCondition: null,
     HC: false,
     HCtype: '',
     HClts: '',
@@ -113,14 +123,6 @@ export const FormReports = () => {
     year: number
     hour: number
     minute: number
-  }
-  const formattedDate = (date: DateValue) => {
-    const day = date.day.toString().padStart(2, '0')
-    const month = date.month.toString().padStart(2, '0')
-    const year = date.year
-    const hour = date.hour.toString().padStart(2, '0')
-    const minute = date.minute.toString().padStart(2, '0')
-    return `${year}-${month}-${day}T${hour}:${minute}`
   }
 
   const handleAccidentTypes = (e: { target: { value: any; checked: any } }) => {
@@ -147,9 +149,9 @@ export const FormReports = () => {
     }))
   }
 
-  const selectLE = (value: number | ChangeEvent<HTMLSelectElement>) => {
+  const selectLE = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedMember = tripulation.find(
-      member => member.sailor_book_number === value
+      member => member.sailor_book_number === parseInt(e.target.value)
     )
     setAccidentData({
       ...accidentData,
@@ -180,16 +182,24 @@ export const FormReports = () => {
   }
 
   const submitData = async () => {
-    console.log(accidentData)
-    // try {
-    //   const submitData = { ...signatures, shipNumber, ...accidentData }
-    //   const response = await axios.post('/api/register_accident/', submitData)
-    //   console.log('Data submitted:', response.data)
-    //   alert('Accidente registrado con éxito')
-    // } catch (error) {
-    //   alert('Error registrando accidente')
-    //   console.error('Error submitting data:', error)
-    // }
+    setSendingData(true)
+    try {
+      const submitData = {
+        chargedBy: userData.id,
+        ...signatures,
+        shipNumber,
+        ...accidentData,
+        shipCondition: specialCondition ?? accidentData.shipCondition
+      }
+      const response = await axios.post('/api/register_accident/', submitData)
+      console.log('Data submitted:', response.data)
+      alert('Accidente registrado con éxito')
+    } catch (error) {
+      alert('Error registrando accidente')
+      console.error('Error submitting data:', error)
+    }
+    setSendingData(false)
+
   }
 
   return (
@@ -232,6 +242,7 @@ export const FormReports = () => {
           </CheckboxGroup>
         </CardBody>
         <Divider />
+
         <CardBody>
           <p className='text-xl pb-4'>Descripción del acontecimiento</p>
           <div className='w-full md:flex md:gap-4'>
@@ -263,7 +274,7 @@ export const FormReports = () => {
           <Select
             label='Seleccione un tripulante de la lista'
             className='w-full'
-            onChange={value => selectLE(value)}
+            onChange={e => selectLE(e)}
           >
             {tripulation.map(member => (
               <SelectItem
@@ -274,6 +285,28 @@ export const FormReports = () => {
               </SelectItem>
             ))}
           </Select>
+        </CardBody>
+        <Divider />
+        <CardBody>
+          <p className='text-xl pb-4'>Condición del buque</p>
+          <Select
+            label='Seleccione un tripulante de la lista'
+            className='w-full'
+            onChange={e => handleSelectChange('shipCondition', e.target.value)}
+          >
+            {shipConditions.map(condition => (
+              <SelectItem key={condition} value={condition}>
+                {condition}
+              </SelectItem>
+            ))}
+          </Select>
+          {accidentData.shipCondition === 'Otras circunstancias' && (
+            <Input
+              onChange={e => setSecialCondition(e.target.value)}
+              className='mt-4'
+              label='Ingrese la condición'
+            />
+          )}
         </CardBody>
         <Divider />
         <WitnessesComponent
@@ -303,10 +336,7 @@ export const FormReports = () => {
               }
             >
               {cardinalDirections.map(direction => (
-                <SelectItem
-                  key={direction}
-                  value={direction}
-                >
+                <SelectItem key={direction} value={direction}>
                   {direction}
                 </SelectItem>
               ))}
@@ -332,10 +362,7 @@ export const FormReports = () => {
                 }
               >
                 {cardinalDirections.map(direction => (
-                  <SelectItem
-                    key={direction}
-                    value={direction}
-                  >
+                  <SelectItem key={direction} value={direction}>
                     {direction}
                   </SelectItem>
                 ))}
@@ -363,10 +390,7 @@ export const FormReports = () => {
               }
             >
               {cardinalDirections.map(direction => (
-                <SelectItem
-                  key={direction}
-                  value={direction}
-                >
+                <SelectItem key={direction} value={direction}>
                   {direction}
                 </SelectItem>
               ))}
@@ -404,7 +428,7 @@ export const FormReports = () => {
                 >
                   {hydrocarbonsTypes.map(selection => (
                     <SelectItem
-                      key={`hydrocarbonsTypesSelect-${selection}`}
+                      key={selection}
                       value={selection}
                     >
                       {selection}
@@ -506,7 +530,7 @@ export const FormReports = () => {
         </CardBody>
         <Divider />
         <CardFooter className=' flex gap-3 justify-end'>
-          <Button onClick={submitData}>Enviar</Button>
+          <Button onClick={submitData} isLoading={sendingData}>Abrir nuevo caso</Button>
         </CardFooter>
       </form>
     </Card>
