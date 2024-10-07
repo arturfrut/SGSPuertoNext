@@ -20,9 +20,9 @@ import { AccidentReportCard } from './accidentReportCard'
 import AccidentModal from './accidentModal'
 
 interface HistoryDataInterface {
-  description: string; // Descripción del mantenimiento realizado
-  date: Date; // Fecha en la que se realizó el mantenimiento
-  type: string; // Tipo de tarea, en este caso siempre 'mantenimiento'
+  description: string // Descripción del mantenimiento realizado
+  date: Date // Fecha en la que se realizó el mantenimiento
+  type: string // Tipo de tarea, en este caso siempre 'mantenimiento'
 }
 export const AccidentReports = () => {
   const { selectedShip } = useGlobalStore()
@@ -36,14 +36,15 @@ export const AccidentReports = () => {
     const year = date.getUTCFullYear()
     return `${day} - ${month} - ${year}`
   }
-  const {accidents, loadingAccidents} = useAccidentsByShip(8123123)
-  console.log('adadasdasd')
-  console.log('accidents',accidents)
+  const { accidents, loadingAccidents } = useAccidentsByShip(8123123)
 
-
-
-  
-  const ordersTabHeader = ['Estado', 'Barco','Empresa', 'Fecha', 'Última Modificación', 'Ver/Modificar']
+  const ordersTabHeader = [
+    'Estado',
+    'Barco',
+    'Fecha',
+    'Última Modificación',
+    'Ver/Modificar'
+  ]
 
   return (
     <Card className='w-full  md:px-10 md:py-5'>
@@ -61,44 +62,39 @@ export const AccidentReports = () => {
       </CardHeader>
       <Divider className='mb-4' />
       <CardBody>
-
         <AccidentReportCard />
-        <Table aria-label='Example static collection table w-full' isStriped className='my-4'>
-
-          
+        <Table
+          aria-label='Example static collection table w-full'
+          isStriped
+          className='my-4'
+        >
           <TableHeader>
             {ordersTabHeader.map(header => (
               <TableColumn key={header}>{header}</TableColumn>
             ))}
           </TableHeader>
-          <TableBody
-            emptyContent={
-              'No hay accidentes registrados'
-            }
-          >
+          <TableBody emptyContent={'No hay accidentes registrados'}>
             {
               // !isLoading &&
               accidents?.map((element, index) => (
                 <TableRow key={index}>
-                  <TableCell>{element?.open_case ? 'En proceso' : 'Terminado'}</TableCell>
-                  <TableCell>{element.ship_number}</TableCell>
-                  <TableCell>Empresa</TableCell>
+                  <TableCell>
+                    {element?.open_case ? 'En proceso' : 'Terminado'}
+                  </TableCell>
+                  <TableCell>{element.shipData.ship_name}</TableCell>
                   <TableCell>{element.date}</TableCell>
-                  <TableCell>{element.date} </TableCell> 
+                  <TableCell>{element.date} </TableCell>
                   {/* <TableCell><AccidentModal accidentData={element} /></TableCell>  */}
-                  <TableCell><AccidentModal accidentData={element}/></TableCell> 
+                  <TableCell>
+                    <AccidentModal accidentData={element} />
+                  </TableCell>
                   {/* hacer función para que tome última modificación */}
                 </TableRow>
               ))
             }
           </TableBody>
         </Table>
-
-
       </CardBody>
     </Card>
   )
 }
-
-
-
