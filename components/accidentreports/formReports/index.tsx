@@ -38,6 +38,7 @@ import {
 import { ChangeEvent, useState } from 'react'
 import { useFormReport } from './useFormReport'
 import WitnessesComponent from './WitnessComponent'
+import axios from 'axios'
 
 export interface AccidentData {
   accidentType: string[]
@@ -84,19 +85,20 @@ export const FormReports = () => {
     return `${year}-${month}-${day}T${hour}:${minute}`
   }
 
-  const { tripulation, selectedShip } = useGlobalStore()
+  const { tripulation, selectedShip,userData } = useGlobalStore()
   const shipName = selectedShip?.name
   const shipNumber = selectedShip?.idOMI
   const today = parseAbsoluteToLocal(new Date().toISOString())
   const [specialCondition, setSecialCondition] = useState(null)
   const { signatures, handleSaveSignature } = useSignModal()
+  const [sendingData, setSendingData] = useState(false)
   const [accidentData, setAccidentData] = useState({
     accidentType: [''],
     date: formattedDate(today),
     place: '',
     LEId: '',
     LEname: '',
-    whitness: [],
+    whitness: null,
     whitnessIds: [],
     windPower: null,
     windDirection: null,
@@ -180,19 +182,24 @@ export const FormReports = () => {
   }
 
   const submitData = async () => {
-    console.log({
-      ...accidentData,
-      shipCondition: specialCondition ?? accidentData.shipCondition
-    })
-    // try {
-    //   const submitData = { ...signatures, shipNumber, ...accidentData, shipCondition: specialCondition ?? accidentData.shipCondition }
-    //   const response = await axios.post('/api/register_accident/', submitData)
-    //   console.log('Data submitted:', response.data)
-    //   alert('Accidente registrado con éxito')
-    // } catch (error) {
-    //   alert('Error registrando accidente')
-    //   console.error('Error submitting data:', error)
-    // }
+    setSendingData(true)
+    try {
+      const submitData = {
+        chargedBy: userData.id,
+        ...signatures,
+        shipNumber,
+        ...accidentData,
+        shipCondition: specialCondition ?? accidentData.shipCondition
+      }
+      const response = await axios.post('/api/register_accident/', submitData)
+      console.log('Data submitted:', response.data)
+      alert('Accidente registrado con éxito')
+    } catch (error) {
+      alert('Error registrando accidente')
+      console.error('Error submitting data:', error)
+    }
+    setSendingData(false)
+
   }
 
   return (
@@ -421,7 +428,7 @@ export const FormReports = () => {
                 >
                   {hydrocarbonsTypes.map(selection => (
                     <SelectItem
-                      key={`hydrocarbonsTypesSelect-${selection}`}
+                      key={selection}
                       value={selection}
                     >
                       {selection}
@@ -523,7 +530,7 @@ export const FormReports = () => {
         </CardBody>
         <Divider />
         <CardFooter className=' flex gap-3 justify-end'>
-          <Button onClick={submitData}>Enviar</Button>
+          <Button onClick={submitData} isLoading={sendingData}>Abrir nuevo caso</Button>
         </CardFooter>
       </form>
     </Card>

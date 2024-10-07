@@ -1,4 +1,5 @@
 'use client'
+import useAccidentsByShip from '@/app/hooks/useAccidentsByShip'
 import useGlobalStore from '@/stores/useGlobalStore'
 import {
   Card,
@@ -16,6 +17,7 @@ import {
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { AccidentReportCard } from './accidentReportCard'
+import AccidentModal from './accidentModal'
 
 interface HistoryDataInterface {
   description: string; // Descripción del mantenimiento realizado
@@ -34,31 +36,14 @@ export const AccidentReports = () => {
     const year = date.getUTCFullYear()
     return `${day} - ${month} - ${year}`
   }
+  const {accidents, loadingAccidents} = useAccidentsByShip(8123123)
+  console.log('adadasdasd')
+  console.log('accidents',accidents)
 
-  useEffect(() => {
-    const fetchMaintenanceData = async () => {
-      try {
-        const response = await axios.get(
-          `/api/get_maintenance_history/${selectedShip?.idOMI}`
-        )
-        const data = response.data
-        setHistoryData(
-              // @ts-ignore
 
-          data.map(element => ({ ...element, date: formatDate(element.date) }))
-        )
-        console.log(data)
-      } catch (error) {
-        console.error('Error fetching history data:', error)
-      }
-    }
 
-    if (selectedShip?.idOMI) {
-      fetchMaintenanceData()
-    }
-  }, [selectedShipOmi])
-
-  const ordersTabHeader = ['estado', 'tipo','descripcion', 'fecha']
+  
+  const ordersTabHeader = ['Estado', 'Barco','Empresa', 'Fecha', 'Última Modificación', 'Ver/Modificar']
 
   return (
     <Card className='w-full  md:px-10 md:py-5'>
@@ -79,6 +64,8 @@ export const AccidentReports = () => {
 
         <AccidentReportCard />
         <Table aria-label='Example static collection table w-full' isStriped className='my-4'>
+
+          
           <TableHeader>
             {ordersTabHeader.map(header => (
               <TableColumn key={header}>{header}</TableColumn>
@@ -86,24 +73,28 @@ export const AccidentReports = () => {
           </TableHeader>
           <TableBody
             emptyContent={
-              'No hay capacitaciones registradas'
-
-              // isLoading ? 'Cargando data...' : 'No hay capacitaciones registradas'
+              'No hay accidentes registrados'
             }
           >
             {
               // !isLoading &&
-              historyData.map((element, index) => (
+              accidents?.map((element, index) => (
                 <TableRow key={index}>
-                  <TableCell>{element.type}</TableCell>
-                  <TableCell>reparación</TableCell>
-                  <TableCell>{element.description}</TableCell>
-                  <TableCell>20/12/24</TableCell>
+                  <TableCell>{element?.open_case ? 'En proceso' : 'Terminado'}</TableCell>
+                  <TableCell>{element.ship_number}</TableCell>
+                  <TableCell>Empresa</TableCell>
+                  <TableCell>{element.date}</TableCell>
+                  <TableCell>{element.date} </TableCell> 
+                  {/* <TableCell><AccidentModal accidentData={element} /></TableCell>  */}
+                  <TableCell><AccidentModal accidentData={element}/></TableCell> 
+                  {/* hacer función para que tome última modificación */}
                 </TableRow>
               ))
             }
           </TableBody>
         </Table>
+
+
       </CardBody>
     </Card>
   )

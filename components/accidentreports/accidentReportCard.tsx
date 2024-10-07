@@ -32,7 +32,6 @@ export const AccidentReportCard = () => {
           <Link href='/accidentreports/formReports'>
             <Button>Reportar</Button>
           </Link>
-          {/* TODO: Hacer que me lleve a la pantalla de cerrar comando */}
         </div>
       </CardBody>
     </Card>
