@@ -22,7 +22,6 @@ const useShipsByCompany = (selectedCompany: string | number | undefined) => {
         const res = await axios.get(`/api/get_ships/${selectedCompany}`)
         const data = await res.data
         setShipOptions(data)
-        console.log(data)
       } catch (error) {
         console.error('Error fetching ships:', error)
         setErrorShip(error)

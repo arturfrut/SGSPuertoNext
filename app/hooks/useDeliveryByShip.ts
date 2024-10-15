@@ -53,7 +53,6 @@ const useDeliveryByShip = (selectedShip: string | number) => {
         const data = await res.data
         setDelivery(processData(data.basicData))
         setLastCharge(data.lastCharge)
-        console.log(data)
       } catch (error) {
         console.error('Error fetching ships:', error)
         setErrorDelivery(error)

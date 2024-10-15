@@ -69,7 +69,6 @@ const useAccidentsByShip = (shipId: string | number | undefined) => {
         const res = await axios.get(`/api/get_accidents/${shipId}`)
         const data = await res.data
         setAccidents(data)
-        console.log(data)
       } catch (error) {
         console.error('Error fetching ships:', error)
         setErrorAccidents(error)

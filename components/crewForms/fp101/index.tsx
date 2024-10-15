@@ -2,32 +2,43 @@
 import SignModal from '@/components/signModal'
 import useSignModal from '@/components/signModal/useSignModal'
 import { SignatureChecker } from '@/components/signatureChecker'
-import { Card, CardBody, Divider, Input } from '@nextui-org/react'
+import useGlobalStore from '@/stores/useGlobalStore'
+import { generateExpirationDate } from '@/utils/generateExpirationDateUploadImage'
+import { Button, Card, CardBody, CardFooter, Divider } from '@nextui-org/react'
 import axios from 'axios'
 import { useState } from 'react'
 
 export const Fp101 = () => {
   const { signatures, handleSaveSignature } = useSignModal()
-  const sailorName = 'Juan Martinez'
-  const sailorRol = 'Marinero'
-  const sailor_book_number = '22232'
-  const inTripDate = '08-10-2024' // Esta fecha se genera cuando se suma marinero a la tripulación
-  const [supervisor, setSupervisor] = useState<string | null>()
+  const { selectedTripulant, userId } = useGlobalStore()
+  const [waitingResponse, setWaitingResponse] = useState(false)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSupervisor(e.target.value)
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submitData = async (e: React.FormEvent) => {
     e.preventDefault()
-    // try {
-    //   const response = await axios.put('/api/register_ship', ship)
-    //   console.log('Ship created successfully:', response.data)
-    //   alert('Barco registrado')
-    // } catch (error) {
-    //   console.error('Error creating ship:', error)
-    //   alert('Error al registrar barco')
-    // }
+    if (!signatures) {
+      alert('Debes firmar el documento')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('doc_type', 'politicsSigned')
+    formData.append('charged_by', userId.toString())
+    formData.append('expiration_date', generateExpirationDate())
+    formData.append(
+      'sailor_book_number',
+      selectedTripulant.sailor_book_number.toString()
+    )
+    formData.append('sign', signatures.sailorSign)
+    try {
+      setWaitingResponse(true)
+      const response = await axios.post('/api/upload_image', formData)
+      alert('Documento registrado')
+      setWaitingResponse(false)
+    } catch (error) {
+      console.error('Error creating document:', error)
+      alert('Error al registrar documento')
+      setWaitingResponse(false)
+    }
   }
 
   // const isSpecial =
@@ -36,7 +47,7 @@ export const Fp101 = () => {
   //   sailorRol === 'Guardia'
 
   return (
-    <Card className='w-full md:w-2/3 md:px-10 md:py-5'>
+    <Card className='w-full md:mx-8 p-4 '>
       <CardBody className='my-4'>
         <p className='text-2xl text-center mb-4 underline'>
           POLÍTICA DE SEGURIDAD, PROTECCIÓN AMBIENTAL, NO DISCRIMINACIÓN Y NO
@@ -166,11 +177,10 @@ export const Fp101 = () => {
       <Divider />
       <CardBody className=' gap-4 mt-3'>
         <div className='w-full  '>
-          <p className='text-xl  my-4'>
-            {'Adición a la tripulación: ' + inTripDate}
+          <p className='text-2xl  my-4'>
+            {'Nombre tripulante: ' + selectedTripulant.name}
           </p>
-          <p className='text-2xl  my-4'>{'Nombre tripulante: ' + sailorName}</p>
-          <p className='text-2xl my-4'>{'Puesto: ' + sailorRol}</p>
+          <p className='text-2xl my-4'>{'Puesto: ' + selectedTripulant.rol}</p>
         </div>
         <div className='w-full md:w-1/3 flex items-center gap-5'>
           <SignModal
@@ -179,16 +189,7 @@ export const Fp101 = () => {
           />
           <SignatureChecker status={signatures?.sailorSign} />
         </div>
-        {/* {isSpecial && (
-          <Input
-            placeholder={'Persona encargada de realizar su familiarización'}
-            value={supervisor ?? ''}
-            onChange={handleInputChange}
-            className='mb-4 w-1/3'
-            label='Persona encargada de realizar su familiarización'
-            labelPlacement={'outside'}
-          />
-        )} */}
+
 
         <Divider />
         <p className='text-sm'>
@@ -199,7 +200,17 @@ export const Fp101 = () => {
           Nacional”. Leyes N° 23.592 Penalización Actos discriminatorios y
           N°24.515 Creación del INADI.
         </p>
+        <Divider />
       </CardBody>
+      <CardFooter className='flex justify-end'>
+        <Button
+          onClick={submitData}
+          isLoading={waitingResponse}
+          className=' bg-warning-400 text-black'
+        >
+          Enviar formulario
+        </Button>
+      </CardFooter>
     </Card>
   )
 }

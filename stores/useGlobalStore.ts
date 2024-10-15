@@ -1,4 +1,3 @@
-import { mockTripulation } from '@/mocks/crewListMock'
 import { create } from 'zustand'
 import { persist, PersistStorage } from 'zustand/middleware'
 
@@ -13,26 +12,42 @@ export interface Ship {
   // Puedes añadir más propiedades según tu estructura de datos
 }
 
-interface TripulationExpirationsInterface {
-  sailor_book_first: string
-  renovation: string
-  medical_certification: string | null
-  cense: string | null
-  stcw: string | null
+export interface DocumentData {
+  doc_type: string
+  charged_date: string // o Date si prefieres usar objetos Date
+  expiration_date: string // o Date si prefieres usar objetos Date
+  sailor_book_number: number | string
+  img_url: string | null // Considera que puede ser nulo como en tu JSON
+  sign?: string // Si sign no es obligatorio, puede ser opcional
+  charged_by: number
+}
+
+interface SailorBookData {
+  sailor_book_first: DocumentData[]
+  renovation: DocumentData[]
+  medical_certification: DocumentData[]
+  cense: DocumentData[]
+  stcw: DocumentData[]
+}
+
+interface ProvisoryCardData {
+  provisory_sailor_book_first: DocumentData[]
+  provisory_renovation: DocumentData[]
+  provisory_medical_certification: DocumentData[]
+  provisory_cense: DocumentData[]
+  provisory_stcw: DocumentData[]
 }
 
 export interface TripulationMemberInterface {
   sailor_book_number: number
   name: string
-  rol: string
-  observationsNumber: number
-  documentsRegisterId: number
-  sailorBookData?: TripulationExpirationsInterface | {} // Permitimos objeto vacío
-  provisory_card?: TripulationExpirationsInterface
-  politicsSigned: boolean
-  familiarizationSigned: boolean
-  protectionExpiration: string
-  expiration_controls: TripulationExpirationsInterface
+  rol?: string
+  sailorBookData?: SailorBookData
+  provisory_card?: ProvisoryCardData
+  politicsSigned?: DocumentData[]
+  familiarizationSigned?: DocumentData[]
+  protectionExpiration?: DocumentData[] // REVISAR ESTA PARTE
+  expiration_controls?: DocumentData[] // REVISAR ESTA PARTE
 }
 
 export interface CompanyInterface {
@@ -57,16 +72,26 @@ export interface UserInfo {
   ships_in_charge: number[]
 }
 
+interface SelectedTripulantInterface {
+  sailor_book_number: number
+  name: string
+  rol?: string
+}
+
 interface State {
+  userId: number | null
   userData: UserInfo | null
   roles: string[] | null
   rolSelected: string | null
   ships: Ship[]
   selectedShip: Ship | null
   tripulation: TripulationMemberInterface[]
-  idCaptain: number | null
+  idCaptain: number | null // cambiar por idUser
   companyInUse: CompanyInterface | null
   companies: CompanyInterface[]
+  selectedTripulant: SelectedTripulantInterface | null
+  setSelectedTripulant: (tripulant: SelectedTripulantInterface) => void
+  setUserId: (userId: number) => void
   setCompanyInUse: (company: CompanyInterface) => void
   setCompanies: (companies: CompanyInterface[]) => void
   setRoles: (rol: string[]) => void
@@ -110,24 +135,31 @@ const useGlobalStore = create<State>()(
         }),
 
       // Estados persistidos en localStorage
+      // userId: null,
+
+      userId: 2, // RECORDAR HACER ESTO DINÁMICO
+
+      setUserId: userId => set({ userId }),
       companyInUse: null,
-      setCompanyInUse: companyInUse => ({ companyInUse }),
+      setCompanyInUse: companyInUse => set({ companyInUse }),
       companies: [],
       setCompanies: companies => set({ companies }),
       roles: [],
       setRoles: roles => set({ roles }),
       rolSelected: null,
-      setRolSelected: rol => set({ rolSelected: rol }),
+      setRolSelected: rolSelected => set({ rolSelected }),
       userData: null,
       setUserData: user => set({ userData: user }),
-      tripulation: mockTripulation,
+      tripulation: null,
       setTripulation: tripulation => set({ tripulation }),
       selectedShip: null,
       setSelectedShip: ship => set({ selectedShip: ship }),
       ships: [],
       setShips: ships => set({ ships }),
-      idCaptain: 442, // Setear en login
-      setIdCaptain: idCaptain => set({ idCaptain })
+      idCaptain: 442, // Setear en login   Recordar sacarlo para poner userId
+      setIdCaptain: idCaptain => set({ idCaptain }),
+      selectedTripulant: null,
+      setSelectedTripulant: selectedTripulant => set({ selectedTripulant })
     }),
     {
       name: 'mi-storage', // Nombre del key en localStorage
@@ -138,8 +170,11 @@ const useGlobalStore = create<State>()(
         companies: state.companies,
         companyInUse: state.companyInUse,
         userData: state.userData,
+        userId: state.userId,
         ships: state.ships,
-        selectedShip: state.selectedShip
+        selectedShip: state.selectedShip,
+        selectedTripulant: state.selectedTripulant,
+        tripulation: state.tripulation
       }) // Solo guarda estos estados
     }
   )

@@ -7,7 +7,7 @@ import useGlobalStore from '@/stores/useGlobalStore'
 const useAllCompanies = () => {
   const [loadingCompanies, setLoadingCompanies] = useState(false)
   const [errorCompanies, setErrorCompanies] = useState<unknown>(null)
-  const {setCompanies, companies} = useGlobalStore()
+  const {setCompanies} = useGlobalStore()
 
 
 

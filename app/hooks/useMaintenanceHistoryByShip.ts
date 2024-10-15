@@ -29,7 +29,6 @@ export const useMaintenanceHistoryByShip = (idOmi: string | null | undefined | n
         setHistoryData(
           data.map((element: HistoryDataInterface)=> ({ ...element, date: formatDate(String(element.date)) }))
         )
-        console.log(data)
       } catch (error) {
         console.error('Error fetching history data:', error)
       }

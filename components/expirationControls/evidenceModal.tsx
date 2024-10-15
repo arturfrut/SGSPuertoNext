@@ -151,13 +151,11 @@ const EvidenceModal:FC<EvidenceModalInterface> = ({
           formData,
           config
         )
-        // console.log(Array.from(formData.entries()))
 
         alert('Vencimiento cargado con exito')
         setIsLoading(false)
-        onClose() // Cierra el modal solo si la imagen se sube con éxito
+        onClose() 
       } catch (error) {
-        console.log(Array.from(formData.entries()))
 
         console.error('Error en la solicitud:', error)
         setIsLoading(false)
@@ -360,7 +358,6 @@ const EvidenceModal:FC<EvidenceModalInterface> = ({
                   }
                   className='my-4'
                   onClick={() => {
-                    console.log('images', images)
                     setPageAmmount(pageAmmount + 1)
                   }}
                 >

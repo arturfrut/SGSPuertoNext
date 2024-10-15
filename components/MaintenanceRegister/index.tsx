@@ -1,6 +1,6 @@
 'use client'
 
-import { useMaintenanceRegister } from '@/app/hooks/useMaintenanceRegister'
+import { useMaintenanceRegister } from '@/app/hooks/components/useMaintenanceRegister'
 // FALTA CORREGIR PARA QUE EN CASO DE SUPERPOSICIÓN TOME SOLO EL ÚLTIMO
 
 import { SignatureChecker } from '@/components/signatureChecker'

@@ -29,7 +29,6 @@ export const useOrderRepairByShip = (
         setHistoryData(
           data.map((element: { date: string }) => ({ ...element, date: formatDate(element.date) }))
         )
-        console.log('maintenance', data)
       } catch (error) {
         console.error('Error fetching history data:', error)
       }

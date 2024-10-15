@@ -1,28 +1,13 @@
 import { Card, CardBody } from '@nextui-org/react'
-import axios from 'axios'
-import { useEffect, useState } from 'react'
 import { Community } from '../icons/community'
-import { NewCrewMemberModal } from './NewCrewMemberModal'
+import { useAllSailors } from '@/app/hooks/useAllSailors'
+import { NewCrewMemberModal } from './newCrewMemberModal'
+
 
 export const NewCrewMemberCard = () => {
-  const [searchOptions, setSearchOptions] = useState([{label:'222', value:'222'}])
+  const {searchOptions, loadingSailors } = useAllSailors()
 
-  async function fetchData() {
-    try {
-      const res = await axios.get(`/api/get_sailors_for_search`)
-      const data = await res.data.map((sailor: { name: any; sailor_book_number: any }) => ({
-        label: sailor.name,
-        value: sailor.sailor_book_number,
-      }))
-      setSearchOptions(data)
-    } catch (error) {
-      console.error("Error fetching sailors:", error)
-    } 
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
+  console.log(searchOptions)
 
   return (
     <Card className='bg-danger rounded-xl shadow-md px-3 w-full'>
@@ -46,7 +31,7 @@ export const NewCrewMemberCard = () => {
         <div className='flex gap-2.5 py-2 items-center justify-end'>
           <NewCrewMemberModal
             searchOptions={searchOptions}
-            // loadingOptions={isLoading}
+            loadingOptions={loadingSailors}
           />
         </div>
       </CardBody>
