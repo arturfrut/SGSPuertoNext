@@ -33,7 +33,7 @@ interface ChargeImageModalInterface {
   destination: string
 }
 
-const ChargeImageModal: React.FC<ChargeImageModalInterface> = ({
+const ChargeImageModal2: React.FC<ChargeImageModalInterface> = ({
   id_OMI,
   captainId,
   docType,
@@ -164,4 +164,4 @@ const ChargeImageModal: React.FC<ChargeImageModalInterface> = ({
     </>
   )
 }
-export default ChargeImageModal
+export default ChargeImageModal2

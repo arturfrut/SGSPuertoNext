@@ -1,8 +1,8 @@
 'use client'
 
-import { SignatureChecker } from '@/components/signatureChecker'
-import SignModal from '@/components/signModal'
-import useSignModal from '@/components/signModal/useSignModal'
+// import { SignatureChecker } from '@/components/signatureChecker'
+// import SignModal from '@/components/signModal'
+// import useSignModal from '@/components/signModal/useSignModal'
 import {
   Chip,
   Table,
@@ -12,88 +12,77 @@ import {
   TableHeader,
   TableRow
 } from '@nextui-org/react'
-import { useState } from 'react'
-import ChargeImageModal from './chargeImageModal'
+
 import { SailorBookModal } from './sailorBookModal'
+import useGlobalStore from '@/stores/useGlobalStore'
+import { ChargeSailorBookModal } from './chargeSailorBookModal'
+// import { useState } from 'react'
+import { checkDateForChip } from '@/utils/daysUntilExpiration'
 
 export const SailorBook = () => {
-  const { signatures, handleSaveSignature } = useSignModal()
-  const [sailorBookImg, setSailorBookImg] = useState(null)
-  const [renovationImg, setRenovationImg] = useState(null)
-  const [medicalCertificationImg, setMedicalCertificationImg] = useState(null)
-  const [censeImg, setCenseImg] = useState(null)
-  const [stcw, setStcw] = useState(null)
+  // const { signatures, handleSaveSignature } = useSignModal()
+  const { selectedTripulant, tripulation } = useGlobalStore()
 
-  const id_OMI = 8883339
-  const id_captain = 442
-  const sailorBookNumber = 123456
+  const fullTripulant = tripulation.find(
+    sailor => sailor.sailor_book_number === selectedTripulant.sailor_book_number
+  )
 
   const chargeImages = [
     {
-      chargeDate: 'simula ultima carga',
+      chargeDate:
+        fullTripulant?.sailorBookData?.sailor_book_first[0].expiration_date ??
+        'Sin fecha cargada',
       destination: 'Libreta: Hoja 1 y 2',
       docType: 'sailor_book_first',
       textDescription:
         'Por favor tome una foto en horizontal de las primeras dos páginas de su libreta',
-      id_OMI: id_OMI,
-      sailorBookNumber,
-      captainId: id_captain,
-      selectedFile: sailorBookImg,
-      setSelectedFile: setSailorBookImg,
-      expirationStatus: 'vence en 10 días'
+      chipData: checkDateForChip(fullTripulant?.sailorBookData.sailor_book_first[0].expiration_date)
     },
     {
-      chargeDate: 'simula ultima carga',
+      chargeDate:
+        fullTripulant.sailorBookData?.renovation[0]?.expiration_date ??
+        'Sin fecha cargada',
       destination: 'Libreta: Renovaciones',
       docType: 'renovation',
       textDescription:
-        'Por favor tome una foto en horizontal de las ultimas páginas de su libreta',
-      id_OMI: id_OMI,
-      sailorBookNumber,
-      captainId: id_captain,
-      selectedFile: renovationImg,
-      setSelectedFile: setRenovationImg,
-      expirationStatus: 'vence en 10 días'
+        'Por favor tome una foto en horizontal de las ultimas páginas de su libreta'
+        ,chipData: checkDateForChip(fullTripulant?.sailorBookData?.renovation[0]?.expiration_date)
+
     },
     {
-      chargeDate: 'simula ultima carga',
+      chargeDate:
+        fullTripulant?.sailorBookData?.medical_certification[0]?.expiration_date ??
+        'Sin fecha cargada',
       destination: 'Certificado Médico',
       docType: 'medical_certification',
-      textDescription: 'Por favor tome una foto de su certificado médico',
-      id_OMI: id_OMI,
-      sailorBookNumber,
-      captainId: id_captain,
-      selectedFile: medicalCertificationImg,
-      setSelectedFile: setMedicalCertificationImg,
-      expirationStatus: 'vence en 10 días'
+      textDescription: 'Por favor tome una foto de su certificado médico'
+      ,chipData: checkDateForChip(fullTripulant?.sailorBookData?.medical_certification[0]?.expiration_date)
+
     },
     {
-      chargeDate: 'simula ultima carga',
+      chargeDate:
+        fullTripulant.sailorBookData.cense[0]?.expiration_date ??
+        'Sin fecha cargada',
       destination: 'Censo',
       docType: 'cense',
       textDescription:
-        'Por favor tome una foto en horizontal de los censos en su libreta',
-      id_OMI: id_OMI,
-      sailorBookNumber,
-      captainId: id_captain,
-      selectedFile: censeImg,
-      setSelectedFile: setCenseImg,
-      expirationStatus: 'vence en 10 días'
+        'Por favor tome una foto en horizontal de los censos en su libreta'
+        ,chipData: checkDateForChip(fullTripulant?.sailorBookData?.cense[0]?.expiration_date)
+
     },
     {
-      chargeDate: 'simula ultima carga',
+      chargeDate:
+        fullTripulant.sailorBookData.stcw[0]?.expiration_date ??
+        'Sin fecha cargada',
       destination: 'STCW/95',
       docType: 'stcw',
-      textDescription: 'Por favor tome una foto completa del certificado',
-      id_OMI: id_OMI,
-      sailorBookNumber,
-      captainId: id_captain,
-      selectedFile: stcw,
-      setSelectedFile: setStcw,
-      expirationStatus: 'vence en 10 días'
+      textDescription: 'Por favor tome una foto completa del certificado'
+      ,chipData: checkDateForChip(fullTripulant?.sailorBookData?.stcw[0]?.expiration_date)
+
     }
+    
   ]
-  const sailorsTabHeader = ['Fecha de carga', 'Estado', 'Sección', '', 'Status']
+  const sailorsTabHeader = ['Fecha de carga', 'Estado', 'Sección', '']
   return (
     <div className='h-full lg:px-6 w-full'>
       <SailorBookModal initialOpen={true} />
@@ -118,15 +107,15 @@ export const SailorBook = () => {
                   <TableRow key={index}>
                     <TableCell>{row.chargeDate}</TableCell>
                     <TableCell>
-                      <Chip color='danger'>{row.expirationStatus} </Chip>
+                      <Chip color={row.chipData.color}>{row.chipData.text} </Chip>
                     </TableCell>
                     <TableCell>{row.destination}</TableCell>
                     <TableCell className='cursor-pointer'>
-                      {/* <ChargeImageModal {...row} /> */}
-                      Corregir componente carga imagen
-                    </TableCell>
-                    <TableCell>
-                      <SignatureChecker status={''} />
+                      <ChargeSailorBookModal
+                        docType={row.docType}
+                        destination={row.destination}
+                        textDescription={row.textDescription}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -134,13 +123,13 @@ export const SailorBook = () => {
             </Table>
           </div>
           <div className='w-full flex justify-end'>
-            <div className='flex items-center gap-5'>
+            {/* <div className='flex items-center gap-5'>
               <SignModal
                 onSave={(data: any) => handleSaveSignature(data, 'witnessSign')}
                 title='Firma Tripulante'
               />
               <SignatureChecker status={signatures?.witnessSign} />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -75,7 +75,8 @@ export const SidebarWrapper = () => {
                     color='warning'
                     className='max-w-xs'
                     onChange={handleSelectionRol}
-                    value={rolSelected ?? ''}
+                    
+                    value={rolSelected??'casa'}
                     aria-label='rolSelected'
                   >
                     {roles ? (

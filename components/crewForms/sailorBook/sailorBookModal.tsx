@@ -26,7 +26,7 @@ export const SailorBookModal = ({ initialOpen = false }) => {
           {onClose => (
             <>
               <ModalHeader className='flex flex-col gap-1'>
-                Modal Title
+                Advertencia
               </ModalHeader>
               <ModalBody>
                 <p>

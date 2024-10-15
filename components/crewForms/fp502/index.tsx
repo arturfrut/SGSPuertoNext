@@ -1,6 +1,5 @@
 "use client";
-import { CrossIcon } from "@/components/icons/crossIcon";
-import { FR802Values } from "@/types/FR802";
+
 import {
   Button,
   Card,
@@ -84,13 +83,7 @@ export const Fp502 = (data: { status: string; ncn: number }) => {
       date: string;
     };
 
-    // --------------------------------------
-    // --------------------------------------
-    // --------------------------------------
-    // --------------------------------------
-    // --------------------------------------
-    // --------------------------------------
-    // --------------------------------------
+
 
     accidentDescription: {
       accidentTime: {

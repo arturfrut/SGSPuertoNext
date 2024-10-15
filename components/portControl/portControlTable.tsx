@@ -1,4 +1,4 @@
-import { usePortControl } from '@/app/hooks/usePortControl'
+import { usePortControl } from '@/app/hooks/components/usePortControl'
 import {
   Table,
   TableHeader,

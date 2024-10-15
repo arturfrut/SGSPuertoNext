@@ -36,6 +36,19 @@ Sistema de tripulantes casi completo
 Cambiar captainId por userId en todas las bdd
 Manejo de formularios compartidos  -> alerta climática, accidente, peticiones de jefe de máquinas
 
+
+
+
+
+
 Errores:
     Limpieza de estados (cuando un vuelve a abrir formulario)
     Control de puerto no toma páginas anteriores a la última
+
+
+
+FP 101, dura un año? que pasa si se baja del barco? Lo puse para que dure un año
+
+en familiarización se estan guardando la posibilidad de casos especiales ( capitan, jefe de maquinas, guardia) pero no se muestran
+
+Falta validación de supervisor especial en familiarización
