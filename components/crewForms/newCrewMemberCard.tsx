@@ -1,7 +1,7 @@
 import { Card, CardBody } from '@nextui-org/react'
 import { Community } from '../icons/community'
-import { NewCrewMemberModal } from './NewCrewMemberModal'
 import { useAllSailors } from '@/app/hooks/useAllSailors'
+import { NewCrewMemberModal } from './newCrewMemberModal'
 
 
 export const NewCrewMemberCard = () => {
