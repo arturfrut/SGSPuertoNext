@@ -1,38 +1,32 @@
-'use client'
-
-
+import { SignatureChecker } from '@/components/signatureChecker'
 import SignModal from '@/components/signModal'
 import useSignModal from '@/components/signModal/useSignModal'
-import { SignatureChecker } from '@/components/signatureChecker'
 import { fc501Themes } from '@/constants/formsLists'
 import useGlobalStore from '@/stores/useGlobalStore'
 import { generateExpirationDate } from '@/utils/generateExpirationDateUploadImage'
-// import { dateGeratorWithFormat } from "@/utils/dateFormat";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
   CardHeader,
-  Checkbox,
   Divider,
-  Image,
-  Input,
+  CardBody,
+  Button,
   Table,
-  TableBody,
-  TableCell,
-  TableColumn,
   TableHeader,
-  TableRow
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Checkbox,
+  Input,
+  CardFooter,
+  Image
 } from '@nextui-org/react'
 import axios from 'axios'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
-export const Fp501 = () => {
+export const FamiliarizationForm = () => {
   const { signatures, handleSaveSignature } = useSignModal()
-  const { selectedTripulant, userId } = useGlobalStore()
+  const {  userData,selectedShip } = useGlobalStore()
   const [waitingResponse, setWaitingResponse] = useState(false)
-  const [needSupervisor, setNeedSupervisor] = useState(false)
   const [specialSupervisorName, setSpecialSupervisorName] = useState('')
   const [checkedStates, setCheckedStates] = useState<boolean[]>(
     Array(fc501Themes.length).fill(false)
@@ -43,7 +37,7 @@ export const Fp501 = () => {
     setCheckedStates(updatedCheckedStates)
   }
   const areAllChecked = () => {
-    return checkedStates.every(state => state === true) 
+    return checkedStates.every(state => state === true)
   }
 
   const submitData = async (e: React.FormEvent) => {
@@ -57,22 +51,25 @@ export const Fp501 = () => {
       return
     }
 
+    const apiData = {
+      chargedBy: userData.id,
+      guardName: userData.name,
+      guardSign: signatures.guardSign,
+      expirationDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+      shipIdOmi: selectedShip.idOMI,
+      docType: 'fp501',
 
-    const formData = new FormData()
-    formData.append('doc_type', 'familiarizationSigned')
-    formData.append('charged_by', userId.toString())
-    formData.append('expiration_date', generateExpirationDate())
-    formData.append(
-      'sailor_book_number',
-      selectedTripulant.sailor_book_number.toString()
-    )
-    formData.append('sign', signatures.sailorSign)
-    formData.append('special_sign',signatures.specialSign ?? null)
-    formData.append('special_sign_name', specialSupervisorName )
+
+// FALTA AGREGAR ESTO A BDD, DIFERENCIAR ESTO EN BDD DEL 101 Y AGREGAR A LA TABLA DE ADMIN
+
+      supervisorSign: signatures.specialSign,
+      supervisorName: specialSupervisorName
+    }
+
 
     try {
       setWaitingResponse(true)
-      const response = await axios.post('/api/upload_image', formData)
+      const response = await axios.post('/api/register_guard_101', apiData)
       alert('Documento registrado')
       setWaitingResponse(false)
     } catch (error) {
@@ -83,9 +80,8 @@ export const Fp501 = () => {
   }
   const familiarizationTableHeaders = ['Tema', 'Cumplimiento']
 
-
   return (
-    <Card className='w-full md:mx-8 p-4 '>
+    <>
       <CardHeader className='flex gap-3'>
         <Image
           alt='nextui logo'
@@ -103,8 +99,7 @@ export const Fp501 = () => {
       <Divider />
 
       <CardBody>
-        <p className='mb-4'> Nombre del tripulante: {selectedTripulant.name}</p>
-        <p className='mb-4'> Libreta de embarque: {selectedTripulant.sailor_book_number}</p>
+        <p className='mb-4'> Nombre del tripulante: {userData.name}</p>
         {/* <p className="mb-4"> Fecha: {dateGeratorWithFormat()}</p> */}
         <Divider />
         <p className='my-4'>
@@ -113,15 +108,7 @@ export const Fp501 = () => {
           deben ser cumplimentadas obligatoriamente por cada uno de ellos.
         </p>
       </CardBody>
-      <Divider />
-      <CardBody>
-        <Button
-          className='w-full my-4'
-          onClick={() => setNeedSupervisor(!needSupervisor)}
-        >
-          Presione en caso ser capitán o jefe de máquinas
-        </Button>
-      </CardBody>
+
       <Divider />
       <CardBody>
         <Table
@@ -150,31 +137,28 @@ export const Fp501 = () => {
         </Table>
       </CardBody>
       <CardBody className='flex gap-4'>
-        {needSupervisor && (
-          <div>
-            <p>Nombre de la persona que supervisa:</p>
-            <Input
-              className='my-4'
-              label={'Nombre del supervisor'}
-              type='text'
-              value={specialSupervisorName}
-              onChange={e => setSpecialSupervisorName(e.target.value)}
-            />
-            <div className='w-full md:w-1/2 flex items-center gap-5'>
-              <SignModal
-                onSave={(data: any) => handleSaveSignature(data, 'specialSign')}
-                title='FIRMA SUPERVISOR'
-              />
-              <SignatureChecker status={signatures?.specialSign} />
-            </div>
-          </div>
-        )}
+        <p>Nombre de la persona que supervisa:</p>
+        <Input
+          className='my-4'
+          label={'Nombre del supervisor'}
+          type='text'
+          value={specialSupervisorName}
+          onChange={e => setSpecialSupervisorName(e.target.value)}
+        />
         <div className='w-full md:w-1/2 flex items-center gap-5'>
           <SignModal
-            onSave={(data: any) => handleSaveSignature(data, 'sailorSign')}
-            title='FIRMA TRIPULANTE'
+            onSave={(data: any) => handleSaveSignature(data, 'specialSign')}
+            title='FIRMA SUPERVISOR'
           />
-          <SignatureChecker status={signatures?.sailorSign} />
+          <SignatureChecker status={signatures?.specialSign} />
+        </div>
+
+        <div className='w-full md:w-1/2 flex items-center gap-5'>
+          <SignModal
+            onSave={(data: any) => handleSaveSignature(data, 'guardSign')}
+            title='FIRMA GUARDIA'
+          />
+          <SignatureChecker status={signatures?.guardSign} />
         </div>
       </CardBody>
 
@@ -187,6 +171,6 @@ export const Fp501 = () => {
           Enviar formulario
         </Button>
       </CardFooter>
-    </Card>
+    </>
   )
 }

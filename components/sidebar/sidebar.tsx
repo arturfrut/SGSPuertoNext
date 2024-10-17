@@ -264,16 +264,16 @@ export const SidebarWrapper = () => {
                 href='/port-control'
               />
               <SidebarItem
-                isActive={pathname === '/accounts'}
+                isActive={pathname === '/port-control-politics'}
                 title='FP 101 Políticas'
                 icon={<AccountsIcon />}
-                href='/accounts'
+                href='/port-control-politics'
               />
               <SidebarItem
-                isActive={pathname === '/accounts'}
+                isActive={pathname === '/port-control-familiarization'}
                 title='FP 501 familiarizacion'
                 icon={<AccountsIcon />}
-                href='/accounts'
+                href='/port-control-familiarization'
               />
               <SidebarItem
                 isActive={pathname === '/accounts'}

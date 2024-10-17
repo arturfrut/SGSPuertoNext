@@ -17,7 +17,8 @@ export async function POST(request: Request) {
       TAT,
       potencia,
       company,
-      company_omi
+      company_omi,
+      charged_by
     } = shipData
 
     const { error: insertError } = await supabase.from('ships').insert([
@@ -32,7 +33,8 @@ export async function POST(request: Request) {
         TAT: parseInt(TAT),
         potencia:parseInt(potencia),
         company,
-        company_omi
+        company_omi,
+        charged_by
       }
     ])
 
