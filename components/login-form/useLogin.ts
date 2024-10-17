@@ -4,7 +4,7 @@ import supabase from '@/lib/supabase'
 import { userShipsData } from '@/mocks/localStorageShips'
 import useGlobalStore from '@/stores/useGlobalStore'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
   const mockShips = userShipsData
@@ -20,8 +20,9 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
     userData: userDataStore,
     setShips,
     setRoles,
-    setRolSelected,
+    setRolSelected
   } = useGlobalStore()
+  useAllCompanies()
   const toggleVisibility = () => setIsVisible(!isVisible)
 
   const handleLogin = async () => {
@@ -52,7 +53,6 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
         if (userInfoResponse.status === 200) {
           setUserdataStore(userInfo)
           setShips(mockShips)
-
           if (userInfo.roles.includes(0)) {
             console.log('userINFO', userInfo)
             const devRoles = rolesForDev.map(role => role.rolName)
@@ -72,7 +72,6 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
       }
     }
   }
-
 
   return {
     toggleVisibility,
