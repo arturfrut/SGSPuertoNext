@@ -11,7 +11,7 @@ const useAllCompanies = () => {
     const fetchCompaniesData = async () => {
       setLoadingCompanies(true)
       setErrorCompanies(null)
-
+      console.log('t')
       try {
         const res = await axios.get(`/api/get_companies`)
         const data = await res.data
