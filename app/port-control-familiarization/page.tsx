@@ -1,5 +1,7 @@
+import { Fp501PortControl } from "@/components/portControl/fp501portControl"
+
 const portControlFamiliarization = () => {
-  return <h1>Control de guardía familiarización</h1>
+  return <Fp501PortControl />
 }
 
 export default portControlFamiliarization

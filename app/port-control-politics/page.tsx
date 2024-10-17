@@ -1,6 +1,7 @@
+import { Fp101PortControl } from "@/components/portControl/fp101PortControl"
 
 const portControlPolitics= () => {
-  return <h1>Control de guardía políticas</h1>
+  return <Fp101PortControl />
 }
 
 export default portControlPolitics

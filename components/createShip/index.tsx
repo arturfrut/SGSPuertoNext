@@ -1,5 +1,6 @@
 'use client'
 
+import useGlobalStore from '@/stores/useGlobalStore'
 import {
   Button,
   Card,
@@ -13,7 +14,7 @@ import {
   SelectItem
 } from '@nextui-org/react'
 import axios from 'axios'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 
 export interface ShipInterface {
   ship_name: string
@@ -27,6 +28,7 @@ export interface ShipInterface {
   potencia: string
   company: string
   company_omi?: number | null
+  charged_by?: number
 }
 
 export interface CompanyOptionsInterface {
@@ -47,6 +49,19 @@ export const CreateShip = () => {
     potencia: '',
     company: '',
     company_omi: null
+  }
+
+  const validateShipData = (data: ShipInterface) => {
+    for (const key in data) {
+      if (
+        data[key as keyof ShipInterface] === '' ||
+        data[key as keyof ShipInterface] === null
+      ) {
+        alert(`Falta ${key}`)
+        return false
+      }
+    }
+    return true
   }
 
   const formFields = [
@@ -79,29 +94,9 @@ export const CreateShip = () => {
     { name: 'company_omi' }
   ]
 
+  const { companies, userData } = useGlobalStore()
   const [ship, setShip] = useState<ShipInterface>(createShipInitialValue)
   const [awaitResponse, setAwaitResponse] = useState(false)
-  const [loadingCompany, setLoadingCompany] = useState<boolean>(true)
-  const [companyOptions, setCompanyOptions] = useState<
-    CompanyOptionsInterface[]
-  >([])
-
-  async function fetchData() {
-    try {
-      const res = await axios.get(`/api/get_companies`)
-      const data = await res.data
-      setCompanyOptions(data)
-      console.log(data)
-    } catch (error) {
-      console.error('Error fetching companies:', error)
-    } finally {
-      setLoadingCompany(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -113,7 +108,7 @@ export const CreateShip = () => {
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target
-    const selectedCompany = companyOptions.find(
+    const selectedCompany = companies.find(
       company => company.company_omi === parseInt(value)
     )
 
@@ -125,17 +120,29 @@ export const CreateShip = () => {
       }))
     }
   }
+  const handleShipType =(e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target
+    setShip(prevState => ({
+      ...prevState,
+      ship_type: value // actualizar company
+    })
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setAwaitResponse(true)
-    try {
-      await axios.post('/api/register_ship', ship)
-      alert('Barco registrado')
-    } catch (error) {
-      alert('Error al registrar barco')
+    console.log(ship)
+    if (validateShipData(ship)) {
+      setAwaitResponse(true)
+      const apiData = { ...ship, charged_by: userData.id }
+      try {
+        await axios.post('/api/register_ship', apiData)
+        alert('Barco registrado')
+      } catch (error) {
+        alert('Error al registrar barco')
+      }
+      setAwaitResponse(false)
     }
-    setAwaitResponse(false)
   }
 
   return (
@@ -167,8 +174,8 @@ export const CreateShip = () => {
                     key={name}
                     name={name}
                     placeholder={placeholder}
-                    value={(ship as any)[name]}
-                    onChange={handleSelectChange}
+                    value={name}
+                    onChange={handleShipType}
                     className='mb-4'
                     aria-label={name}
                   >
@@ -200,10 +207,9 @@ export const CreateShip = () => {
             value={ship.company}
             onChange={handleSelectChange}
             className='mb-4'
-            isDisabled={loadingCompany}
             aria-label='Empresa'
           >
-            {companyOptions.map(company => (
+            {companies.map(company => (
               <SelectItem
                 key={company.company_omi}
                 value={company.company_name}

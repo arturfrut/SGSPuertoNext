@@ -2,18 +2,12 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import useGlobalStore from '@/stores/useGlobalStore'
 
-
-
 const useAllCompanies = () => {
   const [loadingCompanies, setLoadingCompanies] = useState(false)
   const [errorCompanies, setErrorCompanies] = useState<unknown>(null)
-  const {setCompanies} = useGlobalStore()
-
-
-
+  const { setCompanies } = useGlobalStore()
 
   useEffect(() => {
-
     const fetchCompaniesData = async () => {
       setLoadingCompanies(true)
       setErrorCompanies(null)
@@ -33,7 +27,6 @@ const useAllCompanies = () => {
     fetchCompaniesData()
   }, [])
 
-  
   return { loadingCompanies, errorCompanies }
 }
 
