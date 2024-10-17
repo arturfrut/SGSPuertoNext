@@ -98,7 +98,7 @@ export const CreateShip = () => {
   const { companies, userData } = useGlobalStore()
   const [ship, setShip] = useState<ShipInterface>(createShipInitialValue)
   const [awaitResponse, setAwaitResponse] = useState(false)
-
+  useAllCompanies()
   
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,13 +123,12 @@ export const CreateShip = () => {
       }))
     }
   }
-  const handleShipType =(e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleShipType = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target
     setShip(prevState => ({
       ...prevState,
       ship_type: value // actualizar company
-    })
-    )
+    }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
