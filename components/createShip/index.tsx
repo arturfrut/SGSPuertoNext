@@ -15,7 +15,7 @@ import {
   SelectItem
 } from '@nextui-org/react'
 import axios from 'axios'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment,  useState } from 'react'
 
 export interface ShipInterface {
   ship_name: string

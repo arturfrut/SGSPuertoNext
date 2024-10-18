@@ -7,7 +7,7 @@ import useGlobalStore from '@/stores/useGlobalStore'
 
 export const Fp501PortControl = () => {
   const { selectedShip } = useGlobalStore()
-  const { guardData, loadingGuard } = useGuard101ByShip(selectedShip.idOMI)
+  const { guardData, loadingGuard } = useGuard101ByShip(selectedShip.idOMI,'fp501')
   return (
     <div className='flex flex-col w-full'>
       <Card className='w-full my-4 md:mx-8 p-4 '>

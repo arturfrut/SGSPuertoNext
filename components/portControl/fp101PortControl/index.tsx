@@ -8,7 +8,7 @@ import { PoliticsGuardPrevData } from './politicsGuardPrevData'
 
 export const Fp101PortControl = () => {
   const { selectedShip } = useGlobalStore()
-  const { guardData, loadingGuard } = useGuard101ByShip(selectedShip.idOMI)
+  const { guardData, loadingGuard } = useGuard101ByShip(selectedShip.idOMI, 'fp101')
 
 
   return (
