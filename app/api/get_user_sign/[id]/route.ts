@@ -14,7 +14,7 @@ export async function GET(req: Request, { params }: Params) {
     const { data, error } = await supabase
       .from('signs')
       .select('*')
-      .eq('id', id)
+      .eq('user_id', id)
 
     if (error) {
       throw error
