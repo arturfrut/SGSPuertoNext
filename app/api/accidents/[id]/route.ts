@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import supabase from '@/lib/supabase';
+interface Params {
+  params: {
+    id: string
+  }
+}
 
-export async function GET(request: Request) {
+export async function GET(req: Request, { params }: Params) {
+  const { id } = params
   try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
 
     if (!id) {
       return NextResponse.json(

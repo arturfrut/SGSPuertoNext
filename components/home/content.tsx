@@ -1,27 +1,29 @@
 'use client'
+import useGlobalStore from '@/stores/useGlobalStore'
 import { Accordion, AccordionItem } from '@nextui-org/react'
+import { DeliveryDataForCompanies } from '../commandDelivery/deliveryDataForCompanies'
 import { ExpirationTable } from '../expirationControls/expirationTable'
 import { MaintenanceHistoryTable } from '../maintenanceHistory/maintenanceHistoryTable'
-import { PortControlTable } from '../portControl/portControlTable'
-import { DeliveryDataForCompanies } from '../commandDelivery/deliveryDataForCompanies'
-import TrainingsTable from '../trainings/TrainingsTable'
-import useGlobalStore from '@/stores/useGlobalStore'
 import { OrderRepairTable } from '../OrderRepair/orderRapairTable'
+import { PortControlTable } from '../portControl/portControlTable'
+import TrainingsTable from '../trainings/TrainingsTable'
+import { ModalCreateSign } from './modalCheckSign'
 
 export const Content = () => {
-  const { userData, rolSelected, selectedShip, ships, companyInUse } =
+  const { userData, rolSelected, selectedShip, ships,userSign } =
     useGlobalStore()
 
+  
   return (
     <div className=' w-full '>
-
+      {!userSign && <ModalCreateSign initialOpen={true} />}
       <h1 className='text-center text-4xl font-bold'>
         Buenas tardes {userData?.name}
       </h1>
       <h4>Rol: {rolSelected ?? 'Sin rol seleccionado'}</h4>
-      <h4>
+      {/* <h4>
         Empresa: {companyInUse?.company_name ?? 'No hay compañia seleccionada'}
-      </h4>
+      </h4> */}
       <h4>
         Barco seleccionado: {selectedShip?.name ?? 'Sin barco seleccionado'}
       </h4>

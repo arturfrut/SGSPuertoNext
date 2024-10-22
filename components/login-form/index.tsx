@@ -8,7 +8,7 @@ import {
   CardHeader,
   Divider,
   Image,
-  Input
+  Input,
 } from '@nextui-org/react'
 import { EyeFilledIcon } from '../icons/EyeFilledIcon'
 import { EyeSlashFilledIcon } from '../icons/EyeSlashFilledIcon'
@@ -19,14 +19,26 @@ interface LoginFormProps {
 }
 
 const LoginForm = ({ setIsLogged }: LoginFormProps) => {
+  
   const {
     toggleVisibility,
     handleLogin,
     userData,
     setUserData,
     error,
-    isVisible
+    isVisible,
+    loadingData
   } = useLogin(setIsLogged)
+
+  
+
+  const handleLoginAndRedirect = async () => {
+    const success = await handleLogin()
+    if (success) {
+      setIsLogged(true)
+      window.location.href = '/'  
+    }
+  }
 
   return (
     <div className='flex justify-center items-center h-screen'>
@@ -87,7 +99,8 @@ const LoginForm = ({ setIsLogged }: LoginFormProps) => {
         </CardBody>
         <Divider />
         <CardFooter className='flex justify-end'>
-          <Button onClick={handleLogin}>Entrar</Button>
+          
+          <Button onClick={handleLoginAndRedirect} isLoading={loadingData} >Entrar</Button>
         </CardFooter>
       </Card>
     </div>

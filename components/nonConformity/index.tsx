@@ -16,7 +16,7 @@ export const NonCoformity = () => {
           width={40}
         />
         <div className='flex flex-col'>
-          <p className='text-xl'>Ordenes y reparaciones</p>
+          <p className='text-xl'>Notas de no conformidad</p>
         </div>
       </CardHeader>
       <Divider className='mb-4' />

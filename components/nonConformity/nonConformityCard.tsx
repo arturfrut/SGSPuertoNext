@@ -30,7 +30,7 @@ export const NonConformityCard = () => {
         <div className='flex gap-2.5 py-2 items-center justify-end'>
           {/* <Button color='warning'>Cerrar comando</Button> */}
           <Link href='/non-conformity/new-note'>
-            <Button>Botón</Button>
+            <Button>Crear</Button>
           </Link>
           {/* TODO: Hacer que me lleve a la pantalla de cerrar comando */}
         </div>

@@ -1,9 +1,14 @@
 import supabase from '@/lib/supabase'
 import { NextResponse } from 'next/server'
+interface Params {
+  params: {
+    id: string
+  }
+}
 
-export async function GET() {
-  const id = 8883339
-
+export async function GET(req: Request, { params }: Params) {
+  const { id } = params
+  
   try {
     // Obtener datos básicos de la tabla `command_delivery_basic_data`
     const { data: basicData, error: basicError } = await supabase
