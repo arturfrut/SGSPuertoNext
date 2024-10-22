@@ -6,6 +6,7 @@ import { SupportIcon } from '../icons/navbar/support-icon'
 import { BurguerButton } from './burguer-button'
 import { NotificationsDropdown } from './notifications-dropdown'
 import { UserDropdown } from './user-dropdown'
+import { DarkModeSwitch } from './darkmodeswitch'
 
 interface Props {
   children: React.ReactNode
@@ -26,7 +27,11 @@ export const NavbarWrapper = ({ children }: Props) => {
         <NavbarContent className='md:hidden'>
           <BurguerButton />
         </NavbarContent>
-          <h3>{`Barco seleccionado: ${selectedShip?.name}` ?? 'SIN BARCO SELECCIONADO'}</h3>
+        <h3>
+          {selectedShip?.name
+            ? `Barco seleccionado: ${selectedShip?.name}`
+            : 'SIN BARCO SELECCIONADO'}
+        </h3>
         <NavbarContent className='w-full max-md:hidden'>
           {/* 
           TODO: Acomodar de forma dinamica
@@ -51,11 +56,11 @@ export const NavbarWrapper = ({ children }: Props) => {
             <span>Feedback?</span>
           </div>
 
-          <NotificationsDropdown />
+          {/* <NotificationsDropdown /> */}
 
-          <div className='max-md:hidden'>
+          {/* <div className='max-md:hidden'>
             <SupportIcon />
-          </div>
+          </div> */}
 
           {/*
           TODO: Decidir si sirve link a algún lado
@@ -66,7 +71,9 @@ export const NavbarWrapper = ({ children }: Props) => {
             <GithubIcon />
           </Link> */}
           <NavbarContent>
-            <UserDropdown />
+            <DarkModeSwitch />
+
+            {/* <UserDropdown /> */}
           </NavbarContent>
         </NavbarContent>
       </Navbar>

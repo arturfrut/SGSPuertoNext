@@ -59,7 +59,7 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
           const signRes = await axios.get(`/api/get_user_sign/${userInfo.id}`)
           if (signRes.status === 200) {
             const { data } = signRes
-            setUserSign(data)
+            setUserSign(data[0])
           } else {
             alert(`Error al obtener su firma`)
             setError('Error fetching sign')
