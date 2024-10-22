@@ -2,7 +2,6 @@ import { Accordion, AccordionItem } from '@nextui-org/react'
 import { AccordionMember } from './accordionMember'
 import useGlobalStore from '@/stores/useGlobalStore'
 import { useCrewMembersAccordion } from '@/app/hooks/components/useCrewMembersAccordion'
-import { mockTrip } from './mockCrew'
 
 const CrewMemberCards = () => {
   useCrewMembersAccordion()
