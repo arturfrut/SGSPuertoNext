@@ -31,7 +31,7 @@ export const WeatherAlert = () => {
           width={40}
         />
         <div className='flex flex-col'>
-          <p className='text-xl'>Ordenes y reparaciones</p>
+          <p className='text-xl'>Alertas climáticas</p>
         </div>
       </CardHeader>
       <Divider className='mb-4' />

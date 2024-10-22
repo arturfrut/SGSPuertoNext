@@ -3,25 +3,27 @@ import { NextResponse } from 'next/server'
 
 interface Params {
   params: {
-    companyId: string
+    id: string
   }
 }
 
 export async function GET(req: Request, { params }: Params) {
-  const { companyId } = params
+  const { id } = params
+
   try {
     const { data, error } = await supabase
       .from('ships')
-      .select('omi, ship_name')
-      .eq('company_omi', companyId)
+      .select('omi, ship_name, company, ship_type, matricula')
+      .eq('omi', id)
 
     if (error) {
       throw error
     }
 
-    return NextResponse.json(data)
+    return NextResponse.json(data[0])
   } catch (error: any) {
     console.error('Error fetching history:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
+

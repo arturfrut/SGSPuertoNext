@@ -27,26 +27,28 @@ import { OrderRepairTable } from '../OrderRepair/orderRapairTable'
 
 const AdminCompanies = () => {
   const { loadingCompanies } = useAllCompanies()
-  const { companies } = useGlobalStore()
+  const { companies, rolSelected } = useGlobalStore()
   const [selectedCompany, setSelectedCompany] = useState<string>()
   const { shipOptions, loadingShip } = useShipsByCompany(selectedCompany)
   const [selectedShip, setSelectedShip] = useState<ShipOptionsInterface>()
 
   return (
     <div className=' w-full '>
-      <Select
-        label='Empresas'
-        className='mb-4'
-        disabled={loadingCompanies}
-        onChange={e => setSelectedCompany(e.target.value)}
-      >
-        {companies.map(company => (
-          <SelectItem key={company.company_omi} value={company.company_omi}>
-            {company.company_name}
-          </SelectItem>
-        ))}
-      </Select>
-      <Select className='mb-4' label='Barcos' disabled={loadingShip}>
+      {rolSelected === 'administrador' && (
+        <Select
+          label='Empresas'
+          className='mb-4'
+          disabled={loadingCompanies}
+          onChange={e => setSelectedCompany(e.target.value)}
+        >
+          {companies.map(company => (
+            <SelectItem key={company.company_omi} value={company.company_omi}>
+              {company.company_name}
+            </SelectItem>
+          ))}
+        </Select>
+      )}
+      <Select className='mb-4' label='Barcos' disabled={loadingShip} isLoading={loadingShip}>
         {shipOptions.map(ship => (
           <SelectItem
             key={ship?.omi}
@@ -97,7 +99,7 @@ const AdminCompanies = () => {
             </Accordion>
           </AccordionItem>
           <AccordionItem key='2' aria-label='Accordion 2' title='Vencimientos'>
-            <ExpirationTable idOmi={selectedShip?.omi}  />
+            <ExpirationTable idOmi={selectedShip?.omi} />
           </AccordionItem>
           <AccordionItem
             key='3'

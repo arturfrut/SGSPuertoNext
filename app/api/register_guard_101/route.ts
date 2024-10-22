@@ -1,21 +1,24 @@
 import supabase from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
-
 export async function POST(request: Request) {
   try {
-    const data101 = await request.json()
+    const dataForm = await request.json()
 
     const { error: insertError } = await supabase
       .from('guards_101_501')
-      .insert([{
-        charged_by: data101.chargedBy,
-        guard_name: data101.guardName,
-        guard_sign: data101.guardSign,
-        expiration_date: data101.expirationDate,
-        ship_id_omi: data101.shipIdOmi,
-        docType: data101.docType,
-      }])
+      .insert([
+        {
+          charged_by: dataForm.chargedBy,
+          guard_name: dataForm.guardName,
+          guard_sign: dataForm.guardSign,
+          expiration_date: dataForm.expirationDate,
+          ship_id_omi: dataForm.shipIdOmi,
+          doc_type: dataForm.docType,
+          supervisorName: dataForm.supervisorName ?? null,
+          supervisorSign: dataForm.supervisorSign ?? null
+        }
+      ])
 
     if (insertError) {
       throw insertError

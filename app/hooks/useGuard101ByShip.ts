@@ -10,9 +10,11 @@ export interface GuardInfo {
   charged_date: string // ISO 8601 date format
   expiration_date: string // 'YYYY-MM-DD' format
   docType: string
+  supervisorSign: string
+  supervisorName: string
 }
 
-const useGuard101ByShip = (shipId: string | number | undefined) => {
+const useGuard101ByShip = (shipId: string | number | undefined, docType: string| undefined) => {
   const [guardData, setGuardData] = useState<GuardInfo>(null)
   const [loadingGuard, setLoadingGuard] = useState(false)
   const [errorGuard, setErrorGuard] = useState<unknown>(null)
@@ -25,7 +27,7 @@ const useGuard101ByShip = (shipId: string | number | undefined) => {
 
       try {
         const res = await axios.get(
-          `/api/get_port_control_101_by_ship/${shipId}`
+          `/api/get_port_control_101_by_ship/${shipId}/${docType}`
         )
         const data = await res.data
         setGuardData(data)

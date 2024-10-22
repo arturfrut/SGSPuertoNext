@@ -8,7 +8,6 @@ export interface Ship {
   company: string
   matricula: number
   type: string
-  actualTripulationID?: number
   // Puedes añadir más propiedades según tu estructura de datos
 }
 
@@ -78,6 +77,7 @@ interface SelectedTripulantInterface {
   rol?: string
 }
 
+
 interface State {
   userId: number | null
   userData: UserInfo | null
@@ -90,6 +90,8 @@ interface State {
   companyInUse: CompanyInterface | null
   companies: CompanyInterface[]
   selectedTripulant: SelectedTripulantInterface | null
+  userSign: string
+  setUserSign: (userSign: string) => void
   setSelectedTripulant: (tripulant: SelectedTripulantInterface) => void
   setUserId: (userId: number) => void
   setCompanyInUse: (company: CompanyInterface) => void
@@ -138,7 +140,6 @@ const useGlobalStore = create<State>()(
       // userId: null,
 
       userId: 2, // RECORDAR HACER ESTO DINÁMICO
-
       setUserId: userId => set({ userId }),
       companyInUse: null,
       setCompanyInUse: companyInUse => set({ companyInUse }),
@@ -159,7 +160,9 @@ const useGlobalStore = create<State>()(
       idCaptain: 442, // Setear en login   Recordar sacarlo para poner userId
       setIdCaptain: idCaptain => set({ idCaptain }),
       selectedTripulant: null,
-      setSelectedTripulant: selectedTripulant => set({ selectedTripulant })
+      setSelectedTripulant: selectedTripulant => set({ selectedTripulant }),
+      userSign: null,
+      setUserSign: userSign => set({ userSign })
     }),
     {
       name: 'mi-storage', // Nombre del key en localStorage
@@ -174,7 +177,8 @@ const useGlobalStore = create<State>()(
         ships: state.ships,
         selectedShip: state.selectedShip,
         selectedTripulant: state.selectedTripulant,
-        tripulation: state.tripulation
+        tripulation: state.tripulation,
+        userSign: state.userSign
       }) // Solo guarda estos estados
     }
   )

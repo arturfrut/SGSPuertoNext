@@ -27,6 +27,9 @@ export const FamiliarizationGuardPrevData: FC<FamiliarizationGuardInterface> = (
             Nombre: <span>{guardData.guard_name}</span>
           </h1>
           <h1>
+            Encargado de familiarización: <span>{guardData.supervisorName}</span>
+          </h1>
+          <h1>
             Fecha de carga de FP101 políticas:{" "}
             <span>{guardData.charged_date}</span>
           </h1>

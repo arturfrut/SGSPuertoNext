@@ -13,15 +13,15 @@ export interface UserInterface {
   roles: string[]
   comments: string
   password: string
-  company?: string // Arreglo para manejar las compañías seleccionadas
-  ships_in_charge?: string[] // Arreglo para manejar los barcos seleccionados
+  company?: string
+  ships_in_charge?: string[]
 }
 
-
 export async function POST(request: Request) {
+  let user = null; // Para almacenar el usuario creado en caso de error
+
   try {
     const userData: UserInterface = await request.json();
-
     const {
       chargedBy,
       name,
@@ -35,20 +35,24 @@ export async function POST(request: Request) {
       comments,
       ships_in_charge,
       company,
-      password = ''
+      password,
     } = userData;
+
+    if (!email || !password) {
+      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
+    }
 
     // Crear el usuario en la autenticación de Supabase
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
-      password
+      password,
     });
 
     if (signUpError) {
-      throw signUpError;
+      return NextResponse.json({ error: signUpError.message }, { status: 400 });
     }
 
-    const user = data.user;
+    user = data.user;
 
     if (!user) {
       throw new Error('User creation failed');
@@ -76,82 +80,27 @@ export async function POST(request: Request) {
       ]);
 
     if (insertError) {
-      // Si la inserción falla, eliminar el usuario creado en Supabase Auth
-      const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
-
-      if (deleteError) {
-        console.error('Failed to delete user from Supabase Auth:', deleteError);
-      }
-
-      throw insertError; // Lanzar el error para que sea capturado en el bloque catch
+      throw new Error(insertError.message); // Lanza el error para manejarlo más adelante
     }
 
     return NextResponse.json({ message: 'User registered successfully' });
   } catch (error: any) {
     console.error('Error registering user:', error);
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+
+    // Si ya se creó el usuario pero falla la inserción en la DB, eliminarlo de Supabase Auth
+    if (user) {
+      try {
+        const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+        if (deleteError) {
+          console.error('Failed to delete user from Supabase Auth:', deleteError);
+        } else {
+          console.log('User deleted from Supabase Auth after failure.');
+        }
+      } catch (deleteException) {
+        console.error('Exception during user deletion:', deleteException);
+      }
+    }
+
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
-// export async function POST(request: Request) {
-//   try {
-//     const userData: UserInterface = await request.json();
-
-//     const {
-//       name,
-//       last_name,
-//       email,
-//       cellphone_number,
-//       document_number,
-//       document_type,
-//       age,
-//       city,
-//       nationality,
-//       roles,
-//       comments,
-//       ships_in_charge,
-//       company,
-//       password = ''
-//     } = userData;
-
-//     // Mockeando el user.id
-//     const user = { id: '658cdac1-ae78-4ab8-aae5-1c17498d97b7' };
-
-//     // Insertar el usuario en la tabla de la base de datos
-//     const { error: insertError } = await supabase
-//       .from('users')
-//       .insert([
-//         {
-//           name,
-//           last_name,
-//           email,
-//           cellphone_number,
-//           document_number,
-//           document_type,
-//           age,
-//           city,
-//           nationality,
-//           roles,
-//           comments,
-//           ships_in_charge,
-//           company,
-//           uid: user.id // Usando el ID mockeado
-//         }
-//       ]);
-
-//     if (insertError) {
-//       throw insertError;
-//     }
-
-//     return NextResponse.json({ message: 'User registered successfully' });
-//   } catch (error: any) {
-//     console.error('Error registering user:', error);
-//     return NextResponse.json(
-//       { error: error.message },
-//       { status: 500 }
-//     );
-//   }
-// }

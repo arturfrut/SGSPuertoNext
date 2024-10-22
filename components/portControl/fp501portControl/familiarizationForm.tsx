@@ -58,10 +58,6 @@ export const FamiliarizationForm = () => {
       expirationDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
       shipIdOmi: selectedShip.idOMI,
       docType: 'fp501',
-
-
-// FALTA AGREGAR ESTO A BDD, DIFERENCIAR ESTO EN BDD DEL 101 Y AGREGAR A LA TABLA DE ADMIN
-
       supervisorSign: signatures.specialSign,
       supervisorName: specialSupervisorName
     }
