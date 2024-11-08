@@ -47,6 +47,7 @@ export const SidebarWrapper = () => {
     setSelectedShip(selectedShip)
   }
 
+  
   const handleSelectionRol = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRolSelected(e.target.value)
     console.log('rol', rolSelected)
@@ -285,6 +286,7 @@ export const SidebarWrapper = () => {
             {(rolSelected === 'guardia de puerto' ||
               rolSelected === 'responsable/gerente técnico' ||
               rolSelected === 'capitan') && (
+
               <SidebarMenu title='Guardia en puerto'>
                 <SidebarItem
                   isActive={pathname === '/port-control'}

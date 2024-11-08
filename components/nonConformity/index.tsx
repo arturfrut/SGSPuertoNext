@@ -2,9 +2,10 @@
 import { Card, CardHeader, Divider, CardBody, Image } from '@nextui-org/react'
 import { NonConformityCard } from './nonConformityCard'
 import { NonConformityTable } from './nonConformityTable'
+import useGlobalStore from '@/stores/useGlobalStore'
 
 export const NonCoformity = () => {
-
+  const {selectedShip}= useGlobalStore()
   return (
     <Card className='w-full  md:px-10 md:py-5'>
       <CardHeader className='flex gap-3'>
@@ -22,7 +23,7 @@ export const NonCoformity = () => {
       <Divider className='mb-4' />
       <CardBody>
         <NonConformityCard />
-        <NonConformityTable idOmi={123} />
+        <NonConformityTable idOmi={selectedShip.idOMI} />
       </CardBody>
     </Card>
   )

@@ -38,7 +38,7 @@ interface ControlData {
 export const NewControl = () => {
   const today = parseAbsoluteToLocal(new Date().toISOString())
   const { signatures, handleSaveSignature } = useSignModal()
-  const {ships, } = useGlobalStore()
+  const {ships} = useGlobalStore()
    const [controlData, setControlData] = useState<ControlData>({
     date: today,
     observation: '',
