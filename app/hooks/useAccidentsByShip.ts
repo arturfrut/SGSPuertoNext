@@ -71,6 +71,8 @@ const useAccidentsByShip = (shipId: string | number | undefined) => {
         setAccidents(data)
       } catch (error) {
         console.error('Error fetching ships:', error)
+        alert(error.message)
+        alert(error.response.data.error)
         setErrorAccidents(error)
       } finally {
         setLoadingAccidents(false)

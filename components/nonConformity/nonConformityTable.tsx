@@ -28,7 +28,6 @@ export const NonConformityTable = ({ idOmi }: OrderRepairTableProps) => {
       const res = await axios.get(`/api/get_ncn/${noteId}`)
       const data = await res.data
       setNcnActive(data)
-      console.log(data)
       window.location.href = '/non-conformity/new-note'
     } catch (e) {
       alert('Error al obtener la nota')

@@ -171,13 +171,14 @@ export const SidebarWrapper = () => {
                   icon={<NonCoformityIcon />}
                   href='/non-conformity'
                 />
-                <SidebarItem
-                  isDisabled={!selectedShip}
+                {/* <SidebarItem
+                  // isDisabled={!selectedShip}
+                  isDisabled={true}
                   isActive={pathname === '/audit'}
                   title='Informe de auditoria'
                   icon={<AuditIcon />}
                   href='/audit'
-                />
+                /> */}
               </SidebarMenu>
             )}
 

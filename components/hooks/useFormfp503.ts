@@ -1,35 +1,37 @@
 import { trainingExercises } from '@/constants/strings'
 import { getLocalTimeZone, now } from '@internationalized/date'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import useSignModal from '../signModal/useSignModal'
 import useGlobalStore from '@/stores/useGlobalStore'
 
 const useFormfp503 = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const { signatures, handleSaveSignature } = useSignModal()
   const [typeSelect, setTypeSelect] = useState('Zafarrancho')
   const { selectedShip, tripulation } = useGlobalStore()
   const [exerciseDescription, setExerciseDescription] = useState('')
   const [aditionalInfo, setAditionalInfo] = useState('')
   const [supervisorSelect, setSupervisorSelect] = useState('En tripulación')
-  const [exerciseSelected, setExerciseSelected] = useState<string | [] | null>(
-    null
-  )
+  const [exerciseSelected, setExerciseSelected] = useState(null)
   const [supervisorSelected, setSupervisorSelected] = useState<string>('')
   const [formDate, setFormDate] = useState(now(getLocalTimeZone()))
   const [inputValue, setInputValue] = useState('')
   const [supervisorSignSelect, setSupervisorSignSelect] = useState('')
 
   const crewList = tripulation
+  const crewInExerciseInitValue = tripulation.map(tripulation => ({
+    name: tripulation.name,
+    checked: false
+  }))
 
-  const [crewInExercise, setCrewInExercise] = useState(tripulation)
+  const [crewInExercise, setCrewInExercise] = useState(crewInExerciseInitValue)
 
   const removeWitness = (i: number) => {
     setCrewInExercise(prevState => prevState.filter((_, index) => index !== i))
   }
+
   const handleAdd = () => {
-    const [name, lastName] = inputValue.split(' ')
-    const newCrewMember = { name, lastName }
-                      // @ts-ignore
+    const newCrewMember = { name: inputValue, checked: false }
     setCrewInExercise(prevState => [...prevState, newCrewMember])
     setInputValue('')
   }
@@ -43,11 +45,9 @@ const useFormfp503 = () => {
         },
         body: JSON.stringify(document)
       })
-
       if (!response.ok) {
         throw new Error('Failed to register training.')
       }
-
       const responseData = await response.json()
       alert(
         responseData.message ||
@@ -66,7 +66,7 @@ const useFormfp503 = () => {
       return
     }
     if (crewInExercise.length === 0) {
-      alert('No hay tripulación.')
+      alert('No hay tripulantes registrados')
       return
     }
     if (crewInExercise.some(member => !signatures[member.name])) {
@@ -93,31 +93,39 @@ const useFormfp503 = () => {
           ? trainingExercises[exerciseSelected as unknown as number]
           : null,
       resultDescription: inputValue || 'sin información adicional',
-      participants: crewInExercise.map(member => ({
-        id: member.sailor_book_number ?? 'noId',
-        name: member.name,
-        signed: signatures?.[member.name] ?? null
-      })),
+      participants: crewInExercise,
       supervisor: supervisorSelected,
       supervisorSign: signatures?.personInChargeSignature,
       exerciseDescription: exerciseDescription,
       aditionalInfo:
         aditionalInfo === '' ? 'Sin información adicional' : aditionalInfo
     }
-    submitTrainingData(document)
+    setIsLoading(true)
+    console.log(document)
+    submitTrainingData(document).finally(() => {
+      setIsLoading(false)
+    })
   }
 
   const handleSupervisorInSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setSupervisorSignSelect(e.target.value)
-    setSupervisorSelected(
-      `${crewInExercise[e.target.value as unknown as number].name}`
-    )
+    setSupervisorSelected(`${crewInExercise[parseInt(e.target.value)].name}`)
   }
 
-  // useEffect(() => {
-  //   const selectedShip = localStorage.getItem('selectedShipStored')
-  //   selectedShip && setSelectedShip(JSON.parse(selectedShip))
-  // }, [])
+  const handleSignatureAndCheck = (signatureData: any, signatureKey: string) => {
+    // Guardar la firma usando el hook existente
+    handleSaveSignature(signatureData, signatureKey);
+  
+    // Actualizar crewInExercise para marcar el marinero como "checked"
+    setCrewInExercise(prevCrew =>
+      prevCrew.map(member =>
+        member.name === signatureKey
+          ? { ...member, checked: true }
+          : member
+      )
+    );
+  };
+  
 
   return {
     createDocumentObject,
@@ -134,7 +142,7 @@ const useFormfp503 = () => {
     setInputValue,
     handleAdd,
     crewInExercise,
-    handleSaveSignature,
+    handleSignatureAndCheck,
     signatures,
     removeWitness,
     aditionalInfo,
@@ -145,7 +153,9 @@ const useFormfp503 = () => {
     supervisorSelected,
     setSupervisorSelected,
     crewList,
-    supervisorSignSelect
+    supervisorSignSelect,
+    isLoading,
+    handleSaveSignature
   }
 }
 

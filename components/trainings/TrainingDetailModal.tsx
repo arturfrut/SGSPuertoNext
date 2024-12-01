@@ -18,12 +18,9 @@ export default function TrainingDetailModal({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [selectedImageIndex, setSelectedImageIndex] = useState(null)
-                                                              // @ts-ignore
-
   const handleImageClick = index => {
     setSelectedImageIndex(selectedImageIndex === index ? null : index)
   }
-  // isOpen && console.log(trainingData)
   return (
     <>
       <Button onPress={onOpen}>Ver detalle</Button>
@@ -42,14 +39,18 @@ export default function TrainingDetailModal({
                   <p className=' my-4'>
                     {`Fecha: ${trainingData.training_date}`}
                   </p>
-                  <p className='font-bold my-4'>Tema tratado:</p>
+                  <p className='font-bold my-4'>
+                    Tema tratado:{' '}
+                    <span className='font-normal'>
+                      {trainingData.zafarrancho_name}
+                    </span>
+                  </p>
                   <p>{`${trainingData.exercise_description}`}</p>
                   <p className='font-bold my-4'>Lista de participantes:</p>
                   <ul className='list-disc pl-6 space-y-2'>
-                    {trainingData.participants.map((                                                              // @ts-ignore
- participant, i) => (
+                    {trainingData.participants.map((participant, i) => (
                       <li key={i} className='flex justify-between items-center'>
-                        <span>{`${participant.name} ${participant.lastname}`}</span>
+                        <span>{participant.name}</span>
                         <Image
                           className={`bg-white cursor-pointer transition-all duration-300 ${
                             selectedImageIndex === i ? 'w-72 h-52' : 'w-20 h-14'
@@ -77,24 +78,3 @@ export default function TrainingDetailModal({
     </>
   )
 }
-// {
-//   "training_id": 2,
-//   "id_OMI": 8883339,
-//   "training_date": "2024-08-14",
-//   "training_type": "Zafarrancho",
-//   "zafarrancho_name": "Abandono",
-//   "zafarrancho_id": 4,
-//   "zafarrancho_frequency": 30,
-//   "result_description": "sin información adicional",
-//   "participants": [
-//       {
-//           "id": 1,
-//           "name": "NombreTrip1",
-//           "lastName": "ApellidoTrip1",
-//       }
-//   ],
-//   "supervisor": "NombreTrip1 ApellidoTrip1 ",
-//   "exercise_description": "Prueba de envio",
-//   "aditional_info": "Sin información adicional",
-//   "creation_date": "2024-08-14T14:32:02.642729"
-// }

@@ -74,7 +74,7 @@ export async function GET(req: Request, { params }: Params) {
           .single()
 
         if (chargedByError) {
-          console.log('chargedByError error')
+          console.error('chargedByError error')
 
           throw chargedByError
         }
@@ -85,7 +85,7 @@ export async function GET(req: Request, { params }: Params) {
         .eq('id_accident', accident.id)
 
       if (additionalInfoError) {
-        console.log('additionalInfoError error')
+        console.error('additionalInfoError error')
 
         throw additionalInfoError
       }

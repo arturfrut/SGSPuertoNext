@@ -9,6 +9,7 @@ export interface Ship {
   company: string
   matricula: number
   type: string
+  company_omi: string
   // Puedes añadir más propiedades según tu estructura de datos
 }
 

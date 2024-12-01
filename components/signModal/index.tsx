@@ -4,7 +4,6 @@ import {
   ModalBody,
   ModalContent,
   ModalFooter,
-  ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
 import { useRef } from "react";
@@ -50,9 +49,6 @@ export default function SignModal({
         <ModalContent>
           {(onClose) => (
             <>
-              {/* <ModalHeader className="flex flex-col gap-1">
-                Entrega de nuevo material
-              </ModalHeader> */}
               <ModalBody className="grid">
                 <div>
                   <SignaturePad

@@ -18,6 +18,8 @@ const useAllCompanies = () => {
         setCompanies(data)
       } catch (error) {
         console.error('Error fetching ships:', error)
+        alert(error.message)
+        alert(error.response.data.error)
         setErrorCompanies(error)
       } finally {
         setLoadingCompanies(false)
