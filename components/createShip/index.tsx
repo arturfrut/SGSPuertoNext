@@ -15,7 +15,7 @@ import {
   SelectItem
 } from '@nextui-org/react'
 import axios from 'axios'
-import { Fragment,  useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 export interface ShipInterface {
   ship_name: string
@@ -98,8 +98,11 @@ export const CreateShip = () => {
   const { companies, userData } = useGlobalStore()
   const [ship, setShip] = useState<ShipInterface>(createShipInitialValue)
   const [awaitResponse, setAwaitResponse] = useState(false)
-  useAllCompanies()
-  
+  const { fetchCompaniesData } = useAllCompanies()
+
+  useEffect(() => {
+    fetchCompaniesData()
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
