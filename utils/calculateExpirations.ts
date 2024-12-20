@@ -68,7 +68,7 @@ export function calculateExpirationInfo(expirationData: {
     } else if (now > lapseExpiration) {
       // Si ya pasó el período de lapse expiration
       lapseMessage = `El período de gracia venció hace ${Math.abs(
-        daysUntilLapse!
+        daysUntilLapse
       )} días`
       nearExpiration.color = 'danger' // Cambiar a rojo si ya pasó lapse_expiration
     }

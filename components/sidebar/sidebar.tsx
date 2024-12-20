@@ -186,13 +186,13 @@ export const SidebarWrapper = () => {
               <SidebarMenu
                 title={selectedShip.name ?? 'Sin barco seleccionado'}
               >
-                <SidebarItem
+                {/* <SidebarItem
                   isDisabled={!selectedShip}
                   isActive={pathname === '/captainForms'}
                   title='Capitán'
                   icon={<CaptainHatIcon />}
                   href='/captainForms'
-                />
+                /> */}
                 <SidebarItem
                   isDisabled={!selectedShip}
                   isActive={pathname === '/expiration-controls'}
@@ -244,7 +244,7 @@ export const SidebarWrapper = () => {
                   href='/command-delivery'
                 />
                 <SidebarItem
-                  isDisabled={!selectedShip}
+                  isDisabled={true}
                   isActive={pathname === '/audit'}
                   title='Informe de auditoria'
                   icon={<AuditIcon />}
