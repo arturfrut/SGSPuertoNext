@@ -1,5 +1,4 @@
 'use client'
-import { DateSelectorV2 } from '@/components/dateSelectorV2'
 import useFormfp503 from '@/components/hooks/useFormfp503'
 import { CrossIcon } from '@/components/icons/crossIcon'
 import SignModal from '@/components/signModal'
@@ -12,6 +11,7 @@ import {
   CardFooter,
   CardHeader,
   Checkbox,
+  DatePicker,
   Divider,
   Image,
   Input,
@@ -44,7 +44,7 @@ export const Formfp503 = () => {
     setInputValue,
     handleAdd,
     crewInExercise,
-    handleSaveSignature,
+    handleSignatureAndCheck,
     signatures,
     removeWitness,
     aditionalInfo,
@@ -55,7 +55,9 @@ export const Formfp503 = () => {
     supervisorSelected,
     setSupervisorSelected,
     crewList,
-    supervisorSignSelect
+    supervisorSignSelect,
+    isLoading,
+    handleSaveSignature
   } = useFormfp503()
 
   return (
@@ -76,26 +78,27 @@ export const Formfp503 = () => {
         <Divider />
         <CardBody>
           <p className='text-xl '>
-            Empresa: {                                                              // @ts-ignore
- selectedShip.company ?? 'Seleccione barco'}
+            Empresa: {selectedShip.company ?? 'Seleccione barco'}
           </p>
           <p className='mt-4'>
             {' '}
-            Barco: {                                                              // @ts-ignore
- selectedShip.name ?? 'Seleccione barco'}
+            Barco: {selectedShip.name ?? 'Seleccione barco'}
           </p>
           <p className='mt-4'>OMI: {selectedShip?.idOMI ?? ' - '}</p>
           <p className='my-4'>
-            Matricula: {                                                               // @ts-ignore
- selectedShip.matricula ?? 'Seleccione barco'}
+            Matricula: {selectedShip.matricula ?? 'Seleccione barco'}
           </p>
           <Divider />
 
-          <DateSelectorV2
-            title='Fecha de capacitación'
-            date={formDate}                                                              // @ts-ignore
-
-            setDate={setFormDate}
+          <DatePicker
+            showMonthAndYearPickers
+            granularity='day'
+            size='lg'
+            label='Próximo vencimiento'
+            value={formDate}
+            onChange={setFormDate}
+            isRequired
+            className='mt-4'
           />
 
           <p className='text-xl mb-4'>Tipo de capacitación:</p>
@@ -110,8 +113,7 @@ export const Formfp503 = () => {
                 isInvalid={typeSelect === 'Zafarrancho' && !exerciseSelected}
                 errorMessage='Seleccione ejercicio'
                 label='Seleccione Ejercicio'
-                className='w-full my-4'                                                              // @ts-ignore
-
+                className='w-full my-4'
                 selectedKeys={exerciseSelected}
                 onChange={e => setExerciseSelected(e.target.value)}
               >
@@ -150,40 +152,34 @@ export const Formfp503 = () => {
           </div>
           <Table aria-label='Example static collection table' isStriped>
             <TableHeader>
-              <TableColumn>Tripulante</TableColumn>
-              <TableColumn className='w-14'>Firma</TableColumn>
-              <TableColumn>Comprendió</TableColumn>
               <TableColumn className='flex justify-end items-center px-8'>
                 Eliminar
               </TableColumn>
+              <TableColumn>Tripulante</TableColumn>
+              <TableColumn className='w-14'>Firma</TableColumn>
+              <TableColumn>Comprendió</TableColumn>
             </TableHeader>
             <TableBody emptyContent='No hay gente en la lista'>
               {crewInExercise.map((witness, index) => (
                 <TableRow key={index} className='cursor-pointer'>
-                  <TableCell>{witness?.name}</TableCell>
-
-                  <TableCell>
-                    <SignModal
-                      onSave={(data: any) =>                                                              // @ts-ignore
-
-                        handleSaveSignature(data, witness?.lastName)
-                      }
-                      title='FIRMA TRIPULANTE'
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Checkbox                                                              // @ts-ignore
-
-                      isSelected={!!signatures?.[witness?.lastName]}
-                      isReadOnly
-                    />
-                  </TableCell>
-
                   <TableCell
                     className='flex justify-end px-10 h-20 items-center'
                     onClick={() => removeWitness(index)}
                   >
                     <CrossIcon />
+                  </TableCell>
+                  <TableCell>{witness?.name}</TableCell>
+
+                  <TableCell>
+                    <SignModal
+                      onSave={(data: any) =>
+                        handleSignatureAndCheck(data, witness?.name)
+                      }
+                      title='FIRMA TRIPULANTE'
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox isSelected={witness.checked} isReadOnly />
                   </TableCell>
                 </TableRow>
               ))}
@@ -219,18 +215,11 @@ export const Formfp503 = () => {
                 onChange={e => handleSupervisorInSelect(e)}
                 errorMessage='Seleccione encargado'
               >
-                {crewList.map(
-                                                              // @ts-ignore
-
-                  (
-                    member: { id?: number; name: string; lastName: string },
-                    index: number
-                  ) => (
-                    <SelectItem key={index} value={index}>
-                      {`${member.name} ${member.lastName}`}
-                    </SelectItem>
-                  )
-                )}
+                {crewList.map((member, index) => (
+                  <SelectItem key={index} value={index}>
+                    {`${member.name} ${member.name}`}
+                  </SelectItem>
+                ))}
               </Select>
             </div>
           )}
@@ -258,7 +247,9 @@ export const Formfp503 = () => {
 
         <Divider />
         <CardFooter className=' flex gap-3 justify-end'>
-          <Button type='submit'>Enviar</Button>
+          <Button isLoading={isLoading} type='submit'>
+            Enviar
+          </Button>
         </CardFooter>
       </form>
     </Card>

@@ -47,6 +47,7 @@ export const SidebarWrapper = () => {
     setSelectedShip(selectedShip)
   }
 
+  
   const handleSelectionRol = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRolSelected(e.target.value)
     console.log('rol', rolSelected)
@@ -170,13 +171,14 @@ export const SidebarWrapper = () => {
                   icon={<NonCoformityIcon />}
                   href='/non-conformity'
                 />
-                <SidebarItem
-                  isDisabled={!selectedShip}
+                {/* <SidebarItem
+                  // isDisabled={!selectedShip}
+                  isDisabled={true}
                   isActive={pathname === '/audit'}
                   title='Informe de auditoria'
                   icon={<AuditIcon />}
                   href='/audit'
-                />
+                /> */}
               </SidebarMenu>
             )}
 
@@ -184,13 +186,13 @@ export const SidebarWrapper = () => {
               <SidebarMenu
                 title={selectedShip.name ?? 'Sin barco seleccionado'}
               >
-                <SidebarItem
+                {/* <SidebarItem
                   isDisabled={!selectedShip}
                   isActive={pathname === '/captainForms'}
                   title='Capitán'
                   icon={<CaptainHatIcon />}
                   href='/captainForms'
-                />
+                /> */}
                 <SidebarItem
                   isDisabled={!selectedShip}
                   isActive={pathname === '/expiration-controls'}
@@ -242,7 +244,7 @@ export const SidebarWrapper = () => {
                   href='/command-delivery'
                 />
                 <SidebarItem
-                  isDisabled={!selectedShip}
+                  isDisabled={true}
                   isActive={pathname === '/audit'}
                   title='Informe de auditoria'
                   icon={<AuditIcon />}
@@ -285,6 +287,7 @@ export const SidebarWrapper = () => {
             {(rolSelected === 'guardia de puerto' ||
               rolSelected === 'responsable/gerente técnico' ||
               rolSelected === 'capitan') && (
+
               <SidebarMenu title='Guardia en puerto'>
                 <SidebarItem
                   isActive={pathname === '/port-control'}

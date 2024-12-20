@@ -17,9 +17,6 @@ interface TrainingsTableInterface {
 const TrainingsTable: React.FC<TrainingsTableInterface> = ({ id_omi }) => {
 const {isLoading, trainingsList} = useAllTrainigs(id_omi)
 
-console.log(trainingsList)
-
-console.log('TRAININGS LIST', trainingsList)
   const trainingsTabHeader = [
     'Fecha',
     'Tipo',
@@ -42,9 +39,8 @@ console.log('TRAININGS LIST', trainingsList)
         targetDate.setDate(targetDate.getDate() + frequencyInDays)
 
         // Calcular la diferencia en milisegundos
-                                                                      // @ts-ignore
 
-        const diffInMs = targetDate - today
+        const diffInMs = targetDate.getTime() - today.getTime();
 
         // Convertir la diferencia a días
         const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24))
@@ -75,29 +71,22 @@ console.log('TRAININGS LIST', trainingsList)
     const zafarranchosGroupedByName = trainingsData
       .filter((training) => training.training_type === 'Zafarrancho')
       .reduce((acc, training) => {
-                                                                      // @ts-ignore
-
         if (!acc[training.zafarrancho_name]) {
-                                                              // @ts-ignore
-
           acc[training.zafarrancho_name] = [];
         }
-                                                              // @ts-ignore
-
         acc[training.zafarrancho_name].push(training);
         return acc;
-      }, {});
+      }, {} as Record<string, TrainingInterface[]>);
   
     // Marca todos los zafarranchos como repetidos, excepto el último
     Object.keys(zafarranchosGroupedByName).forEach((zafarranchoName) => {
-                                                              // @ts-ignore
-
       const trainings = zafarranchosGroupedByName[zafarranchoName];
-                                                              // @ts-ignore
-
-      trainings.sort((a, b) => new Date(a.training_date) - new Date(b.training_date)); // Ordena por fecha ascendente
-                                                              // @ts-ignore
-
+  
+      trainings.sort(
+        (a, b) =>
+          new Date(a.training_date).getTime() -
+          new Date(b.training_date).getTime()
+      );
       trainings.forEach((training, index) => {
         training.repeated = index < trainings.length - 1; // Todos menos el último se marcan como repetidos
       });
@@ -107,17 +96,18 @@ console.log('TRAININGS LIST', trainingsList)
       .map((trainingData) => {
         const { frequencyText, diffInDays } =
           calculateDaysUntilExpiration(trainingData);
-                                                              // @ts-ignore
   
-        const rowColor = (diffInDays) => {
-          if (diffInDays === false || diffInDays <= 0) {
-            return 'danger';
-          } else if (diffInDays <= 7) {
-            return 'warning';
-          } else {
-            return 'default';
-          }
-        };
+          const rowColor = (days: number | boolean) => {
+            if (days === false) {
+              return 'danger';
+            } else if (typeof days === 'number' && days <= 0) {
+              return 'danger';
+            } else if (typeof days === 'number' && days <= 7) {
+              return 'warning';
+            } else {
+              return 'default';
+            }
+          };
   
         return {
           trainingDate: trainingData.training_date,
@@ -130,19 +120,18 @@ console.log('TRAININGS LIST', trainingsList)
           supervisor: trainingData.supervisor,
           training_id: trainingData.training_id,
           repeated: trainingData.repeated,
+          diffInDays: diffInDays ?? null, // Aseguramos que esté definido
         };
       })
       .sort((a, b) => {
         if (a.expirationDate === false) return 1;
         if (b.expirationDate === false) return -1;
-                                                              // @ts-ignore
-
-        return b.diffInDays - a.diffInDays;
+  
+        return (b.diffInDays ?? 0) - (a.diffInDays ?? 0);
       });
   };
   const tableData = setTableData(trainingsList)
-  console.log('trainingsList',trainingsList)
-  console.log('tableData',tableData)
+
   const modalData = (trainingId: string) =>
     trainingsList.find(training => training.training_id === parseInt(trainingId))
 
@@ -177,7 +166,6 @@ console.log('TRAININGS LIST', trainingsList)
                   trainingData={modalData(String(training.training_id))}
                 />
               </TableCell>
-              {/* <TableCell className={`${training.rowColor }cursor-pointer`}>Crear Nueva</TableCell> */}
             </TableRow>
           ))}
       </TableBody>
@@ -187,32 +175,3 @@ console.log('TRAININGS LIST', trainingsList)
 
 export default TrainingsTable
 
-// [
-//   {
-//       "training_id": 1,
-//       "id_OMI": 1231,
-//       "training_date": "2024-12-25",
-//       "training_type": "Zafarrancho",
-//       "zafarrancho_name": "Hombre al agua",
-//       "zafarrancho_id": 1,
-//       "zafarrancho_frequency": 60,
-//       "result_description": "ACA PUEDE IR UN STRING LARGO",
-//       "participants": [
-//           {
-//               "id": null,
-//               "name": "Artur",
-//               "lastName": "FruTester",
-//               "signed": "ACA VA UN SVG HECHO STRING MUY LARGO"
-//           }
-//       ],
-//       "supervisor": "Juan Carlos",
-//       "supervisor_sign": "ACA VA UN SVG HECHO STRING MUY LARGO",
-//       "exercise_description": "Hombre al agua",
-//       "aditional_info": "Sin información adicional",
-//       "creation_date": "2024-08-11T14:16:50.805136"
-//   }
-// ]
-
-// Agregar ver detalle y modificar, además no funciona fecha, y falta agregar color.
-// Crear post cuando se crea entrenamiento
-// Modal para ver data y dar el okey para presentarla

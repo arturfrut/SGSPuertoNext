@@ -47,10 +47,8 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
         })
 
         const userInfo = userInfoResponse.data
-        console.log('SETEANDO USER INFO', userInfo)
 
         if (userInfoResponse.status === 200) {
-          console.log('userINFO', userInfo)
 
           setUserdataStore(userInfo)
           // setShips(mockShips)
@@ -66,7 +64,6 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
           }
 
           if (userInfo.roles.includes(0)) {
-            console.log('userINFO', userInfo)
             const devRoles = rolesForDev.map(role => role.rolName)
             setRoles(devRoles)
             setRolSelected('developer')
@@ -83,7 +80,6 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
           // caso administrador
 
           if (userInfo.roles.includes(1)) {
-            console.log('userINFO', userInfo)
             setRolSelected('administrador')
             const compamiesRes = await axios.get(`/api/get_companies`)
             if (compamiesRes.status === 200) {
@@ -111,9 +107,9 @@ export const useLogin = (setIsLogged: (arg0: boolean) => void) => {
                 name: data.ship_name,
                 company: data.company,
                 matricula: data.matricula,
-                type: data.ship_type
+                type: data.ship_type,
+                company_omi:data.company_omi
               }
-
               setSelectedShip(shipData)
             } else {
               alert(

@@ -24,6 +24,7 @@ export const SidebarItem = ({
       setCollapsed()
     }
   }
+  console.log(isDisabled)
   return (
     <NextLink
       href={isDisabled ? '#' : href}

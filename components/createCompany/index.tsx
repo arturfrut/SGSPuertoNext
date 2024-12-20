@@ -11,7 +11,7 @@ import {
   Input
 } from '@nextui-org/react'
 import axios from 'axios'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export interface CompanyInterface {
   company_name: string
@@ -35,16 +35,34 @@ export const CreateCompany = () => {
   }
 
   const formFields = [
-    { name: 'company_name', placeholder: 'Nombre de compañía' },
-    { name: 'cuit', placeholder: 'CUIT sin puntos, espacios ni guiones' },
-    { name: 'direction', placeholder: 'Dirección' },
-    { name: 'company_omi', placeholder: 'Número de OMI de compañía' }, // sirve de id
-    { name: 'company_representant', placeholder: 'Representante legal' },
-    { name: 'contact_number', placeholder: 'Número de contacto' },
-    { name: 'company_email', placeholder: 'Email' }
+    { name: 'company_name', placeholder: 'Nombre de compañía', type: 'text' },
+    {
+      name: 'cuit',
+      placeholder: 'CUIT sin puntos, espacios ni guiones',
+      type: 'number'
+    },
+    { name: 'direction', placeholder: 'Dirección', type: 'text' },
+    {
+      name: 'company_omi',
+      placeholder: 'Número de OMI de compañía',
+      type: 'number'
+    }, // sirve de id
+    {
+      name: 'company_representant',
+      placeholder: 'Representante legal',
+      type: 'text'
+    },
+    {
+      name: 'contact_number',
+      placeholder: 'Número de contacto',
+      type: 'number'
+    },
+    { name: 'company_email', placeholder: 'Email', type: 'text' }
   ]
 
-  const [company, setCompany] = useState<CompanyInterface>(createCompanyInitialValue)
+  const [company, setCompany] = useState<CompanyInterface>(
+    createCompanyInitialValue
+  )
   const [awaitResponse, setAwaitResponse] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,6 +84,10 @@ export const CreateCompany = () => {
     } catch (error) {
       console.error('Error creating company:', error)
       alert('Error al registrar compañía')
+
+      if (error.response.data.error) {
+        alert(error.response.data.error)
+      }
     }
     setAwaitResponse(false)
   }
@@ -88,25 +110,28 @@ export const CreateCompany = () => {
         <Divider className='mb-4' />
 
         <CardBody>
-          {formFields.map(({ name, placeholder }) => (
-            <>
-            <p className='mb-4'>{`Ingrese ${placeholder}:`}</p>
-            <Input
-              key={name}
-              name={name}
-              placeholder={placeholder}
-              value={(company as any)[name]}
-              onChange={handleInputChange}
-              className='mb-4'
-              required // Marca los campos como obligatorios
+          {formFields.map(({ name, placeholder,type}) => (
+            <React.Fragment key={name}>
+              <p className='mb-4'>{`Ingrese ${placeholder}:`}</p>
+              <Input
+                key={name}
+                name={name}
+                placeholder={placeholder}
+                value={(company as any)[name]}
+                onChange={handleInputChange}
+                className='mb-4'
+                required
+                type={type === 'number' ? 'number' : 'text'} // Condicional para type
               />
-              </>
+            </React.Fragment>
           ))}
         </CardBody>
 
         <Divider />
         <CardFooter className='flex gap-3 justify-end'>
-          <Button type='submit' isLoading={awaitResponse}>Enviar</Button>
+          <Button type='submit' isLoading={awaitResponse}>
+            Enviar
+          </Button>
         </CardFooter>
       </form>
     </Card>

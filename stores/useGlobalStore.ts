@@ -1,3 +1,4 @@
+import { NcnInterface } from '@/app/hooks/useGetNcnByShip'
 import { create } from 'zustand'
 import { persist, PersistStorage } from 'zustand/middleware'
 
@@ -8,6 +9,7 @@ export interface Ship {
   company: string
   matricula: number
   type: string
+  company_omi: string
   // Puedes añadir más propiedades según tu estructura de datos
 }
 
@@ -91,6 +93,8 @@ interface State {
   companies: CompanyInterface[]
   selectedTripulant: SelectedTripulantInterface | null
   userSign: string
+  ncnActive: null | NcnInterface
+  setNcnActive:(ncnActive: NcnInterface) => void
   setUserSign: (userSign: string) => void
   setSelectedTripulant: (tripulant: SelectedTripulantInterface) => void
   setUserId: (userId: number) => void
@@ -162,7 +166,9 @@ const useGlobalStore = create<State>()(
       selectedTripulant: null,
       setSelectedTripulant: selectedTripulant => set({ selectedTripulant }),
       userSign: null,
-      setUserSign: userSign => set({ userSign })
+      setUserSign: userSign => set({ userSign }),
+      ncnActive: null,
+      setNcnActive: ncnActive => set({ ncnActive })
     }),
     {
       name: 'mi-storage', // Nombre del key en localStorage
@@ -178,7 +184,8 @@ const useGlobalStore = create<State>()(
         selectedShip: state.selectedShip,
         selectedTripulant: state.selectedTripulant,
         tripulation: state.tripulation,
-        userSign: state.userSign
+        userSign: state.userSign,
+        ncnActive: state.ncnActive
       }) // Solo guarda estos estados
     }
   )

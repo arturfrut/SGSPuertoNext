@@ -1,7 +1,7 @@
 import { NewNote } from "@/components/nonConformity/new-note"
 
 const newNote = () => {
-  return <NewNote status={""} ncn={0} />
+  return <NewNote   />
 }
 
 export default newNote

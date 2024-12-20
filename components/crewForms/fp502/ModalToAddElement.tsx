@@ -1,4 +1,3 @@
-import { CrossIcon } from "@/components/icons/crossIcon";
 import SignModal from "@/components/signModal";
 import useSignModal from "@/components/signModal/useSignModal";
 import { SignatureChecker } from "@/components/signatureChecker";
@@ -11,21 +10,75 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Select,
-  SelectItem,
   useDisclosure,
 } from "@nextui-org/react";
+import { ChangeEvent, useState } from "react";
+import { ProductInterface } from ".";
+import axios from "axios";
 
-export default function ModalToAddElement() {
+export default function ModalToAddElement({tripulantBookNumber}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [waitingResponse, setWaitingResponse] = useState(false)
   const { signatures, handleSaveSignature } = useSignModal();
+
+  const initialValue = {
+    product: '',
+    model: '',
+    brand: '',
+    certified: false,
+    amount: '',
+    date: new Date(), 
+    crewSigned: !!(signatures?.witnessSignature),
+  }
+
+  const [newProductData, setNewProductData] = useState<ProductInterface>(initialValue)
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setNewProductData((prevData) => ({
+      ...prevData,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+
+  const submitElement = async (onClose) => {
+    setWaitingResponse(true)
+    const submitData = {
+      ...newProductData,
+      sailor_book_number: tripulantBookNumber,
+      crewSign: signatures.witnessSignature
+    }
+    setNewProductData(initialValue)
+    console.log('SUBMIT',submitData);
+    try {
+      await axios.post('/api/register_epp', submitData)
+      alert('EPP registrado')
+      onClose()
+    } catch (e) {
+      console.log(e)
+      alert('Error al crear la nota')
+      alert(e.message)
+      alert(e.response.data.error)
+    } finally {
+      setWaitingResponse(false)
+    }
+  }
+
+
+  const clearData =(onClose) =>{
+    setNewProductData(initialValue)
+    onClose()
+  } 
+
+
   return (
     <>
       <Button className="my-4" onPress={onOpen}>
         Añadir Elemento
       </Button>
       <Modal
-        size="5xl"
+        size="4xl"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
@@ -38,35 +91,47 @@ export default function ModalToAddElement() {
                 Entrega de nuevo material
               </ModalHeader>
               <ModalBody className="grid">
-                <p>Id del producto a recibir</p>
-                {/* Debe venir por bdd, en caso de seleccionar debe rellenar el
-                resto de los input, en caso de seleccionar otro se agregara a la
-                bdd al final del envio. */}
-                <Select label="Id" value="0">
-                  {[1, 2, 3, 4, 5, "Agregar"].map((element) => (
-                    <SelectItem
-                      key={`monthsSelectId-${element}`}
-                      value={element}
-                    >
-                      {element}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <p>Nombre del elemento a recibir </p>
-                <Input type={"string"} label="Ingrese nombre de producto" />
-                <p>Marca del elemento a recibir </p>
-                <Input type={"string"} label="Marca" />
-                <p>Modelo de elemento a recibir </p>
-                <Input type={"string"} label="Modelo" />
-                <p>Cantidad</p>
-                <Input type="number" label="Cantidad" />
-                <p>Producto certificado</p>
-                <Checkbox
-                  // onChange={handleShipCondition}
-                  name="isCertified"
-                >
-                  Marque solo en caso de ser certificado
-                </Checkbox>
+              <p>Nombre del elemento a recibir</p>
+      <Input
+        label="Ingrese nombre de producto"
+        name="product"
+        value={newProductData.product}
+        onChange={handleChange}
+      />
+
+      <p>Marca del elemento a recibir</p>
+      <Input
+        label="Marca"
+        name="brand"
+        value={newProductData.brand}
+        onChange={handleChange}
+      />
+
+      <p>Modelo de elemento a recibir</p>
+      <Input
+        label="Modelo"
+        name="model"
+        value={newProductData.model}
+        onChange={handleChange}
+      />
+
+      <p>Cantidad</p>
+      <Input
+        label="Cantidad"
+        name="amount"
+        type="string"
+        value={newProductData.amount}
+        onChange={handleChange}
+      />
+
+      <p>Producto certificado</p>
+      <Checkbox
+        name="certified"
+        checked={newProductData.certified}
+        onChange={handleChange}
+      >
+        Marque solo en caso de ser certificado
+      </Checkbox>
                 <div className="w-full md:w-1/2 flex items-center justify-center gap-5">
                   <SignModal
                     onSave={(data: any) =>
@@ -78,11 +143,11 @@ export default function ModalToAddElement() {
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color="danger" variant="light" onPress={()=>clearData(onClose)}>
                   Close
                 </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
+                <Button color="primary" isLoading={waitingResponse} onPress={()=>submitElement(onClose)}>
+                  Elemento entregado
                 </Button>
               </ModalFooter>
             </>

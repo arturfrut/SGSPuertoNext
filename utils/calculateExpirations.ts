@@ -40,7 +40,7 @@ export function calculateExpirationInfo(expirationData: {
   }
   let lapseMessage = null
 
-  expirationData && console.log(expirationData)
+  // expirationData && console.log(expirationData)
 
   // Calcular el estado de near expiration
   if (daysUntilNext <= 0) {
@@ -56,7 +56,7 @@ export function calculateExpirationInfo(expirationData: {
     nearExpiration.message = `Faltan ${daysUntilNext} días para el próximo vencimiento`
     nearExpiration.color = 'primary'
   }
-  expirationData && console.log(nearExpiration.color)
+  // expirationData && console.log(nearExpiration.color)
   // Si existe lapse_expiration, verificar si está dentro o fuera del plazo
   if (lapseExpiration) {
     if (now >= nextExpiration && now <= lapseExpiration) {
@@ -68,7 +68,7 @@ export function calculateExpirationInfo(expirationData: {
     } else if (now > lapseExpiration) {
       // Si ya pasó el período de lapse expiration
       lapseMessage = `El período de gracia venció hace ${Math.abs(
-        daysUntilLapse!
+        daysUntilLapse
       )} días`
       nearExpiration.color = 'danger' // Cambiar a rojo si ya pasó lapse_expiration
     }
