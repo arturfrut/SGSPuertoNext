@@ -30,13 +30,13 @@ export const SailorBook = () => {
   const chargeImages = [
     {
       chargeDate:
-        fullTripulant?.sailorBookData?.sailor_book_first[0].expiration_date ??
+        fullTripulant?.sailorBookData?.sailor_book_first[0]?.expiration_date ??
         'Sin fecha cargada',
       destination: 'Libreta: Hoja 1 y 2',
       docType: 'sailor_book_first',
       textDescription:
         'Por favor tome una foto en horizontal de las primeras dos páginas de su libreta',
-      chipData: checkDateForChip(fullTripulant?.sailorBookData.sailor_book_first[0].expiration_date)
+      chipData: checkDateForChip(fullTripulant?.sailorBookData?.sailor_book_first[0]?.expiration_date)
     },
     {
       chargeDate:
