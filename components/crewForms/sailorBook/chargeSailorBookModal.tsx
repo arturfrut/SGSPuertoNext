@@ -1,5 +1,7 @@
+import { useCrewMembersAccordion } from '@/app/hooks/components/useCrewMembersAccordion'
 import useGlobalStore, { DocumentData } from '@/stores/useGlobalStore'
 import { compressImage } from '@/utils/compressImage'
+import { checkDateForChip } from '@/utils/daysUntilExpiration'
 import { parseAbsoluteToLocal, ZonedDateTime } from '@internationalized/date'
 import {
   Button,
@@ -51,8 +53,8 @@ export const ChargeSailorBookModal: FC<ChargeSailorBookModalInterface> = ({
     const compressedImage = await compressImage(imgFile)
     setFile(compressedImage)
   }
-
-  const submitData = async (e: React.FormEvent) => {
+  const { fetchCrewData } = useCrewMembersAccordion()
+  const submitData = async (e: React.FormEvent, onClose) => {
     e.preventDefault()
 
     if (!file) {
@@ -76,6 +78,11 @@ export const ChargeSailorBookModal: FC<ChargeSailorBookModalInterface> = ({
       const response = await axios.post('/api/upload_image', formData)
       alert('Documento registrado')
       setWaitingResponse(false)
+      setFile(null)
+      setExpiration(today)
+      await fetchCrewData()
+
+      onClose()
     } catch (error) {
       console.error('Error creating document:', error)
       alert('Error al registrar documento')
@@ -83,13 +90,21 @@ export const ChargeSailorBookModal: FC<ChargeSailorBookModalInterface> = ({
     }
   }
 
+  const handleClose = () => {
+    onOpenChange()
+    setFile(null)
+    setExpiration(today)
+  }
+
+  console.log('prevData', prevData)
+
   return (
     <>
       <Button onPress={onOpen}>Cargar imagen</Button>
 
       <Modal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={handleClose}
         isDismissable={false}
         isKeyboardDismissDisabled={true}
         size='2xl'
@@ -104,25 +119,26 @@ export const ChargeSailorBookModal: FC<ChargeSailorBookModalInterface> = ({
               <ModalBody>
                 <Chip
                   color={
-                    // lastChargeData
-                    //   ? daysUntilExpirations?.nearExpiration.color
-                    //   :
-                    'default'
+                    prevData
+                      ? checkDateForChip(prevData.expiration_date).color
+                      : 'default'
                   }
                 >
-                  {' '}
-                  {
-                    // lastChargeData
-                    //   ? daysUntilExpirations?.nearExpiration.message
-                    //   :
-                    'Documento sin cargar'
-                  }
+                  {prevData
+                    ? checkDateForChip(prevData.expiration_date).text
+                    : 'Documento sin cargar'}
                 </Chip>
                 {prevData ? (
                   <div>
                     <p>Datos de la última carga:</p>
-                    <p>Próximo vencimiento: asdasd</p>
-                    <p>Vencimiento final: asdasd</p>
+                    <p>
+                      Fecha de carga:{' '}
+                      {new Date(prevData.charged_date).toLocaleDateString()}
+                    </p>
+                    <p>
+                      Próximo vencimiento:{' '}
+                      {new Date(prevData.expiration_date).toLocaleDateString()}
+                    </p>
 
                     <p>Páginas subidas al sistema: </p>
                     {prevData.img_url ? (
@@ -130,7 +146,14 @@ export const ChargeSailorBookModal: FC<ChargeSailorBookModalInterface> = ({
                         <AccordionItem
                           aria-label={``}
                           title={`último documento subido`}
-                        ></AccordionItem>
+                        >
+                          <img
+                            src={prevData.img_url}
+                            alt='Documento'
+                            width='200'
+                            height='200'
+                          />
+                        </AccordionItem>
                       </Accordion>
                     ) : (
                       'No se Subieron documentos'
@@ -182,7 +205,7 @@ export const ChargeSailorBookModal: FC<ChargeSailorBookModalInterface> = ({
                 <Button
                   isLoading={waitingResponse}
                   color='primary'
-                  onClick={submitData}
+                  onClick={e => submitData(e, onClose)}
                 >
                   Cargar imágenes
                 </Button>

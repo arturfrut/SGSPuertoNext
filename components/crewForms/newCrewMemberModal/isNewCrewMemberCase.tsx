@@ -58,8 +58,8 @@ const IsNewCrewMemberCase = ({newSailor, setNewSailor, fieldState}) => {
           <SelectItem key={'Armador'}>Armador</SelectItem>
           <SelectItem key={'Capitan'}>Capitan</SelectItem>
           <SelectItem key={'Jefe de máquinas'}>Jefe de máquinas</SelectItem>
-          <SelectItem key={'Cocinero'}>Armador</SelectItem>
-          <SelectItem key={'Marinero'}>Armador</SelectItem>
+          <SelectItem key={'Cocinero'}>Cocinero</SelectItem>
+          <SelectItem key={'Marinero'}>Marinero</SelectItem>
         </Select>
         <div>
           <h3 className='font-semibold my-4'>Marinero a crear:</h3>

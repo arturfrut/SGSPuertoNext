@@ -30,24 +30,25 @@ export const SailorBook = () => {
   const chargeImages = [
     {
       chargeDate:
-        fullTripulant?.sailorBookData?.sailor_book_first[0].expiration_date ??
+        fullTripulant?.sailorBookData?.sailor_book_first[0]?.expiration_date ??
         'Sin fecha cargada',
       destination: 'Libreta: Hoja 1 y 2',
       docType: 'sailor_book_first',
       textDescription:
         'Por favor tome una foto en horizontal de las primeras dos páginas de su libreta',
-      chipData: checkDateForChip(fullTripulant?.sailorBookData.sailor_book_first[0].expiration_date)
+      chipData: checkDateForChip(fullTripulant?.sailorBookData?.sailor_book_first[0]?.expiration_date),
+      prevData: fullTripulant?.sailorBookData?.sailor_book_first[0]
     },
     {
       chargeDate:
-        fullTripulant.sailorBookData?.renovation[0]?.expiration_date ??
+        fullTripulant?.sailorBookData?.renovation[0]?.expiration_date ??
         'Sin fecha cargada',
       destination: 'Libreta: Renovaciones',
       docType: 'renovation',
       textDescription:
-        'Por favor tome una foto en horizontal de las ultimas páginas de su libreta'
-        ,chipData: checkDateForChip(fullTripulant?.sailorBookData?.renovation[0]?.expiration_date)
-
+        'Por favor tome una foto en horizontal de las ultimas páginas de su libreta',
+      chipData: checkDateForChip(fullTripulant?.sailorBookData?.renovation[0]?.expiration_date),
+      prevData: fullTripulant?.sailorBookData?.renovation[0]  // Corregido aquí
     },
     {
       chargeDate:
@@ -55,34 +56,34 @@ export const SailorBook = () => {
         'Sin fecha cargada',
       destination: 'Certificado Médico',
       docType: 'medical_certification',
-      textDescription: 'Por favor tome una foto de su certificado médico'
-      ,chipData: checkDateForChip(fullTripulant?.sailorBookData?.medical_certification[0]?.expiration_date)
-
+      textDescription: 'Por favor tome una foto de su certificado médico',
+      chipData: checkDateForChip(fullTripulant?.sailorBookData?.medical_certification[0]?.expiration_date),
+      prevData: fullTripulant?.sailorBookData?.medical_certification[0]
     },
     {
       chargeDate:
-        fullTripulant.sailorBookData.cense[0]?.expiration_date ??
+        fullTripulant?.sailorBookData?.cense[0]?.expiration_date ??
         'Sin fecha cargada',
       destination: 'Censo',
       docType: 'cense',
       textDescription:
-        'Por favor tome una foto en horizontal de los censos en su libreta'
-        ,chipData: checkDateForChip(fullTripulant?.sailorBookData?.cense[0]?.expiration_date)
-
+        'Por favor tome una foto en horizontal de los censos en su libreta',
+      chipData: checkDateForChip(fullTripulant?.sailorBookData?.cense[0]?.expiration_date),
+      prevData: fullTripulant?.sailorBookData?.cense[0]
     },
     {
       chargeDate:
-        fullTripulant.sailorBookData.stcw[0]?.expiration_date ??
+        fullTripulant?.sailorBookData?.stcw[0]?.expiration_date ??
         'Sin fecha cargada',
       destination: 'STCW/95',
       docType: 'stcw',
-      textDescription: 'Por favor tome una foto completa del certificado'
-      ,chipData: checkDateForChip(fullTripulant?.sailorBookData?.stcw[0]?.expiration_date)
-
+      textDescription: 'Por favor tome una foto completa del certificado',
+      chipData: checkDateForChip(fullTripulant?.sailorBookData?.stcw[0]?.expiration_date),
+      prevData: fullTripulant?.sailorBookData?.stcw[0]
     }
-    
   ]
   const sailorsTabHeader = ['Fecha de carga', 'Estado', 'Sección', '']
+  console.log('FULL TRIPULANT DATA',fullTripulant?.sailorBookData)
   return (
     <div className='h-full lg:px-6 w-full'>
       <SailorBookModal initialOpen={true} />
@@ -115,6 +116,7 @@ export const SailorBook = () => {
                         docType={row.docType}
                         destination={row.destination}
                         textDescription={row.textDescription}
+                        prevData={row.prevData}
                       />
                     </TableCell>
                   </TableRow>
