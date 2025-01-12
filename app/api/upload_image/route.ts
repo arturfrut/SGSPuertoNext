@@ -18,7 +18,6 @@ export async function POST(request: Request) {
     const special_sign = formData.get('special_sign') as string
     const special_sign_name = formData.get('special_sign_name') as string
 
-    console.log({ docType, chargedBy, expirationDate })
 
     if (!docType || isNaN(chargedBy) || !expirationDate) {
       return NextResponse.json(
