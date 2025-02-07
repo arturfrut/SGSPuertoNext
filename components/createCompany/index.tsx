@@ -12,6 +12,8 @@ import {
 } from '@nextui-org/react'
 import axios from 'axios'
 import React, { useState } from 'react'
+import useGlobalStore from '@/stores/useGlobalStore'
+import useAllCompanies from '@/app/hooks/useAllCompanies'
 
 export interface CompanyInterface {
   company_name: string
@@ -46,7 +48,7 @@ export const CreateCompany = () => {
       name: 'company_omi',
       placeholder: 'Número de OMI de compañía',
       type: 'number'
-    }, // sirve de id
+    },
     {
       name: 'company_representant',
       placeholder: 'Representante legal',
@@ -60,10 +62,10 @@ export const CreateCompany = () => {
     { name: 'company_email', placeholder: 'Email', type: 'text' }
   ]
 
-  const [company, setCompany] = useState<CompanyInterface>(
-    createCompanyInitialValue
-  )
+  const [company, setCompany] = useState<CompanyInterface>(createCompanyInitialValue)
   const [awaitResponse, setAwaitResponse] = useState(false)
+  const { setCompanies } = useGlobalStore()
+  const { fetchCompaniesData } = useAllCompanies()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -79,13 +81,19 @@ export const CreateCompany = () => {
     try {
       const response = await axios.post('/api/register_company', company)
       console.log('Company created successfully:', response.data)
-      console.log(company)
-      alert('Compañía registrada')
+      
+      // Actualizar la lista de compañías después de crear una nueva
+      await fetchCompaniesData()
+      
+      // Limpiar el formulario
+      setCompany(createCompanyInitialValue)
+      
+      alert('Compañía registrada exitosamente')
     } catch (error) {
       console.error('Error creating company:', error)
       alert('Error al registrar compañía')
 
-      if (error.response.data.error) {
+      if (error.response?.data?.error) {
         alert(error.response.data.error)
       }
     }
@@ -110,7 +118,7 @@ export const CreateCompany = () => {
         <Divider className='mb-4' />
 
         <CardBody>
-          {formFields.map(({ name, placeholder,type}) => (
+          {formFields.map(({ name, placeholder, type }) => (
             <React.Fragment key={name}>
               <p className='mb-4'>{`Ingrese ${placeholder}:`}</p>
               <Input
@@ -121,7 +129,7 @@ export const CreateCompany = () => {
                 onChange={handleInputChange}
                 className='mb-4'
                 required
-                type={type === 'number' ? 'number' : 'text'} // Condicional para type
+                type={type === 'number' ? 'number' : 'text'}
               />
             </React.Fragment>
           ))}

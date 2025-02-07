@@ -67,7 +67,7 @@ export const CreateShip = () => {
 
   const formFields = [
     { name: 'ship_name', placeholder: 'nombre del barco' },
-    { name: 'omi', placeholder: 'OMI' }, //sirve de Id
+    { name: 'omi', placeholder: 'OMI' },
     { name: 'matricula', placeholder: 'matricula' },
     {
       name: 'ship_type',
@@ -83,13 +83,13 @@ export const CreateShip = () => {
         'Gasero',
         'Pesquero',
         'Unidad móvil de perforación mar adentro',
-        'Buque de carga distinto a los anteriores' // Remolcador
+        'Buque de carga distinto a los anteriores'
       ]
-    }, // es shipTypes
+    },
     { name: 'eslora', placeholder: 'eslora' },
     { name: 'manga', placeholder: 'manga' },
     { name: 'puntal', placeholder: 'puntal' },
-    { name: 'TAT', placeholder: 'TAT' }, //tonelaje de arqueo total
+    { name: 'TAT', placeholder: 'TAT' },
     { name: 'potencia', placeholder: 'potency' },
     { name: 'company', placeholder: 'empresa', defaultValue: '', values: [] },
     { name: 'company_omi' }
@@ -100,9 +100,18 @@ export const CreateShip = () => {
   const [awaitResponse, setAwaitResponse] = useState(false)
   const { fetchCompaniesData } = useAllCompanies()
 
+  // Cargar compañías al montar el componente
   useEffect(() => {
-    fetchCompaniesData()
+    const loadInitialData = async () => {
+      await fetchCompaniesData()
+    }
+    loadInitialData()
   }, [])
+
+  // Debug useEffect para monitorear cambios en companies
+  useEffect(() => {
+    console.log('Companies updated:', companies)
+  }, [companies])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -121,16 +130,17 @@ export const CreateShip = () => {
     if (selectedCompany) {
       setShip(prevState => ({
         ...prevState,
-        company: selectedCompany.company_name, // actualizar company
-        company_omi: selectedCompany.company_omi // actualizar company_omi
+        company: selectedCompany.company_name,
+        company_omi: selectedCompany.company_omi
       }))
     }
   }
+
   const handleShipType = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target
     setShip(prevState => ({
       ...prevState,
-      ship_type: value // actualizar company
+      ship_type: value
     }))
   }
 
@@ -142,8 +152,11 @@ export const CreateShip = () => {
       const apiData = { ...ship, charged_by: userData.id }
       try {
         await axios.post('/api/register_ship', apiData)
-        alert('Barco registrado')
+        alert('Barco registrado exitosamente')
+        // Limpiar el formulario después de un registro exitoso
+        setShip(createShipInitialValue)
       } catch (error) {
+        console.error('Error registering ship:', error)
         alert('Error al registrar barco')
       }
       setAwaitResponse(false)
@@ -201,6 +214,7 @@ export const CreateShip = () => {
                     value={(ship as any)[name]}
                     onChange={handleInputChange}
                     className='mb-4'
+                    required
                   />
                 </Fragment>
               ))
@@ -213,11 +227,12 @@ export const CreateShip = () => {
             onChange={handleSelectChange}
             className='mb-4'
             aria-label='Empresa'
+            required
           >
             {companies.map(company => (
               <SelectItem
                 key={company.company_omi}
-                value={company.company_name}
+                value={company.company_omi}
               >
                 {company?.company_name}
               </SelectItem>
