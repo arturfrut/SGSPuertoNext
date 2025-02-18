@@ -1,5 +1,5 @@
-import supabase from '@/lib/supabase';
-import { NextResponse } from 'next/server';
+import supabase from "@/lib/supabase";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -11,9 +11,14 @@ export async function GET() {
       throw selectError;
     }
 
-    return NextResponse.json(data);
+    return new NextResponse(JSON.stringify(data), {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0',
+        'Content-Type': 'application/json',
+      },
+    });
   } catch (error: any) {
-    console.error('Error fetching sailors:', error);
+    console.error('Error fetching companies:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
