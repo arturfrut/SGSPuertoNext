@@ -1,5 +1,7 @@
 import supabase from "@/lib/supabase";
 import { NextResponse } from "next/server";
+export const dynamic = 'force-dynamic' // Esto es clave para forzar respuestas dinámicas
+export const revalidate = 0 // Deshabilita el cache estático
 
 export async function GET() {
   try {
@@ -13,7 +15,9 @@ export async function GET() {
 
     return new NextResponse(JSON.stringify(data), {
       headers: {
-        'Cache-Control': 'no-store, max-age=0',
+        'Cache-Control': 'no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
         'Content-Type': 'application/json',
       },
     });
