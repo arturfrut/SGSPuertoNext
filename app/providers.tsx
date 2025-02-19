@@ -5,11 +5,23 @@ import { ThemeProviderProps } from 'next-themes/dist/types'
 import { Layout } from '../components/layout/layout'
 import LoginForm from '@/components/login-form'
 import React, { useState, useEffect } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 export interface ProvidersProps {
   children: React.ReactNode
   themeProps?: ThemeProviderProps
 }
+
+// Crear el queryClient fuera del componente para que no se reinicie en cada render
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutos
+      refetchOnWindowFocus: false
+    }
+  }
+})
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const [isLogged, setIsLogged] = useState<boolean>(false)
@@ -34,18 +46,21 @@ export function Providers({ children, themeProps }: ProvidersProps) {
   }
 
   return (
-    <NextUIProvider>
-      <NextThemesProvider
-        defaultTheme='system'
-        attribute='class'
-        {...themeProps}
-      >
-        {!isLogged ? (
-          <LoginForm setIsLogged={setIsLogged} />
-        ) : (
-          <Layout>{children}</Layout>
-        )}
-      </NextThemesProvider>
-    </NextUIProvider>
+    <QueryClientProvider client={queryClient}>
+      <NextUIProvider>
+        <NextThemesProvider
+          defaultTheme='system'
+          attribute='class'
+          {...themeProps}
+        >
+          {!isLogged ? (
+            <LoginForm setIsLogged={setIsLogged} />
+          ) : (
+            <Layout>{children}</Layout>
+          )}
+        </NextThemesProvider>
+      </NextUIProvider>
+      <ReactQueryDevtools /> 
+    </QueryClientProvider>
   )
 }

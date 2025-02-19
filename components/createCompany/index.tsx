@@ -14,6 +14,7 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import useGlobalStore from '@/stores/useGlobalStore'
 import useAllCompanies from '@/app/hooks/useAllCompanies'
+import { useCreateCompanyMutation } from '@/app/hooks/useCompaniesQuery'
 
 export interface CompanyInterface {
   company_name: string
@@ -64,8 +65,8 @@ export const CreateCompany = () => {
 
   const [company, setCompany] = useState<CompanyInterface>(createCompanyInitialValue)
   const [awaitResponse, setAwaitResponse] = useState(false)
-  const { setCompanies } = useGlobalStore()
   const { fetchCompaniesData } = useAllCompanies()
+  const createCompany = useCreateCompanyMutation()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -77,28 +78,16 @@ export const CreateCompany = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setAwaitResponse(true)
     try {
-      const response = await axios.post('/api/register_company', company)
-      console.log('Company created successfully:', response.data)
-      
-      // Actualizar la lista de compañías después de crear una nueva
-      await fetchCompaniesData()
-      
-      // Limpiar el formulario
+      await createCompany.mutateAsync(company)
       setCompany(createCompanyInitialValue)
-      
       alert('Compañía registrada exitosamente')
     } catch (error) {
       console.error('Error creating company:', error)
       alert('Error al registrar compañía')
-
-      if (error.response?.data?.error) {
-        alert(error.response.data.error)
-      }
     }
-    setAwaitResponse(false)
   }
+
 
   return (
     <Card className='w-full md:w-2/3 md:px-10 md:py-5'>

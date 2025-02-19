@@ -1,7 +1,5 @@
 'use client'
 
-import useAllCompanies from '@/app/hooks/useAllCompanies'
-import useGlobalStore from '@/stores/useGlobalStore'
 import {
   Button,
   Card,
@@ -14,8 +12,11 @@ import {
   Select,
   SelectItem
 } from '@nextui-org/react'
+import { Fragment, useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { Fragment, useEffect, useState } from 'react'
+import useGlobalStore from '@/stores/useGlobalStore'
+import { useCompaniesQuery } from '@/app/hooks/useCompaniesQuery'
 
 export interface ShipInterface {
   ship_name: string
@@ -95,23 +96,25 @@ export const CreateShip = () => {
     { name: 'company_omi' }
   ]
 
-  const { companies, userData } = useGlobalStore()
+  const { userData } = useGlobalStore()
   const [ship, setShip] = useState<ShipInterface>(createShipInitialValue)
-  const [awaitResponse, setAwaitResponse] = useState(false)
-  const { fetchCompaniesData } = useAllCompanies()
+  
+  // Usar React Query para obtener las compañías
+  const { data: companies = [], isLoading: isLoadingCompanies } = useCompaniesQuery()
 
-  // Cargar compañías al montar el componente
-  useEffect(() => {
-    const loadInitialData = async () => {
-      await fetchCompaniesData()
+  // Mutation para crear barco
+  const createShipMutation = useMutation({
+    mutationFn: (shipData: ShipInterface) => 
+      axios.post('/api/register_ship', shipData),
+    onSuccess: () => {
+      alert('Barco registrado exitosamente')
+      setShip(createShipInitialValue)
+    },
+    onError: (error) => {
+      console.error('Error registering ship:', error)
+      alert('Error al registrar barco')
     }
-    loadInitialData()
-  }, [])
-
-  // Debug useEffect para monitorear cambios en companies
-  useEffect(() => {
-    console.log('Companies updated:', companies)
-  }, [companies])
+  })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -146,21 +149,14 @@ export const CreateShip = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(ship)
     if (validateShipData(ship)) {
-      setAwaitResponse(true)
       const apiData = { ...ship, charged_by: userData.id }
-      try {
-        await axios.post('/api/register_ship', apiData)
-        alert('Barco registrado exitosamente')
-        // Limpiar el formulario después de un registro exitoso
-        setShip(createShipInitialValue)
-      } catch (error) {
-        console.error('Error registering ship:', error)
-        alert('Error al registrar barco')
-      }
-      setAwaitResponse(false)
+      createShipMutation.mutate(apiData)
     }
+  }
+
+  if (isLoadingCompanies) {
+    return <div>Cargando compañías...</div>
   }
 
   return (
@@ -242,7 +238,10 @@ export const CreateShip = () => {
 
         <Divider />
         <CardFooter className='flex gap-3 justify-end'>
-          <Button type='submit' isLoading={awaitResponse}>
+          <Button 
+            type='submit' 
+            isLoading={createShipMutation.isPending}
+          >
             Enviar
           </Button>
         </CardFooter>
