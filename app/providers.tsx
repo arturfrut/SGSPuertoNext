@@ -17,8 +17,9 @@ export interface ProvidersProps {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutos
-      refetchOnWindowFocus: false
+      staleTime: 0, 
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
     }
   }
 })
